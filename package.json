@@ -1,0 +1,27 @@
+{
+  "name": "blockprov",
+  "version": "0.0.1",
+  "description": "Blockchain based provenance application",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freakymind/BlockProv.git"
+  },
+  "keywords": [
+    "Blockchain",
+    "Crypto",
+    "Provenance"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/freakymind/BlockProv/issues"
+  },
+  "homepage": "https://github.com/freakymind/BlockProv#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
