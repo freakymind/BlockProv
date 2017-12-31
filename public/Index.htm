@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blockchain</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/blockchain">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+
+  <style>
+  body {
+      position: relative;
+  }
+  #section1 {padding-top:50px;height:500px;color: #000; background-color: #fff;}
+  #section2 {padding-top:50px;height:500px;color: #000; background-color: #fff;}
+  #section3 {padding-top:50px;height:500px;color: #000; background-color: #fff;}
+  #section4 {padding-top:50px;height:500px;color: #000; background-color: #fff;}
+  </style>
+</head>
+<body ng-app="mainApp" data-spy="scroll" data-target=".navbar" data-offset="50">
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header"; style = "float : left;">
+
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Blockchain</a>
+
+    </div>
+    <div>
+      <div class="collapse navbar-collapse" style ="float:left;" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li><a href="/blockchain/">Home</a></li>
+          <li><a href="/blockchain/about">About</a></li>
+          <li><a href="/blockchain/login" style="color : #F39C12;"><b>Login</b></a></li>
+          <li><a href="/blockchain/signup" style="color: #F39C12;"><b>SignUp</b></a><li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<div ng-view></div>
+
+<script src="app.js"> </script>
+<script src="routes.js"> </script>
+<script src="controller.js"> </script>
+</body>
+</html>

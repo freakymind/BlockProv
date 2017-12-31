@@ -1,27 +1,22 @@
 {
-  "name": "blockprov",
-  "version": "0.0.1",
-  "description": "Blockchain based provenance application",
-  "main": "app.js",
+  "name": "meanstack",
+  "version": "1.0.0",
+  "description": "mean stack application",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/freakymind/BlockProv.git"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [
-    "Blockchain",
-    "Crypto",
-    "Provenance"
+    "MEAN",
+    "Stack"
   ],
-  "author": "",
+  "author": "Yash Bansal",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/freakymind/BlockProv/issues"
-  },
-  "homepage": "https://github.com/freakymind/BlockProv#readme",
   "dependencies": {
-    "express": "^4.16.2"
+    "bcrypt-nodejs": "0.0.3",
+    "express": "^4.16.2",
+    "mongoose": "^4.13.7",
+    "morgan": "^1.9.0"
   }
 }
