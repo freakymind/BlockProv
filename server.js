@@ -17,11 +17,18 @@ app.use(morgan('dev')); 						// dev helps in color coded logs
 app.use(express.static('public')) 	//used to serve static files
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use('/blockchain', routes.router);
+app.use('/api', routes.router);
 
 //connecting to Mongo DB.
 mongoose.connect('mongodb://localhost:27017/blockchain', function() {
 	console.log('Mongo Connected');
+});
+
+app.get('*', function(req, res) {
+	//sendFile requires apbsolute path thus we used __dirname
+	//__dirname 				: absolute path of the current direcory
+	//path.join(x,y,z) 	: method that joins path
+	res.sendFile(path.join(__dirname, '/public/Index.htm'));
 });
 
 //server listening on port 8082

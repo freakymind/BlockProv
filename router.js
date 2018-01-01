@@ -31,10 +31,4 @@ router.get('/userRegCountries', function(req, res, next) {
 	res.json(countryData);
 });
 
-router.get('*', function(req, res) {
-	//sendFile requires apbsolute path thus we used __dirname
-	//__dirname 				: absolute path of the current direcory
-	//path.join(x,y,z) 	: method that joins path
-	res.sendFile(path.join(__dirname, '/public/Index.htm'));
-});
 module.exports.router = router;

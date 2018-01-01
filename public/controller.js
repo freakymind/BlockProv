@@ -9,7 +9,7 @@ angular.module('userController', [])
 
   this.submitRegDetails = function(regData) {
     if(validateRequired() && validatePassword() && validateEmailID()) {
-      $http.post('/blockchain/user', regData)
+      $http.post('/api/user', regData)
       .then(function(res){
         console.log(res.data);
         console.log("post request success!");
@@ -18,7 +18,7 @@ angular.module('userController', [])
   }
 
   this.fetchCountries = function() {
-    $http.get('/blockchain/userRegCountries')
+    $http.get('/api/userRegCountries')
     .then(function(res){
       _this.countryData = res.data['countryData'];
     });

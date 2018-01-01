@@ -3,16 +3,16 @@ angular.module('appRoutes', ["ngRoute"])
 .config(function($routeProvider, $locationProvider){
   console.log("Router loaded");
   $routeProvider
-  .when('/blockchain', {
+  .when('/', {
     templateUrl : "./views/HomePage.htm"
   })
-  .when('/blockchain/login', {
+  .when('/login', {
     templateUrl : "./views/Login.htm"
   })
-  .when('/blockchain/signup', {
+  .when('/signup', {
     templateUrl : "./views/SignUp.htm"
   })
-  .when('/blockchain/about', {
+  .when('/about', {
     templateUrl : "./views/about.htm"
   });
 
