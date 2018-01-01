@@ -1,6 +1,6 @@
 angular.module('userController', [])
 
-.controller('userCtrl', function($http) {
+.controller('userCtrl', function($http, $location) {
   console.log("controller userCtrl loaded.. ");
 
   _this = this;
@@ -11,8 +11,12 @@ angular.module('userController', [])
     if(validateRequired() && validatePassword() && validateEmailID()) {
       $http.post('/api/user', regData)
       .then(function(res){
-        console.log(res.data);
-        console.log("post request success!");
+        if (res.data.success) {
+          clearOut();
+          $location.path('/successfulReg');
+        } else {
+
+        }
       });
     }
   }
@@ -89,4 +93,14 @@ angular.module('userController', [])
     }
   }
 
+  var clearOut = function() {
+    _this.regData.username   = "";
+    _this.regData.fullname   = "";
+    _this.regData.emailid    = "";
+    _this.regData.country    = "";
+    _this.regData.address    = "";
+    _this.regData.phone_no   = "";
+    _this.regData.password   = "";
+    _this.regData.retypepass = "";
+  }
 });
