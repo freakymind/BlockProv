@@ -4,7 +4,7 @@
   <title>Blockchain</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <base href="/blockchain">
+  <base href="/">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -21,7 +21,7 @@
   #section4 {padding-top:50px;height:500px;color: #000; background-color: #fff;}
   </style>
 </head>
-<body ng-app="mainApp" data-spy="scroll" data-target=".navbar" data-offset="50">
+<body ng-app="mainApp" ng-controller="mainCtrl as main" data-spy="scroll" data-target=".navbar" data-offset="50">
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
@@ -48,11 +48,13 @@
     </div>
   </div>
 </nav>
-
-<div ng-view></div>
-
+<div >
+  <div ng-view></div>
+</div>
 <script src="app.js"> </script>
 <script src="routes.js"> </script>
 <script src="controller.js"> </script>
+<script src="mainController.js"> </script>
+<script src="services.js"> </script>
 </body>
 </html>

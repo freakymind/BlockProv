@@ -1,15 +1,16 @@
-angular.module('userController', [])
+angular.module('userController', ['userServices'])
 
-.controller('userCtrl', function($http, $location) {
+.controller('userCtrl', ["$http", "$location", "userFactory", function($http, $location, userFactory) {
   console.log("controller userCtrl loaded.. ");
 
   _this = this;
   this.countryData;
   this.dropdCountries=[];
+  
 
   this.submitRegDetails = function(regData) {
     if(validateRequired() && validatePassword() && validateEmailID()) {
-      $http.post('/api/user', regData)
+      userFactory.register(regData)
       .then(function(res){
         if (res.data.success) {
           clearOut();
@@ -22,7 +23,7 @@ angular.module('userController', [])
   }
 
   this.fetchCountries = function() {
-    $http.get('/api/userRegCountries')
+    userFactory.fetchCountries()
     .then(function(res){
       _this.countryData = res.data['countryData'];
     });
@@ -93,6 +94,8 @@ angular.module('userController', [])
     }
   }
 
+  
+
   var clearOut = function() {
     _this.regData.username   = "";
     _this.regData.fullname   = "";
@@ -103,4 +106,4 @@ angular.module('userController', [])
     _this.regData.password   = "";
     _this.regData.retypepass = "";
   }
-});
+}]);

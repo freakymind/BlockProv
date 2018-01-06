@@ -7,10 +7,10 @@ var path 				= require('path');
 
 //importing LOCAL MODULES
 var routes			= require('./router');
-var User 				= require('./app/models/User');
+var User 			= require('./app/models/User');
 
-var app 				= express();	//invoking express in app variable
-var port 				= process.env.PORT || 8082; //var routes			= require('./router');
+var app 			= express();	//invoking express in app variable
+var port 			= process.env.PORT || 8082; //var routes			= require('./router');
 
 // middlewares
 app.use(morgan('dev')); 						// dev helps in color coded logs
@@ -20,8 +20,12 @@ app.use(express.urlencoded({extended: true}));
 app.use('/api', routes.router);
 
 //connecting to Mongo DB.
-mongoose.connect('mongodb://localhost:27017/blockchain', function() {
-	console.log('Mongo Connected');
+mongoose.connect('mongodb://localhost:27017/blockchain', function(err) {
+	if (err) {
+		console.log(err);
+	} else {
+		console.log('connected Mongo..')
+	}
 });
 
 app.get('*', function(req, res) {
