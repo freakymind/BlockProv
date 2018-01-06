@@ -1,4 +1,4 @@
-angular.module('userServices', [])
+angular.module('userRegService', [])
 
 .factory('userFactory', ["$http", function($http){
 	var UserReg = {}
@@ -9,6 +9,6 @@ angular.module('userServices', [])
 	UserReg.fetchCountries = function() {
 		return $http.get('/api/userRegCountries');
 	}
-	
+
 	return UserReg;
 }]);

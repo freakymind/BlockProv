@@ -16,7 +16,14 @@
 				<input type="password" class="form-control" id="password" ng-model = "main.loginDet.password">
 			</div>
 
-			<button type="button" style ="background-color: #F39C12; color: #fff; border: none; width:80px;" class="btn btn-primary" ng-click="main.validate(login.loginDet)">Login</button>
+			<button type="button" style ="background-color: #F39C12; color: #fff; border: none; width:80px;" class="btn btn-primary" ng-click="main.signIn()">Login</button>
+			<br>
+			<br>
+			<div class="row">
+				<div class="col-sm-10">
+					{{main.message}}
+				</div>
+			<div>
 		</div>
 	</div>
 </div>

@@ -1,4 +1,4 @@
-angular.module('userController', ['userServices'])
+angular.module('userController', ['userRegService'])
 
 .controller('userCtrl', ["$http", "$location", "userFactory", function($http, $location, userFactory) {
   console.log("controller userCtrl loaded.. ");
@@ -6,7 +6,7 @@ angular.module('userController', ['userServices'])
   _this = this;
   this.countryData;
   this.dropdCountries=[];
-  
+
 
   this.submitRegDetails = function(regData) {
     if(validateRequired() && validatePassword() && validateEmailID()) {
@@ -94,7 +94,7 @@ angular.module('userController', ['userServices'])
     }
   }
 
-  
+
 
   var clearOut = function() {
     _this.regData.username   = "";
