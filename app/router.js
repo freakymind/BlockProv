@@ -40,14 +40,38 @@ router.post('/login', function(req, res, next){
     console.log(user);
     if(user) {
       if (user.authUser(req.body.password)) {
-        var token = jwt.sign({username: req.body.username, email: req.body.email, fullname: req.body.fullname}, secret, { expiresIn: '1h' });
+        var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname}, secret, { expiresIn: '1h' });
+        console.log(token);
         res.json({success:true, message:"correct credentials", token:token});
       } else {
         res.json({success:false, message:"incorrect credentials"});
       }
     } else {
-      console.log('hi');
       res.json({success:false, message:"User not found"});
+    }
+  });
+});
+
+router.post ('/getCurrentUser', function(req, res, next) {
+  jwt.verify(req.body.token, secret, function(err, decoded) {
+    if (err) {
+        res.json({success:false, token:{}});
+    } else {
+        res.json({success:true, token:decoded});
+    }
+
+  });
+});
+
+router.post ('/getCurrentUserAllDetails', function(req, res, next) {
+  jwt.verify(req.body.token, secret, function(err, decoded) {
+    if (err) {
+        res.json({success:false, user:{}});
+    } else {
+      console.log(decoded.username);
+      User.findOne({username:decoded.username}, function(err, user) {
+        res.json({success:true, user:{username:user.username, address:user.address, country:user.country, email:user.email, fullname:user.fullname, phone_no:user.phone_no}});
+      });
     }
   });
 });

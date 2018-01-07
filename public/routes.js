@@ -17,6 +17,12 @@ angular.module('appRoutes', ["ngRoute"])
   })
   .when('/successfulReg', {
     templateUrl : "./views/successfulReg.htm"
+  })
+  .when('/loggingOut', {
+    templateUrl : "./views/loggingOut.htm"
+  })
+  .when('/profile', {
+    templateUrl : "./views/profile.htm"
   });
 
   //https://scotch.io/tutorials/pretty-urls-in-angularjs-removing-the-hashtag#toc-setting-for-relative-links
