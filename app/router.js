@@ -6,7 +6,7 @@ var jwt         = require('jsonwebtoken');
 //loacl modules
 var User 				= require('./models/User');
 var countryData = require('../resources/countries');
-
+let appDetails = require('../package.json')
 //instances
 var router  		= express.Router();
 var app         = express();
@@ -78,6 +78,11 @@ router.post ('/getCurrentUserAllDetails', function(req, res, next) {
 
 router.get('/userRegCountries', function(req, res, next) {
 	res.json(countryData);
+});
+
+//Ping health check
+router.get('/ping', function(req, res, next) {
+	res.end(`PONG, version ${appDetails.version}`);
 });
 
 module.exports.router = router;
