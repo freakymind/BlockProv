@@ -82,7 +82,7 @@ router.get('/userRegCountries', function(req, res, next) {
 
 //Ping health check
 router.get('/ping', function(req, res, next) {
-	res.end(`PONG, version ${appDetails.version}`);
+	res.end(`PONG, verzion ${appDetails.version}`);
 });
 
 module.exports.router = router;
