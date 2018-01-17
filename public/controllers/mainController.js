@@ -14,6 +14,10 @@ angular.module('mainController', ['authServices'])
 	//check Session on route change
 	$rootScope.$on('$routeChangeStart', function (next, last) {
 			//checking if user logged in
+			if($location.path() == '/profile'){
+				_this.getCurrentUserProfile();
+			}				
+
 			if (authUser.isLoggedIn()) {
 				_this.isLoggedIn = true;
 				console.log(_this.isLoggedIn);

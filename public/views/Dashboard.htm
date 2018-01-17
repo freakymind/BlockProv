@@ -1,50 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Dashboard|Blockchain</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-	<style type="text/css">
-		.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
-    		background-color: #333;
-		}
-	</style>
-</head>
-<body>
-	<!--
-			NAVBAR 
-		-->
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-	  <div class="container-fluid">
-	    <div class="navbar-header"; style = "float : left;">
-	      
-	      <a class="navbar-brand" href="#">Blockchain</a>
-	      
-	    </div>
-	    <div>
-	      <div style ="float:right; margin-top: 10px; ">
-	      	<button type="button" style ="background-color: #F39C12; color: #fff; border-color: #fff; width:80px;" class="btn btn-primary ">Log Out</button>
-	      	
-	      </div>	
+<div class="container-fluid" style="background-color: #333; height:600px;">
+	
+	<div class = "row" style="margin-top: 50px;">
+		<div class ="col-sm-8 col-sm-offset-2" style="background-color: #eee;">
+			
+			<!-- dashboard panel -->
+			<div class = "row" style="padding:50px;">
+				<div class = "col-sm-10 col-sm-offset-1">
+					
+					<!-- dashboard Heading -->
+					<div class="row">
+						<div class="col-sm-10 col-sm-offset-1">
+							<h1>
+								Dashboard
+							</h1>
+						</div>
+					</div>
+					<!-- dashboard Heading end -->
+					<br>
+					<!-- dashboard buttons -->
+					<div class="row">
+						<div class="col-sm-2 col-sm-offset-1" style="background-color: #333; height:150px; width: 150px; border-radius: 100px;">
+							<h3 style="padding:25px; text-align: center; color: #eee">
+								<b>Add Asset</b>
+							</h3>
+						</div>
+						<div class="col-sm-2 col-sm-offset-1" style="background-color: #333; height:150px; width: 150px; border-radius: 100px;">
+							<h3 style="padding: 25px; text-align: center; color: #eee">
+								<b>View Assets</b>
+							</h3>
+						</div>
+					</div>
+					<!-- dashbord buttons end -->
 
-	    </div>
-	  </div>
-	</nav>    
-	<div class = 'row' style="margin-top: 60px;">
-		
+				</div>	
+			</div>
+			<!-- dashboard panel end -->
 
-		<div class = 'col-sm-2 ' style="margin-left: 10px;">
-			<ul class="nav nav-pills nav-stacked" >
-				<li class="active"><a href="#">Home</a></li>
-				<li><a href="#">Create Asset</a></li>
-				<li><a href="#">Add Distributor</a></li>
-				<li><a href="#">Track Asset</a></li>
-			</ul>
 		</div>
 	</div>
-</body>
-</html>
+</div>

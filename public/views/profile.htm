@@ -1,43 +1,58 @@
-<div class="row">
-  <div class="col-sm-8 col-sm-offset-2">
+<div class="container-fluid" style="background-color: #333; padding-bottom:100px; height:600px;"> 
+  
+  <div class="row" style="margin-top: 100px;">
     <div class="row">
-      <div class="col-sm-4 col-sm-offset-1">
-        Name :
+        <div class="col-sm-6 col-sm-offset-3" style="background-color:#F39C12; height:10px;">
+    </div>
+    <h4>
+    <div class="col-sm-6 col-sm-offset-3" style="background-color: #eee;padding: 50px;">
+      
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-1">
+          <h1>Profile</h1>
+        </div>
       </div>
+      <br><br>
+      <div class="row">
+        <div class="col-sm-4 col-sm-offset-1">
+          Name 
+        </div>
 
-      <div class="col-sm-4 col-sm-offset-1">
-        {{main.currentUserFullDet.fullname}}
+        <div class="col-sm-4">
+          {{main.currentUserFullDet.fullname}}
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-sm-4 col-sm-offset-1">
+          Username 
+        </div>
+
+        <div class="col-sm-4">
+          {{main.currentUserFullDet.username}}
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-sm-4 col-sm-offset-1">
+          Address 
+        </div>
+
+        <div class="col-sm-4">
+          {{main.currentUserFullDet.address}}, {{main.currentUserFullDet.country}}
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-sm-4 col-sm-offset-1">
+          EmailId 
+        </div>
+
+        <div class="col-sm-4">
+          {{main.currentUserFullDet.email}}
+        </div>
       </div>
     </div>
-
-    <div class="row">
-      <div class="col-sm-4 col-sm-offset-1">
-        Username :
-      </div>
-
-      <div class="col-sm-4 col-sm-offset-1">
-        {{main.currentUserFullDet.username}}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-4 col-sm-offset-1">
-        Address :
-      </div>
-
-      <div class="col-sm-4 col-sm-offset-1">
-        {{main.currentUserFullDet.address}}, {{main.currentUserFullDet.country}}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-4 col-sm-offset-1">
-        EmailId :
-      </div>
-
-      <div class="col-sm-4 col-sm-offset-1">
-        {{main.currentUserFullDet.email}}
-      </div>
-    </div>
+  </h4>
   </div>
 </div>

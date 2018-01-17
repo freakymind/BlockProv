@@ -44,6 +44,7 @@
           <li ng-show="!(main.isLoggedIn)"><a href="/signup" style="color: #F39C12;"><b>SignUp</b></a><li>
           <li ng-show="main.isLoggedIn"><a href="/loggingOut" style="color: #F39C12;" ng-click="main.signOut()"><b>Logout</b></a><li>
           <li ng-show="main.isLoggedIn"><a href="/profile" ng-click="main.getCurrentUserProfile()">Hello {{main.currentUserDet.username}}</a></li>
+          <li ng-show="main.isLoggedIn"><a href="/dashboard">Dashboard</a></li>
         </ul>
       </div>
 

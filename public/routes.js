@@ -23,6 +23,9 @@ angular.module('appRoutes', ["ngRoute"])
   })
   .when('/profile', {
     templateUrl : "./views/profile.htm"
+  })
+  .when('/dashboard', {
+    templateUrl : "./views/dashboard.htm"
   });
 
   //https://scotch.io/tutorials/pretty-urls-in-angularjs-removing-the-hashtag#toc-setting-for-relative-links
