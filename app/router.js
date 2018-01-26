@@ -20,14 +20,24 @@ router.post('/user', function(req, res, next){
   user.username = req.body.username;
   user.password = req.body.password;
   user.email    = req.body.emailid;
-  user.country  = req.body.address;
+  user.country  = req.body.country;
   user.phone_no = req.body.phone_no;
   user.address  = req.body.address;
   user.fullname = req.body.fullname;
 
   user.save(function(err){
     if (err) {
-      res.json({success: false, message : "Signup Failed"});
+      if (err.errors != null) {
+        if (err.errors.fullname) {
+          res.json({success: false, message : err.errors.fullname.message});
+        } else if (err.errors.username) {
+          res.json({success: false, message : err.errors.username.message});
+        } else if (err.errors.email) {
+          res.json({success: false, message : err.errors.email.message});
+        } 
+      } else {
+        res.json({success: false, message : err});
+      }
     } else {
       res.json({success: true, message : "Signup Successful"});
     }

@@ -17,6 +17,7 @@ angular.module('userController', ['userRegService'])
    };
 
   this.signupMessage = '';
+  this.signupMessageHeader = '';
   this.submitRegDetails = function(regData) {
     _this.inputFields = {
       'username' : '',
@@ -37,9 +38,13 @@ angular.module('userController', ['userRegService'])
       .then(function(res){
         if (res.data.success) {
           clearOut();
-          $location.path('/successfulReg');
+          // $location.path('/successfulReg');
+          _this.signupMessage = 'Registration Complete, Login to continue.';
+          _this.signupMessageHeader = 'Success';
         } else {
-
+          console.log(res.data);
+          _this.signupMessage = res.data.message;
+          _this.signupMessageHeader = 'Error';
         }
       });
     } else if (!boolValidateRequired) {
