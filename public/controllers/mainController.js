@@ -4,13 +4,14 @@ angular.module('mainController', ['authServices'])
 	_this = this;
 
 	//scope variables of mainController
-	_this.message 				= ""			// post login message on the panel (on Login Page)
-	_this.panelVisible 		= false;	// post login message panel	(on Login Page)
-	_this.loginDet 				= {};			// login Details variable
+	_this.message = ""			// post login message on the panel (on Login Page)
+	_this.panelVisible = false;	// post login message panel	(on Login Page)
+	_this.loginDet = {};			// login Details variable
 	_this.isLoggedIn;								// boolean to check if a user is logged in
-	_this.currentUserDet	= '';			// current Logged in user Details from session token
-	_this.checkSession		= true;
+	_this.currentUserDet = '';			// current Logged in user Details from session token
+	_this.checkSession = true;
 	_this.currentUserFullDet = '';
+	_this.loadme = true;
 	//check Session on route change
 	$rootScope.$on('$routeChangeStart', function (next, last) {
 			//checking if user logged in
@@ -29,10 +30,13 @@ angular.module('mainController', ['authServices'])
 					} else {
 						//error conditions
 					}
+					_this.loadme = true;
 				});
 			} else {
 				_this.isLoggedIn = false;
+				_this.loadme = true;
 			}
+
 	});
 
 

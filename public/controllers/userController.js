@@ -127,7 +127,6 @@ angular.module('userController', ['userRegService'])
         }
         if (_this.regData == undefined  || locRegData.password   == "" || locRegData.password   == undefined) {
           _this.inputFields.password = "emptyFields"
-          _this.inputFields.password = "emptyFields"
         }
         if (_this.regData == undefined  || locRegData.retypepass == "" || locRegData.retypepass == undefined) {
           _this.inputFields.retypepass = "emptyFields"
