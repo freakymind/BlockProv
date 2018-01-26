@@ -1,6 +1,6 @@
 angular.module('authServices', [])
 
-.factory('authUser', ["$http", "tokenCheck", function($http, tokenCheck){
+.factory('authUser', ["$http", "tokenCheck", function($http, tokenCheck) {
   var authFactory={};
 
   authFactory.login = function(loginDetails){
@@ -30,12 +30,10 @@ angular.module('authServices', [])
 
   authFactory.getUser = function() {
     return $http.post('/api/getCurrentUser', {token:tokenCheck.getToken()});
-  }
+  };
 
   return authFactory;
 }])
-
-
 
 .factory('profileDetails', ["$http", "tokenCheck", function($http, tokenCheck) {
   var profileDetailsFactory = {};

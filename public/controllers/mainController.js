@@ -1,6 +1,8 @@
 angular.module('mainController', ['authServices'])
 
-.controller('mainCtrl',["$http", "$timeout", "$location", "$rootScope", "authUser", "tokenCheck", "profileDetails", function($http, $timeout, $location, $rootScope, authUser, tokenCheck, profileDetails){
+.controller('mainCtrl',["$http", "$timeout", "$location", "$rootScope", "authUser", "tokenCheck", "profileDetails", 
+	function($http, $timeout, $location, $rootScope, authUser, tokenCheck, profileDetails){
+	
 	_this = this;
 
 	//scope variables of mainController
@@ -69,6 +71,7 @@ angular.module('mainController', ['authServices'])
 			}, 2000);
 		}
 	};
+
 
 	_this.getCurrentUserProfile = function() {
 		profileDetails.getAllDetails()
