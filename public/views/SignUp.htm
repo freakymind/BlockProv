@@ -101,15 +101,16 @@
 								class="form-control {{register.inputFields.retypepass}}" 
 								name="retypepass" 
 								ng-model="register.regData.retypepass" 
+								match='{{register.regData.password}}'
 								required
 							>
 
-							<div ng-show="(SignupForm.retypepass.$invalid || SignupForm.retypepass.$error.match)">
+							<div ng-show="(!register.passwordIsValid || SignupForm.retypepass.$invalid)">
 								<a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="must match the password" > Info </a>
 							</div>
 						</div>
-						
-						<button type="button" style ="background-color: #F39C12; color: #fff; border: none; width:80px;" class="btn btn-primary " ng-click="register.submitRegDetails(register.regData, SignupForm.$valid)" data-toggle="modal" data-target="#myModal">Sign Up</button>
+
+						<button type="button" style ="background-color: #F39C12; color: #fff; border: none; width:80px;" class="btn btn-primary " ng-click="register.submitRegDetails(register.regData, (SignupForm.$valid && register.passwordIsValid))" data-toggle="modal" data-target="#myModal">Sign Up</button>
 						<br><br>
 						
 						<div class="modal fade" id="myModal" role="dialog">
@@ -131,6 +132,7 @@
 						      
 						    </div>
 					  	</div>
+
 					</form>
 				</div>
 			</div>

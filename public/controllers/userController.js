@@ -8,25 +8,20 @@ angular.module('userController', ['userRegService'])
   this.signupModalMessage = '';
   this.signupModalHeader = '';
 
-
   this.submitRegDetails = function(regData, valid) {
     if (valid) {
-        var boolValidatePassword = validatePassword();
-        
-        if(boolValidatePassword) {
-          userFactory.register(regData)
-          .then(function(res){
-            if (res.data.success) {
-              clearOut();
-              _this.signupModalMessage = 'Registration Complete, Login to continue.';
-              _this.signupModalHeader = 'Success';
-            } else {
-              console.log(res.data);
-              _this.signupModalMessage = res.data.message;
-              _this.signupModalHeader = 'Error';
-            }
-          });
-        }
+        userFactory.register(regData)
+        .then(function(res){
+          if (res.data.success) {
+            clearOut();
+            _this.signupModalMessage = 'Registration Complete, Login to continue.';
+            _this.signupModalHeader = 'Success';
+          } else {
+            console.log(res.data);
+            _this.signupModalMessage = res.data.message;
+            _this.signupModalHeader = 'Error';
+          }
+        });
       }
   }
 
@@ -42,7 +37,7 @@ angular.module('userController', ['userRegService'])
 
   this.checkEmail = function(valid) {
     if(valid) {
-      userFactory.checkUsername({email:_this.regData.emailid})
+      userFactory.checkEmail({email:_this.regData.emailid})
       .then(function(res){
         console.log(res.data.message);
       });
@@ -75,24 +70,61 @@ angular.module('userController', ['userRegService'])
     });
   }
 
-  var validatePassword = function() {
-    if (_this.regData != undefined  &&
-       _this.regData.password != "" && _this.regData.password != undefined && 
-       _this.regData.retypepass != "" && _this.regData.retypepass != undefined && 
-       _this.regData.password === _this.regData.retypepass) {
-
-      console.log("password valid");
-      return true;
-    } else {
-      console.log("password invalid");
-      _this.inputFields.password = "emptyFields";
-      _this.inputFields.retypepass = "emptyFields";
-      return false;
-    }
-  }
-
   var clearOut = function() {
     _this.regData = {};
   }
 
-}]);
+}])
+
+
+
+.directive('match', function() {
+  return {
+    restrict : 'A',
+    
+    controller : function($scope) {
+
+      $scope.register.passwordIsValid = false;
+      
+      $scope.validatePassword = function(confirmValue) {
+        if ($scope.register.regData != undefined && confirmValue == $scope.register.regData.retypepass) {
+          $scope.register.passwordIsValid = true;
+        } else {
+          $scope.register.passwordIsValid = false;
+        }
+      };
+
+    },
+
+    link : function(scope,element,attrs) {
+      scope.$watch(function(scope) {
+          if (scope.register.regData != undefined) {
+            return scope.register.regData.retypepass
+          }
+          else {
+            return undefined;
+          }
+        }, function(value) {
+          scope.validatePassword(attrs.match);
+      });
+
+      attrs.$observe('match', function() {
+        scope.validatePassword(attrs.match);
+      });
+    }
+  };
+});
+
+
+// .directive('match', function() {
+//   return {
+//     template : '{{register.myInput}}'
+//   }
+// })
+
+
+// .directive('match', function() {
+//   return {
+//     template : 'hey'
+//   }
+// })

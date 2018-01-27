@@ -14,7 +14,7 @@ angular.module('userRegService', [])
 		return $http.post('/api/checkUsername', username);
 	}
 
-	UserReg.checkUsername = function(emailId) {
+	UserReg.checkEmail = function(emailId) {
 		return $http.post('/api/checkEmail', emailId);
 	}
 
