@@ -36,7 +36,9 @@ router.post('/user', function(req, res, next){
           res.json({success: false, message : err.errors.email.message});
         } 
       } else {
-        res.json({success: false, message : err});
+        if (err.code = "11000") {
+          res.json({success: false, message : err.errmsg})
+        }
       }
     } else {
       res.json({success: true, message : "Signup Successful"});
