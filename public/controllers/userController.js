@@ -7,9 +7,12 @@ angular.module('userController', ['userRegService'])
   this.dropdCountries=[];
   this.signupModalMessage = '';
   this.signupModalHeader = '';
+  this.isEmailValid=false;
+  this.isUsernameValid=false;
 
   this.submitRegDetails = function(regData, valid) {
     if (valid) {
+
         userFactory.register(regData)
         .then(function(res){
           if (res.data.success) {
@@ -17,7 +20,6 @@ angular.module('userController', ['userRegService'])
             _this.signupModalMessage = 'Registration Complete, Login to continue.';
             _this.signupModalHeader = 'Success';
           } else {
-            console.log(res.data);
             _this.signupModalMessage = res.data.message;
             _this.signupModalHeader = 'Error';
           }
@@ -30,7 +32,7 @@ angular.module('userController', ['userRegService'])
     if(valid) {
       userFactory.checkUsername({username:_this.regData.username})
       .then(function(res){
-        console.log(res.data.message);
+        _this.isUsernameValid = res.data.success;
       });
     }
   }
@@ -39,7 +41,7 @@ angular.module('userController', ['userRegService'])
     if(valid) {
       userFactory.checkEmail({email:_this.regData.emailid})
       .then(function(res){
-        console.log(res.data.message);
+        _this.isEmailValid = res.data.success;
       });
     }
   }
@@ -83,7 +85,6 @@ angular.module('userController', ['userRegService'])
     restrict : 'A',
     
     controller : function($scope) {
-
       $scope.register.passwordIsValid = false;
       
       $scope.validatePassword = function(confirmValue) {
@@ -114,17 +115,3 @@ angular.module('userController', ['userRegService'])
     }
   };
 });
-
-
-// .directive('match', function() {
-//   return {
-//     template : '{{register.myInput}}'
-//   }
-// })
-
-
-// .directive('match', function() {
-//   return {
-//     template : 'hey'
-//   }
-// })
