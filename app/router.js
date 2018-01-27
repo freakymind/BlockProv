@@ -75,6 +75,34 @@ router.post ('/getCurrentUser', function(req, res, next) {
   });
 });
 
+router.post('/checkUsername', function(req, res, next) {
+  User.findOne({username:req.body.username}, function(err, user){
+    if(err) {
+      res.json({success:false, message:err});
+    } else {
+      if(user) {
+        res.json({success: false, message:'username taken'});
+      } else {
+        res.json({success: true, message: 'valid username'});
+      }
+    }
+  });
+});
+
+router.post('/checkEmail', function(req, res, next) {
+  User.findOne({email:req.body.email}, function(err, user){
+    if(err) {
+      res.json({success:false, message:err});
+    } else {
+      if(user) {
+        res.json({success: false, message:'email exists'});
+      } else {
+        res.json({success: true, message: 'valid email'});
+      }
+    }
+  });
+});
+
 router.post ('/getCurrentUserAllDetails', function(req, res, next) {
   jwt.verify(req.body.token, secret, function(err, decoded) {
     if (err) {

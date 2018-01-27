@@ -44,6 +44,7 @@
 								ng-pattern='/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i'
 								ng-maxlength="30"
 								ng-minlength="3"
+								ng-blur="register.checkEmail(SignupForm.emailid.$valid)"
 								required>
 
 								<div ng-show="(SignupForm.emailid.$pristine || SignupForm.emailid.$invalid)">
@@ -80,6 +81,7 @@
 								ng-pattern='/^[a-zA-Z0-9]+$/i'
 								ng-maxlength="30"
 								ng-minlength="8"
+								ng-blur="register.checkUsername(SignupForm.username.$valid)"
 								required>
 
 							<div ng-show="(SignupForm.username.$pristine || SignupForm.username.$invalid)">

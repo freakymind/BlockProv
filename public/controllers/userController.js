@@ -30,6 +30,25 @@ angular.module('userController', ['userRegService'])
       }
   }
 
+
+  this.checkUsername = function(valid) {
+    if(valid) {
+      userFactory.checkUsername({username:_this.regData.username})
+      .then(function(res){
+        console.log(res.data.message);
+      });
+    }
+  }
+
+  this.checkEmail = function(valid) {
+    if(valid) {
+      userFactory.checkUsername({email:_this.regData.emailid})
+      .then(function(res){
+        console.log(res.data.message);
+      });
+    }
+  }
+
   this.fetchCountries = function() {
     userFactory.fetchCountries()
     .then(function(res){
