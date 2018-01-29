@@ -2,22 +2,46 @@ angular.module('userController', ['userRegService'])
 
 .controller('userCtrl', ["$http", "$location", "userFactory", function($http, $location, userFactory) {
   console.log("controller userCtrl loaded.. ");
-
   _this = this;
   this.countryData;
   this.dropdCountries=[];
+  this.signupModalMessage = '';
+  this.signupModalHeader = '';
+  this.isEmailValid=false;
+  this.isUsernameValid=false;
+
+  this.submitRegDetails = function(regData, valid) {
+    if (valid) {
+
+        userFactory.register(regData)
+        .then(function(res){
+          if (res.data.success) {
+            clearOut();
+            _this.signupModalMessage = 'Registration Complete, Login to continue.';
+            _this.signupModalHeader = 'Success';
+          } else {
+            _this.signupModalMessage = res.data.message;
+            _this.signupModalHeader = 'Error';
+          }
+        });
+      }
+  }
 
 
-  this.submitRegDetails = function(regData) {
-    if(validateRequired() && validatePassword() && validateEmailID()) {
-      userFactory.register(regData)
+  this.checkUsername = function(valid) {
+    if(valid) {
+      userFactory.checkUsername({username:_this.regData.username})
       .then(function(res){
-        if (res.data.success) {
-          clearOut();
-          $location.path('/successfulReg');
-        } else {
+        _this.isUsernameValid = res.data.success;
+      });
+    }
+  }
 
-        }
+  this.checkEmail = function(valid) {
+    if(valid) {
+      userFactory.checkEmail({email:_this.regData.emailid})
+      .then(function(res){
+        _this.isEmailValid = res.data.success;
       });
     }
   }
@@ -48,62 +72,46 @@ angular.module('userController', ['userRegService'])
     });
   }
 
-  var validatePassword = function() {
-    if (_this.regData.password === _this.regData.retypepass) {
-      console.log("password valid");
-      return true;
-    } else {
-      console.log("password invalid");
-      return false;
-    }
-  }
-
-  var validateRequired = function() {
-    var locRegData = _this.regData
-    if (_this.regData == undefined  ||
-        locRegData.username   == "" || locRegData.username   == undefined ||
-        locRegData.fullname   == "" || locRegData.fullname   == undefined ||
-        locRegData.emailid    == "" || locRegData.emailid    == undefined ||
-        locRegData.country    == "" || locRegData.country    == undefined ||
-        locRegData.address    == "" || locRegData.address    == undefined ||
-        locRegData.phone_no   == "" || locRegData.phone_no   == undefined ||
-        locRegData.password   == "" || locRegData.password   == undefined ||
-        locRegData.retypepass == "" || locRegData.retypepass == undefined) {
-        console.log("some details required!")
-        return false;
-    } else {
-      return true;
-    }
-  }
-
-  var validateEmailID = function() {
-    var atLoc = _this.regData.emailid.indexOf('@');
-    var dotLoc = _this.regData.emailid.indexOf('.');
-    var email = _this.regData.emailid;
-
-    if (((atLoc > 0) && (atLoc < (email.length - 1))) && (((dotLoc - atLoc) > 1)  && (email.lastIndexOf('.') < (email.length - 1)))) {
-      //-----------------------------------------------------------------------
-      // http get request to search db for the emailID.
-      // if email ID exists, donot continue, ask user to enter another emailID
-      //-----------------------------------------------------------------------
-
-      return true;
-    } else {
-      console.log('error email');
-      return false;
-    }
-  }
-
-
-
   var clearOut = function() {
-    _this.regData.username   = "";
-    _this.regData.fullname   = "";
-    _this.regData.emailid    = "";
-    _this.regData.country    = "";
-    _this.regData.address    = "";
-    _this.regData.phone_no   = "";
-    _this.regData.password   = "";
-    _this.regData.retypepass = "";
+    _this.regData = {};
   }
-}]);
+
+}])
+
+
+
+.directive('match', function() {
+  return {
+    restrict : 'A',
+    
+    controller : function($scope) {
+      $scope.register.passwordIsValid = false;
+      
+      $scope.validatePassword = function(confirmValue) {
+        if ($scope.register.regData != undefined && confirmValue == $scope.register.regData.retypepass) {
+          $scope.register.passwordIsValid = true;
+        } else {
+          $scope.register.passwordIsValid = false;
+        }
+      };
+
+    },
+
+    link : function(scope,element,attrs) {
+      scope.$watch(function(scope) {
+          if (scope.register.regData != undefined) {
+            return scope.register.regData.retypepass
+          }
+          else {
+            return undefined;
+          }
+        }, function(value) {
+          scope.validatePassword(attrs.match);
+      });
+
+      attrs.$observe('match', function() {
+        scope.validatePassword(attrs.match);
+      });
+    }
+  };
+});

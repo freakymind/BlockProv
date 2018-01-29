@@ -20,14 +20,26 @@ router.post('/user', function(req, res, next){
   user.username = req.body.username;
   user.password = req.body.password;
   user.email    = req.body.emailid;
-  user.country  = req.body.address;
+  user.country  = req.body.country;
   user.phone_no = req.body.phone_no;
   user.address  = req.body.address;
   user.fullname = req.body.fullname;
 
   user.save(function(err){
     if (err) {
-      res.json({success: false, message : "Signup Failed"});
+      if (err.errors != null) {
+        if (err.errors.fullname) {
+          res.json({success: false, message : err.errors.fullname.message});
+        } else if (err.errors.username) {
+          res.json({success: false, message : err.errors.username.message});
+        } else if (err.errors.email) {
+          res.json({success: false, message : err.errors.email.message});
+        } 
+      } else {
+        if (err.code = "11000") {
+          res.json({success: false, message : err.errmsg})
+        }
+      }
     } else {
       res.json({success: true, message : "Signup Successful"});
     }
@@ -60,6 +72,34 @@ router.post ('/getCurrentUser', function(req, res, next) {
         res.json({success:true, token:decoded});
     }
 
+  });
+});
+
+router.post('/checkUsername', function(req, res, next) {
+  User.findOne({username:req.body.username}, function(err, user){
+    if(err) {
+      res.json({success:false, message:err});
+    } else {
+      if(user) {
+        res.json({success: false, message:'username taken'});
+      } else {
+        res.json({success: true, message: 'valid username'});
+      }
+    }
+  });
+});
+
+router.post('/checkEmail', function(req, res, next) {
+  User.findOne({email:req.body.email}, function(err, user){
+    if(err) {
+      res.json({success:false, message:err});
+    } else {
+      if(user) {
+        res.json({success: false, message:'email exists'});
+      } else {
+        res.json({success: true, message: 'valid email'});
+      }
+    }
   });
 });
 
