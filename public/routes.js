@@ -1,4 +1,4 @@
-var app = angular.module('appRoutes', ["ngRoute", "authServices"])
+var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementServices"])
 
 .config(function($routeProvider, $locationProvider){
   console.log("Router loaded");
@@ -30,7 +30,13 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices"])
     authenticated : true
   })
   .when('/dashboard', {
-    templateUrl : "./views/dashboard.htm"
+    templateUrl : "./views/dashboard.htm",
+    authenticated : true
+  })
+  .when('/management', {
+    templateUrl : "./views/management.htm",
+    authenticated : true, 
+    permissions : ["admin"]
   });
 
   //https://scotch.io/tutorials/pretty-urls-in-angularjs-removing-the-hashtag#toc-setting-for-relative-links
@@ -38,14 +44,23 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices"])
 
 });
 
-app.run(['$rootScope', 'authUser', '$location', function($rootScope, authUser, $location) {
+app.run(['$rootScope', 'authUser', '$location', 'mgtService', function($rootScope, authUser, $location, mgtService) {
   $rootScope.$on('$routeChangeStart', function (event, next, last) {
-    // console.log(authUser.isLoggedIn());
-    // console.log(next.$$route);
+
     if (next.$$route.authenticated == true) {
       if (!authUser.isLoggedIn()) {
         event.preventDefault();
         $location.path('/');
+      } else if (authUser.isLoggedIn() && next.$$route.permissions) {
+        mgtService.getCurrentUserRole()
+        .then(function(res){
+          if (next.$$route.permissions.find(function(permission){
+            return permission == res.data.role;
+          }) == undefined) {
+            event.preventDefault();
+            $location.path('/');
+          } 
+        });
       }
     } else if (next.$$route.authenticated == false) {
       if (authUser.isLoggedIn()) {

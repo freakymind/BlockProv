@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="/">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
@@ -47,8 +47,9 @@
           <li><a href="/about">About</a></li>
           <li ng-show="!(main.isLoggedIn)"><a href="/login" style="color : #F39C12;"><b>Login</b></a></li>
           <li ng-show="!(main.isLoggedIn)"><a href="/signup" style="color: #F39C12;"><b>SignUp</b></a><li>
-          <li ng-show="main.isLoggedIn"><a href="/loggingOut" style="color: #F39C12;" ng-click="main.signOut()"><b>Logout</b></a><li>
-          <li ng-show="main.isLoggedIn"><a href="/profile" ng-click="main.getCurrentUserProfile()">Hello {{main.currentUserDet.username}}</a></li>
+          <li ng-show="main.isLoggedIn"><a href="" style="color: #F39C12;" ng-click="main.showModal(2)"><b>Logout</b></a><li>
+          <li ng-show="main.isLoggedIn"><a href="/profile" ng-click="main.getCurrentUserProfile()">Hello {{main.currentUserDet.username}}
+          <li ng-show="main.isLoggedIn && main.isAdmin"><a href="/management">Management</a></li>
           <li ng-show="main.isLoggedIn"><a href="/dashboard">Dashboard</a></li>
         </ul>
       </div>
@@ -58,6 +59,28 @@
 </nav>
 <div >
   <div style="margin-top:50px;" ng-view></div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" ng-click="main.cancelButtonModal()">&times;</button>
+          <h4 class="modal-title">{{main.titleMessage}}</h4>
+        </div>
+        <div class="modal-body">
+          <b>{{main.bodyMessage}}</b>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-show="main.modalBehaviour">Refresh</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="main.cancelButtonModal()">{{main.modalCloseBouttonLabel}}</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
 </div>
 
 <!--Main app-->
@@ -69,9 +92,12 @@
 <!--Controllers-->
 <script src="controllers/userController.js"> </script>
 <script src="controllers/mainController.js"> </script>
+<script src="controllers/managementController.js"> </script>
 
 <!--Services-->
 <script src="services/userRegService.js"> </script>
 <script src="services/authServices.js"> </script>
+<script src="services/mgtService.js"> </script>
+
 </body>
 </html>

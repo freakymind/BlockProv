@@ -1,5 +1,6 @@
-angular.module('mainApp', ['appRoutes','mainController', 'userController', 'userRegService', 'authServices'])
+angular.module('mainApp', ['appRoutes','mainController', 'userController', 'userRegService', 'authServices', 'managementController', 'managementServices'])
 
-.config(function() {
-  console.log("App Loaded");
+.config(function($httpProvider) {
+	$httpProvider.interceptors.push('authInterceptor');
+  	console.log("App Loaded");
 });

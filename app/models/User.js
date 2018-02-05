@@ -60,7 +60,8 @@ var UserSchema 	= new Schema({
 	address 	: {type:String, required:true},
 	fullname	: {type:String, required:true, validate : fullnameValidation},
 	phone_no	: {type:Number, required:true},
-	email 		: {type:String, lowercase:true, required:true, unique:true, validate : emailValidation}
+	email 		: {type:String, lowercase:true, required:true, unique:true, validate : emailValidation},
+	role		: {type:String, lowercase:true}
 });
 
 // , validate : fullnameValidation

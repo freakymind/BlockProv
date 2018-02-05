@@ -4,17 +4,14 @@ angular.module('authServices', [])
   var authFactory={};
 
   authFactory.login = function(loginDetails){
-    console.log('in factory')
     var promise = $http.post('/api/login', loginDetails);
     return promise;
   };
 
   authFactory.isLoggedIn = function() {
     if (tokenCheck.getToken()) {
-      console.log('user is logged in' + tokenCheck.getToken());
       return true;
     } else {
-      console.log('no user logged in');
       return false;
     }
   };
@@ -29,7 +26,7 @@ angular.module('authServices', [])
   };
 
   authFactory.getUser = function() {
-    return $http.post('/api/getCurrentUser', {token:tokenCheck.getToken()});
+    return $http.get('/api/getCurrentUser');
   };
 
   return authFactory;
@@ -39,7 +36,7 @@ angular.module('authServices', [])
   var profileDetailsFactory = {};
 
   profileDetailsFactory.getAllDetails = function() {
-    return $http.post('/api/getCurrentUserAllDetails', {token:tokenCheck.getToken()});
+    return $http.get('/api/getCurrentUserAllDetails');
   }
 
   return profileDetailsFactory;
@@ -61,4 +58,17 @@ angular.module('authServices', [])
   };
 
   return tokenCheckFactory;
+}])
+
+.factory('authInterceptor', ["tokenCheck", function(tokenCheck){
+  var authInterceptorFactory = {};
+
+  authInterceptorFactory.request = function(config) {
+    var token = tokenCheck.getToken();
+
+    if (token) config.headers['x-access-token'] = token;
+    return config;
+  } 
+
+  return authInterceptorFactory;
 }]);
