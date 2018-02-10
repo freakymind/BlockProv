@@ -1,58 +1,64 @@
-<div class="container-fluid" style="background-color: #333; padding-bottom:100px; height:600px;"> 
+<div class="container-fluid" style="background-color:#2c3e50; padding-bottom:100px; height:600px;"> 
   
-  <div class="row" style="margin-top: 100px;">
+  <div class="row" style="margin-top: 50px;">
     <div class="row">
-        <div class="col-sm-6 col-sm-offset-3" style="background-color:#F39C12; height:10px;">
-    </div>
-    <h4>
-    <div class="col-sm-6 col-sm-offset-3" style="background-color: #eee;padding: 50px;">
+      <div class="col-sm-6 col-sm-offset-3" style="background-color:#f5f6fa; height:30px;">
       
-      <div class="row">
-        <div class="col-sm-6 col-sm-offset-1">
-          <h1>Profile</h1>
-        </div>
       </div>
-      <br><br>
-      <div class="row">
-        <div class="col-sm-4 col-sm-offset-1">
-          Name 
-        </div>
+      <div class="col-sm-6 col-sm-offset-3" style="background-color:#2c3e50; text-align:center; font-family: 'Roboto Slab', sans-serif; color:#f5f6fa;  height:100px;">
+        <p style="font-size:500%;">
+          Profile
+        </p>
+      </div>
+      <h4>
+      <div class="col-sm-6 col-sm-offset-3" style="background-color:#f5f6fa; color: #0a3d62; padding: 50px; padding-top:0px; font-family: 'Roboto Slab', sans-serif; font-size: 120%; box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+        
+        <!-- <div class="row">
+          <div class="col-sm-6 col-sm-offset-1">
+            <h1>Profile</h1>
+          </div>
+        </div> -->
+        <br><br>
+        <div class="row">
+          <div class="col-sm-4 col-sm-offset-1" style="text-align: right">
+            Name 
+          </div>
 
-        <div class="col-sm-4">
-          {{main.currentUserFullDet.fullname}}
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.fullname}}</i></b>
+          </div>
         </div>
-      </div>
-      <br>
-      <div class="row">
-        <div class="col-sm-4 col-sm-offset-1">
-          Username 
-        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-4 col-sm-offset-1" style="text-align: right">
+            Username 
+          </div>
 
-        <div class="col-sm-4">
-          {{main.currentUserFullDet.username}}
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.username}}</i></b>
+          </div>
         </div>
-      </div>
-      <br>
-      <div class="row">
-        <div class="col-sm-4 col-sm-offset-1">
-          Address 
-        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-4 col-sm-offset-1" style="text-align: right;">
+            Address 
+          </div>
 
-        <div class="col-sm-4">
-          {{main.currentUserFullDet.address}}, {{main.currentUserFullDet.country}}
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.address}}, {{main.currentUserFullDet.country}}</i></b>
+          </div>
         </div>
-      </div>
-      <br>
-      <div class="row">
-        <div class="col-sm-4 col-sm-offset-1">
-          EmailId 
-        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-4 col-sm-offset-1" style="text-align: right">
+            EmailId 
+          </div>
 
-        <div class="col-sm-4">
-          {{main.currentUserFullDet.email}}
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.email}}</i></b>
+          </div>
         </div>
       </div>
-    </div>
   </h4>
   </div>
 </div>

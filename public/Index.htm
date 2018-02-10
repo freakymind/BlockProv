@@ -5,11 +5,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="/">
+
+  <!-- bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <!-- angular js -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+
+  <!-- google fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:700,700i|Roboto+Slab:400,700" rel="stylesheet">
+
+  <!-- font awesome -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 
   <style>
   body {
@@ -28,7 +38,7 @@
 </head>
 <body ng-app="mainApp" ng-controller="mainCtrl as main" data-spy="scroll" data-target=".navbar" data-offset="50" ng-show="{{main.loadme}}" ng-cloak>
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-inverse navbar-fixed-top" style="border:0px; background-color:#2C3A47; font-family: 'Roboto Slab', serif; font-size: 120%;">
   <div class="container-fluid">
     <div class="navbar-header"; style = "float : left;">
 
@@ -37,20 +47,25 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Blockchain</a>
+      <a class="navbar-brand" href="#"><p style="font-size: 120%">Blockchain</p></a>
 
     </div>
     <div>
       <div class="collapse navbar-collapse" style ="float:left;" id="myNavbar">
         <ul class="nav navbar-nav">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li ng-show="!(main.isLoggedIn)"><a href="/login" style="color : #F39C12;"><b>Login</b></a></li>
-          <li ng-show="!(main.isLoggedIn)"><a href="/signup" style="color: #F39C12;"><b>SignUp</b></a><li>
-          <li ng-show="main.isLoggedIn"><a href="" style="color: #F39C12;" ng-click="main.showModal(2)"><b>Logout</b></a><li>
-          <li ng-show="main.isLoggedIn"><a href="/profile" ng-click="main.getCurrentUserProfile()">Hello {{main.currentUserDet.username}}
-          <li ng-show="main.isLoggedIn && main.isAdmin"><a href="/management">Management</a></li>
-          <li ng-show="main.isLoggedIn"><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/" style="color: #fff">Home</a></li>
+          <li><a href="/about" style="color: #fff">About</a></li>
+          
+
+          <li ng-show="main.isLoggedIn && main.isAdmin"><a href="/management" style="color: #fff">Management</a></li>
+          <li ng-show="main.isLoggedIn"><a href="/dashboard" style="color: #fff">Dashboard</a></li>
+
+          <li ng-show="!(main.isLoggedIn)"><a href="/login" style="color:#FFC312;"><b>Login</b></a></li>
+          <li ng-show="!(main.isLoggedIn)"><a href="/signup" style="color:#FFC312;"><b>SignUp</b></a><li>
+          <li ng-show="main.isLoggedIn"><a href="/profile" style="color: #fff" ng-click="main.getCurrentUserProfile()">
+            <i class="fa fa-user-circle" aria-hidden="true"></i>  {{main.currentUserDet.username}} 
+          </a></li>
+          <li ng-show="main.isLoggedIn"><a href="" style="color: #FFC312;" ng-click="main.showModal(2)"><b>Logout</b></a><li>
         </ul>
       </div>
 
