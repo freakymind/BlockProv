@@ -77,10 +77,9 @@ router.post('/checkEmail', function(req, res, next) {
 //User Login
 router.post('/login', function(req, res, next){
   User.findOne({username: req.body.username}, function(err, user) {
-    console.log(user);
     if(user) {
       if (user.authUser(req.body.password)) {
-        var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname, role: user.role}, secret, { expiresIn: '5000' });
+        var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname, role: user.role}, secret, { expiresIn: '10h' });
         console.log(token);
         res.json({success:true, message:"correct credentials", token:token});
       } else {
@@ -99,6 +98,25 @@ router.get('/userRegCountries', function(req, res, next) {
 //Ping health check
 router.get('/ping', function(req, res, next) {
 	res.end(`PONG, version ${appDetails.version}`);
+});
+
+
+router.param('username', function(req, res, next, username){
+  User.findOne({username:username}, function(err, user){
+    if(user) {
+      var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname, role: user.role}, secret, { expiresIn: '1h' })
+      req.token = token;
+      next();
+    } else {
+      res.json({success:false, message:"could not refresh"})
+    }
+  }); 
+});
+
+router.get('/refreshSession/:username', function(req, res, next){
+  if (req.token) {
+    res.json({success:true, token:req.token});
+  }
 });
 
 //session or token verification middleware
@@ -134,5 +152,121 @@ router.get ('/getCurrentUserAllDetails', function(req, res, next) {
 router.get ('/getCurrentUserRole', function(req, res, next) {
     res.json({success: true, role: req.decoded.role});
 });
+
+router.get ('/getAllUsers', function(req, res, next) {
+  User.find({username : {$ne : req.decoded.username}}, 'username address country fullname phone_no role', function(err, users){
+    if(req.decoded.role == 'admin'){
+      if (users) {
+        res.json({success:true, users:users});
+      } else if (err) {
+        res.json({success:false, message:err, users:{}});
+      }
+    } else {
+      res.json({success: false, message:"You do not have permission."})
+    }
+
+  });
+});
+
+router.delete ('/deleteUser', function(req, res, next){
+  if(req.decoded.role == 'admin') {
+    User.deleteOne({id:req.body.id}, function(err){
+      if(err){
+        res.json({success:false, message:err});
+      } else {
+        res.json({success:true, message:"user deleted"})
+      }
+    });
+  } else{
+    res.json({success:false, message:"You do not have permission."})
+  }
+});
+
+router.get('/getUserByID/:id', function(req, res, next){
+  if(req.decoded.role == 'admin') {
+    User.findOne({_id:req.params.id}, 'username address country fullname phone_no role', function(err, user){
+      console.log(req.params.id);
+      if(err) {
+        res.json({success:false, message:err});
+      } else if (user) {
+        res.json({success:true, user:user});
+      } else {
+        res.json({success:false, message:"User not found"})
+      }
+    });
+  }
+}); 
+
+
+router.put('/updateUserDetailsByID', function(req, res, next){
+  if (req.decoded.role == 'admin') {
+    User.findOne({_id:req.body.id}, function(err, user){
+      if (err){
+        res.json({success:false, message:err});
+      } else if (user) {
+        if(req.body.fullname) { //update FULL NAME
+          console.log("here")
+          user.fullname = req.body.fullname;
+          user.save(function(err){
+            if (err) {
+              if(err.errors != null) {
+                if (err.errors.fullname) {
+                  res.json({success:false, message:err.errors.fullname.message});
+                }
+              } else {
+                res.json({success:false, message:err});
+              }
+            } else {
+              res.json({success:true, message:"Successfully updated full name"})
+            }
+          });
+        } else if (req.body.address && req.body.country) { //update ADDRESS
+          user.address = req.body.address;
+          user.country = req.body.country;
+          user.save(function(err) {
+            if (err) {
+              res.json({success:false, message:err});
+            } else {
+              res.json({success:true, message:"Successfully updated address"})
+            }
+          });
+        } else if (req.body.phone_no) { //update PHONE_NO
+          user.phone_no = req.body.phone_no;
+          user.save(function(err) {
+            if (err) {
+              if(err.errors != null) {
+                if (err.errors.phone_no) {
+                  res.json({success:false, message:err.errors.phone_no.message});
+                }
+              } else {
+                res.json({success:false, message:err});
+              }
+            } else {
+              res.json({success:true, message:"Successfully updated phone_no"})
+            }
+          });
+        } else if (req.body.role) { //update ROLE
+          user.role = req.body.role;
+          user.save(function(err) {
+            if (err) {
+              res.json({success:false, message:err});
+            } else {
+              res.json({success:true, message:"Successfully updated role"})
+            }
+          });
+        } else { //updating nothing
+          res.json({success:false, message:"no update attribute provided"});
+        }
+      } else {
+        res.json({success:false, message:'User Not Found'});
+      }
+    });
+  } else {
+    res.json({success:false, message:'you donot have enough permissions'});
+  }
+});
+
+
+
 
 module.exports.router = router;

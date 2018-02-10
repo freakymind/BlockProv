@@ -74,13 +74,15 @@
           <b>{{main.bodyMessage}}</b>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-show="main.modalBehaviour">Refresh</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="main.cancelButtonModal()">{{main.modalCloseBouttonLabel}}</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-show="main.modalBehaviour" ng-click="main.refreshButton()">{{main.modalFirstRefreshButton}}</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-show="!main.modalBehaviour">{{main.modalFirstNoButton}}</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="main.cancelButtonModal()">{{main.modalSecondButton}}</button>
         </div>
       </div>
       
     </div>
   </div>
+  <!-- End of modal -->
 </div>
 
 <!--Main app-->
@@ -93,6 +95,7 @@
 <script src="controllers/userController.js"> </script>
 <script src="controllers/mainController.js"> </script>
 <script src="controllers/managementController.js"> </script>
+<script src="controllers/editUserDetailsController.js"> </script>
 
 <!--Services-->
 <script src="services/userRegService.js"> </script>

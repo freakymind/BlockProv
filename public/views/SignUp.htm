@@ -58,8 +58,16 @@
 
 						<div class="form-group">
 							<label>Country:</label>
-							<input type="text" list="browsers" class="form-control {{register.inputFields.country}}" name="country" ng-model="register.regData.country" ng-change = "register.loadCountries(register.regData.country)" ng-blur = "register.countryInList(register.regData.country)" required>
-							<datalist id="browsers">
+							<input 
+							type="text" 
+							list="countries" 
+							class="form-control {{register.inputFields.country}}" 
+							name="country" 
+							ng-model="register.regData.country" 
+							ng-change = "register.loadCountries(register.regData.country)" 
+							ng-blur = "register.countryInList(register.regData.country)" 
+							required>
+							<datalist id="countries">
 							  <option ng-repeat = 'x in register.dropdCountries' value="{{x}}">
 							</datalist>
 						</div>

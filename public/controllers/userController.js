@@ -2,7 +2,7 @@ angular.module('userController', ['userRegService'])
 
 .controller('userCtrl', ["$http", "$location", "userFactory", "tokenCheck", function($http, $location, userFactory, tokenCheck) {
   console.log("controller userCtrl loaded.. ");
-  _this = this;
+  var _this = this;
   this.countryData;
   this.dropdCountries=[];
   this.signupModalMessage = '';

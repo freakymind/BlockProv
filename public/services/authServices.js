@@ -25,9 +25,13 @@ angular.module('authServices', [])
     }
   };
 
-  authFactory.getUser = function() {
+  authFactory.getCurrentUser = function() {
     return $http.get('/api/getCurrentUser');
   };
+
+  authFactory.refreshSession = function(username) {
+    return $http.get('/api/refreshSession/' + username);
+  }
 
   return authFactory;
 }])
@@ -35,7 +39,7 @@ angular.module('authServices', [])
 .factory('profileDetails', ["$http", "tokenCheck", function($http, tokenCheck) {
   var profileDetailsFactory = {};
 
-  profileDetailsFactory.getAllDetails = function() {
+  profileDetailsFactory.getCurrentUserAllDetails = function() {
     return $http.get('/api/getCurrentUserAllDetails');
   }
 
