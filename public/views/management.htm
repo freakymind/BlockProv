@@ -1,34 +1,54 @@
-<div class="container-fluid" ng-controller="mgtCtrl as mgt" style="background-color: #333; padding-bottom:100px;">
+<div class="container-fluid" ng-controller="mgtCtrl as mgt" style="background-color:#2c3e50; font-family: 'Roboto Slab', serif; padding-bottom:100px; height:600px;">
 	
-	<div class="panel panel-primary" style="margin-top: 100px;" >
-		<div class="panel-heading"><h4>All Users</h4></div>
-		
-			<table class="table table-hover panel-body" style="background-color: #eee;" ng-show = "mgt.loadme" ng-cloak>
-				<thead>
-					<tr>
-						<th>Full Name</th>
-						<th>Address</th>
-						<th>Username</th>
-						<th>Phone Number</th>
-						<th>User Role</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="user in mgt.userAllDetails">
-						<td>{{user.fullname}}</td>
-						<td>{{user.address}}, {{user.country}}</td>
-						<td>{{user.username}}</td>
-						<td>{{user.phone_no}}</td>
-						<td>{{user.role}}</td>
-						<td>
-							<button class="btn btn-primary" ng-click="mgt.gotoEditRoute(user)"><span class="glyphicon glyphicon-edit"></span> Edit</button>
-							<button class="btn btn-danger" ng-click="mgt.deleteThisUser(user)"><span class="glyphicon glyphicon-trash" ></span> Delete</button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		
+	<div class="row">
+		<div class="col-sm-10 col-sm-offset-1">
+
+			<!-- management sheet -->
+			<div class="row" style=" background-color: #f5f6fa; margin-top: 50px">
+				<div class="col-sm-10 col-sm-offset-1">
+					<h1>User Management</h1>
+					<!-- All users display panel  -->
+					<div class="panel" style="margin-top: 50px; border:0px;">
+						<!-- panel head -->
+						<div class="panel-heading" style="background-color: #2C3A47; color:#f5f6fa;">
+							<h3>All Users</h3>
+						</div>
+						<!-- panel body -->
+						<div class="panel-body" style="overflow: auto; padding: 0px;">
+							<table class="table" style=" background-color:#535c68; color:#f5f6fa; margin-bottom: 0px;" ng-show = "mgt.loadme" ng-cloak>
+								<thead style="background-color: #2C3A47; color:#f5f6fa; font-size: 1.2em;">
+									<tr>
+										<th>Full Name</th>
+										<th>Address</th>
+										<th>Username</th>
+										<th>Phone Number</th>
+										<th>User Role</th>
+										<th>Operations</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="user in mgt.userAllDetails">
+										<td>{{user.fullname}}</td>
+										<td>{{user.address}}, {{user.country}}</td>
+										<td>{{user.username}}</td>
+										<td>{{user.phone_no}}</td>
+										<td>{{user.role}}</td>
+										<td>
+											<button class="btn btn-primary" style="font-size: 1em; " ng-click="mgt.gotoEditRoute(user)">Edit</button>
+											<!-- border:2px solid #0984e3; color:#0984e3; border-radius: 10px; background-color:#535c68; -->
+											<button class="btn btn-danger" style="font-size: 1em; " ng-click="mgt.deleteThisUser(user)">Delete</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- all users display panel end -->
+				</div>
+			</div>
+		</div>
 	</div>
+
 	<!-- Modal -->
 	<div class="modal fade" id="deleteUserModal" role="dialog">
     <div class="modal-dialog">

@@ -22,6 +22,11 @@ angular.module('mainController', ['authServices', 'managementServices'])
 	_this.modalBehaviour = false;
 	_this.modalCloseBouttonLabel = "";
 	
+	//for changing routes on button click
+	_this.switchRoute = function(path) {
+		$location.path(path);
+	}
+
 	//function to check whether a user is logged in / session is there logging out user when token expires
 	_this.checkSession = function() {
 

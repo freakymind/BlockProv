@@ -1,26 +1,36 @@
 <div class="container-fluid" style="background-color:#2c3e50; padding-bottom:100px; height:600px;"> 
-  
+
   <div class="row" style="margin-top: 50px;">
-    <div class="row">
+
+      <!-- profile style band -->
       <div class="col-sm-6 col-sm-offset-3" style="background-color:#f5f6fa; height:30px;">
       
       </div>
-      <div class="col-sm-6 col-sm-offset-3" style="background-color:#2c3e50; text-align:center; font-family: 'Roboto Slab', sans-serif; color:#f5f6fa;  height:100px;">
+
+      <!-- profile header -->
+      <div class="col-sm-6 col-sm-offset-3" style="background-color:#f5f6fa; text-align:center; font-family: 'Roboto Slab', sans-serif; color:#2c3e50;  height:100px;">
         <p style="font-size:500%;">
           Profile
         </p>
       </div>
-      <h4>
-      <div class="col-sm-6 col-sm-offset-3" style="background-color:#f5f6fa; color: #0a3d62; padding: 50px; padding-top:0px; font-family: 'Roboto Slab', sans-serif; font-size: 120%; box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-        
-        <!-- <div class="row">
-          <div class="col-sm-6 col-sm-offset-1">
-            <h1>Profile</h1>
-          </div>
-        </div> -->
-        <br><br>
-        <div class="row">
-          <div class="col-sm-4 col-sm-offset-1" style="text-align: right">
+      <!-- profile header end -->
+      
+      <!-- profile body -->
+      <div 
+        class="col-sm-6 col-sm-offset-3" 
+        style="
+        background-color:#f5f6fa; 
+        color: #0a3d62; 
+        padding: 50px; 
+        padding-top:50px; 
+        font-family: 'Roboto Slab', sans-serif; 
+        font-size: 1.5em" 
+      >
+
+
+        <!-- name -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left">
             Name 
           </div>
 
@@ -28,9 +38,10 @@
             <b><i>{{main.currentUserFullDet.fullname}}</i></b>
           </div>
         </div>
-        <br>
-        <div class="row">
-          <div class="col-sm-4 col-sm-offset-1" style="text-align: right">
+
+        <!-- username -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left">
             Username 
           </div>
 
@@ -38,9 +49,10 @@
             <b><i>{{main.currentUserFullDet.username}}</i></b>
           </div>
         </div>
-        <br>
-        <div class="row">
-          <div class="col-sm-4 col-sm-offset-1" style="text-align: right;">
+
+        <!-- address -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left;">
             Address 
           </div>
 
@@ -48,9 +60,10 @@
             <b><i>{{main.currentUserFullDet.address}}, {{main.currentUserFullDet.country}}</i></b>
           </div>
         </div>
-        <br>
-        <div class="row">
-          <div class="col-sm-4 col-sm-offset-1" style="text-align: right">
+
+        <!-- email -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left">
             EmailId 
           </div>
 
@@ -58,7 +71,32 @@
             <b><i>{{main.currentUserFullDet.email}}</i></b>
           </div>
         </div>
+
+        <!-- email -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left">
+            Phone Number 
+          </div>
+
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.phone_no}}</i></b>
+          </div>
+        </div>
+
+        <!-- Role -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left">
+            Role 
+          </div>
+
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.role}}</i></b>
+          </div>
+        </div>
+
+
       </div>
-  </h4>
-  </div>
+      <!-- profile body end -->
+</div>
+
 </div>

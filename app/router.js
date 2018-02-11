@@ -144,7 +144,7 @@ router.get ('/getCurrentUser', function(req, res, next) {
 router.get ('/getCurrentUserAllDetails', function(req, res, next) {
     console.log(req.decoded.username);
     User.findOne({username:req.decoded.username}, function(err, user) {
-      res.json({success:true, user:{username:user.username, address:user.address, country:user.country, email:user.email, fullname:user.fullname, phone_no:user.phone_no}});
+      res.json({success:true, user:{username:user.username, address:user.address, country:user.country, email:user.email, fullname:user.fullname, phone_no:user.phone_no, role:user.role}});
     });
 });
 
