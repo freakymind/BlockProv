@@ -14,11 +14,13 @@ angular.module('userController', ['userRegService'])
     if (valid) {
         userFactory.register(regData)
         .then(function(res){
+          console.log(res.data);
           if (res.data.success) {
             clearOut();
             _this.signupModalMessage = 'Registration Complete, Login to continue.';
             _this.signupModalHeader = 'Success';
           } else {
+            console.log(res.data);
             _this.signupModalMessage = res.data.message;
             _this.signupModalHeader = 'Error';
           }

@@ -47,6 +47,7 @@ angular.module('mainController', ['authServices', 'managementServices'])
 				var expireTime = self.parseJwt(token);
 				var timestamp = Math.floor(Date.now()/1000);
 				console.log(timestamp);
+				console.log(tokenCheck.getToken());
 				if ((expireTime.exp - timestamp) <= 0) {	
 					_this.showModal(1);
 					$interval.cancel(interval);
@@ -107,6 +108,7 @@ angular.module('mainController', ['authServices', 'managementServices'])
 					
 					//setting jwt token recieved from the server in the browser memory 
 					tokenCheck.setToken(res.data.token);
+
 					$timeout(function() {
 						_this.loginDet 	= {};
 						_this.message 	= "";

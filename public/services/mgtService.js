@@ -14,7 +14,7 @@ angular.module('managementServices', ['authServices'])
 	}
 
 	mgtFactory.deleteUser = function(id) {
-		return $http.delete('api/deleteUser', {id : id})
+		return $http.delete('api/deleteUser/'+ id)
 	}
 	return mgtFactory;
 }]);

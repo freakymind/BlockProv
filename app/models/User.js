@@ -2,7 +2,7 @@ var mongoose 	= require('mongoose');
 var bcrypt 		= require('bcrypt-nodejs');
 var Schema 		= mongoose.Schema;
 var titlize 	= require('mongoose-title-case');
-var validate = require('mongoose-validator');
+var validate 	= require('mongoose-validator');
 
 var fullnameValidation = [
 	validate({
@@ -61,7 +61,8 @@ var UserSchema 	= new Schema({
 	fullname	: {type:String, required:true, validate : fullnameValidation},
 	phone_no	: {type:Number, required:true},
 	email 		: {type:String, lowercase:true, required:true, unique:true, validate : emailValidation},
-	role		: {type:String, lowercase:true}
+	role		: {type:String, lowercase:true},
+	assets_created	: [String]
 });
 
 // , validate : fullnameValidation

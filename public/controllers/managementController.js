@@ -11,8 +11,10 @@ angular.module('managementController', ['authServices', 'managementServices'])
 	
 	//deleting a user from db with id provided
 	_this.deleteUser = function(id){
+		console.log(id);
 		mgtService.deleteUser(id)
 		.then(function(res){
+			console.log(res);
 			mgtService.getAllUsers()
 			.then(function(res){
 				_this.userAllDetails = res.data.users;

@@ -5,8 +5,10 @@ var jwt         = require('jsonwebtoken');
 
 //loacl modules
 var User 				= require('./models/User');
+var Asset       = require('./models/Asset');
 var countryData = require('../resources/countries');
 let appDetails = require('../package.json')
+
 //instances
 var router  		= express.Router();
 var app         = express();
@@ -25,6 +27,7 @@ router.post('/user', function(req, res, next){
   user.address  = req.body.address;
   user.fullname = req.body.fullname;
   user.role     = "user";
+  user.assets_created = [];
   user.save(function(err){
     if (err) {
       if (err.errors != null) {
@@ -45,6 +48,7 @@ router.post('/user', function(req, res, next){
     }
   });
 });
+
 
 router.post('/checkUsername', function(req, res, next) {
   User.findOne({username:req.body.username}, function(err, user){
@@ -168,9 +172,10 @@ router.get ('/getAllUsers', function(req, res, next) {
   });
 });
 
-router.delete ('/deleteUser', function(req, res, next){
+router.delete ('/deleteUser/:id', function(req, res, next){
   if(req.decoded.role == 'admin') {
-    User.deleteOne({id:req.body.id}, function(err){
+    console.log(req.params);
+    User.findOneAndRemove({_id:req.params.id}, function(err){
       if(err){
         res.json({success:false, message:err});
       } else {
@@ -266,7 +271,60 @@ router.put('/updateUserDetailsByID', function(req, res, next){
   }
 });
 
+//ading asset for the user
+router.post('/addAsset', function(req, res, next){
+  var asset = new Asset();
+  asset.product_ref   = req.body.product_ref;
+  asset.company_ref   = req.body.company_ref;
+  asset.upc_a         = req.body.upc_a;
+  asset.country_code  = req.body.country_code;
+  asset.brand         = req.body.brand;
+  asset.product_name  = req.body.product_name;
+  asset.model         = req.body.model;
+  asset.weight        = req.body.weight;
+  asset.product_dim   = req.body.product_dim;
+  asset.save(function(err){
+    console.log(asset);
+    if(err) {
+       res.json({success:false, message:err});
+    } else{
+      //finding the user to which the asset is added
+      User.findOne({username : req.decoded.username}, function(error, user) {
+        if(error){
+          Asset.deleteOne({_id:asset._id}, function(err){
+            if(err){
+              res.json({success:false, message:"user not found but could not delete asset"});
+            } else {
+              res.json({success:false, message:"user not found deleted the asset"});
+            }
+          });
+          res.json({success:false, message:error});
+        } else if (user) {
+          //add asset to assets_created array for the user
+          user.assets_created = user.assets_created.concat([asset._id]);
+          //saving the model
+          user.save(function(errorUser){
+            if(errorUser) {
+              res.json({success: false, message:"could not save the user" + errorUser});
+            } else {
+              res.json({success: true, message:"Asset Created", asset:asset});
+            }
+          });
+        } else {
+          //deleting the asset just created if no user found
+          Asset.deleteOne({_id:asset._id}, function(err){
+            if(err){
+              res.json({success:false, message:"user not found but could not delete asset"});
+            } else {
+              res.json({success:false, message:"user not found deleted the asset"});
+            }
+          });
+        }
+      });
+    }
+  });
 
+});
 
 
 module.exports.router = router;
