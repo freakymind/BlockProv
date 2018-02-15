@@ -27,6 +27,23 @@
       position: relative;
   }
 
+
+  .navbar-button:hover, .navbar-button:focus {
+    color:#2C3A47;
+    background-color:#FFC312;
+    outline: none;
+  }
+  
+  .navbar-button {
+    color:#FFC312; 
+    background-color:#2C3A47; 
+    border:2px solid #FFC312; 
+    outline: none; 
+    border-radius: 10px; 
+    margin:0.5em;
+  }
+
+
   .emptyFields {
     background-color: #fce1a4;
   }
@@ -67,15 +84,15 @@
 
         </ul>
         <!-- buttons when user logged out -->
-        <button ng-show="!(main.isLoggedIn)" ng-click="main.switchRoute('/signup')" class="btn navbar-right" style="color:#FFC312; background-color:#2C3A47; border:2px solid #FFC312; outline: none; border-radius: 10px; margin:0.5em;">
+        <button class="btn navbar-right navbar-button" ng-show="!(main.isLoggedIn)" ng-click="main.switchRoute('/signup')">
             SignUp
         </button>
-        <button ng-show="!(main.isLoggedIn)" ng-click="main.switchRoute('/login')" class="btn navbar-right" style="color:#FFC312; background-color:#2C3A47; border:2px solid #FFC312; outline: none; border-radius: 10px; margin:0.5em;">
+        <button class="btn navbar-right navbar-button" ng-show="!(main.isLoggedIn)" ng-click="main.switchRoute('/login')">
             Login
         </button>
 
         <!-- buttons when user logged in -->
-        <button ng-show="(main.isLoggedIn)" ng-click="main.showModal(2)" class="btn navbar-right" style="color:#FFC312; background-color:#2C3A47; border:2px solid #FFC312; outline: none; border-radius: 10px; margin:0.5em;">
+        <button class="btn navbar-right navbar-button" ng-show="(main.isLoggedIn)" ng-click="main.showModal(2)">
             LogOut
         </button>
       </div>
@@ -124,6 +141,7 @@
   <script src="controllers/managementController.js"> </script>
   <script src="controllers/editUserDetailsController.js"> </script>
   <script src="controllers/assetCreationController.js"> </script>
+  <script src="controllers/dashboardController.js"> </script>
   
   <!--Services-->
   <script src="services/userRegService.js"> </script>
