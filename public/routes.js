@@ -46,6 +46,11 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementSer
   .when('/assetCreation', {
     templateUrl : "./views/assetCreation.htm",
     authenticated : true
+  })
+  .when('/twoFactorSetup', {
+    templateUrl : "./views/twoFactorSetup.htm",
+    authenticated : true,
+    permissions : ["admin"]
   });
 
   //https://scotch.io/tutorials/pretty-urls-in-angularjs-removing-the-hashtag#toc-setting-for-relative-links

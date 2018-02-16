@@ -33,6 +33,23 @@ angular.module('authServices', [])
     return $http.get('/api/refreshSession/' + username);
   }
 
+  //getting 2FA setup details of the user 
+  authFactory.getSetup2FADetails = function(username) {
+    return $http.get('/api/setup2FA/' + username);
+  }
+
+  authFactory.setup2FA = function() {
+    return $http.post('/api/setup2FA');
+  }
+
+  authFactory.verify2FA = function(TOTP) {
+    return $http.post('/api/verify2FA', {twoFactAuthToken:TOTP});
+  }
+
+  authFactory.disable2FA = function() {
+    return $http.delete('/api/disable2FA');
+  }
+
   return authFactory;
 }])
 

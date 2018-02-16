@@ -2,12 +2,15 @@
 var express 		= require('express');
 var path        = require('path');
 var jwt         = require('jsonwebtoken');
+var speakeasy   = require('speakeasy');
+var QRCode      = require('qrcode');
+var bcrypt    = require('bcrypt-nodejs');
 
 //loacl modules
 var User 				= require('./models/User');
 var Asset       = require('./models/Asset');
 var countryData = require('../resources/countries');
-let appDetails = require('../package.json')
+let appDetails  = require('../package.json')
 
 //instances
 var router  		= express.Router();
@@ -28,27 +31,34 @@ router.post('/user', function(req, res, next){
   user.fullname = req.body.fullname;
   user.role     = "user";
   user.assets_created = [];
-  user.save(function(err){
+  user.twoFactor = {};
+  bcrypt.hash(user.password, null, null, function(err, hash){
     if (err) {
-      if (err.errors != null) {
-        if (err.errors.fullname) {
-          res.json({success: false, message : err.errors.fullname.message});
-        } else if (err.errors.username) {
-          res.json({success: false, message : err.errors.username.message});
-        } else if (err.errors.email) {
-          res.json({success: false, message : err.errors.email.message});
-        } 
-      } else {
-        if (err.code = "11000") {
-          res.json({success: false, message : err.errmsg})
-        }
-      }
+      res.json({success:false, message:"error converting password to hash"});
     } else {
-      res.json({success: true, message : "Signup Successful"});
+      user.password = hash;
+      user.save(function(err){
+        if (err) {
+          if (err.errors != null) {
+            if (err.errors.fullname) {
+              res.json({success: false, message : err.errors.fullname.message});
+            } else if (err.errors.username) {
+              res.json({success: false, message : err.errors.username.message});
+            } else if (err.errors.email) {
+              res.json({success: false, message : err.errors.email.message});
+            } 
+          } else {
+            if (err.code = "11000") {
+              res.json({success: false, message : err.errmsg})
+            }
+          }
+        } else {
+          res.json({success: true, message : "Signup Successful"});
+        }
+      });
     }
   });
 });
-
 
 router.post('/checkUsername', function(req, res, next) {
   User.findOne({username:req.body.username}, function(err, user){
@@ -78,16 +88,54 @@ router.post('/checkEmail', function(req, res, next) {
   });
 });
 
+router.get('/setup2FA/:username', function(req, res, next){
+  User.findOne({username:req.params.username}, function(err, user){
+    if (err) {
+      res.json({success:false, message:"some error occured while fetching user " + err});
+    } else if (user) {
+      res.json({success:true, twoFactorDetails:user.twoFactor});
+    } else {
+      res.json({success:false, message:"user not found"});
+    }
+  }); 
+});
+
 //User Login
 router.post('/login', function(req, res, next){
   User.findOne({username: req.body.username}, function(err, user) {
     if(user) {
-      if (user.authUser(req.body.password)) {
-        var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname, role: user.role}, secret, { expiresIn: '10h' });
-        console.log(token);
-        res.json({success:true, message:"correct credentials", token:token});
+      if (!user.twoFactor || !user.twoFactor.secret) {
+        console.log(user)
+        if (user.authUser(req.body.password)) {
+          var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname, role: user.role}, secret, { expiresIn: '10h' });
+          console.log(token);
+          res.json({success:true, message:"correct credentials", token:token});
+        } else {
+          res.json({success:false, message:"incorrect credentials"});
+        }
       } else {
-        res.json({success:false, message:"incorrect credentials"});
+        if(!req.body.twoFactAuthToken || req.body.twoFactAuthToken == '') {
+          res.json({success:false, message:"no two factor auth token provided"});
+        } else {
+          var verified = speakeasy.totp.verify({
+            secret: user.twoFactor.secret, //secret of the logged in user
+            encoding: 'base32',
+            token: req.body.twoFactAuthToken
+          });
+
+          if (verified) {
+            if (user.authUser(req.body.password)) {
+              var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname, role: user.role}, secret, { expiresIn: '10h' });
+              console.log(token);
+              res.json({success:true, message:"correct credentials", token:token});
+            } else {
+              console.log('hey');
+              res.json({success:false, message:"incorrect credentials"});
+            }
+          } else {
+            res.json({success:false, message:"Invalid Token Verification failed"});
+          }
+        }
       }
     } else {
       res.json({success:false, message:"User not found"});
@@ -103,7 +151,6 @@ router.get('/userRegCountries', function(req, res, next) {
 router.get('/ping', function(req, res, next) {
 	res.end(`PONG, version ${appDetails.version}`);
 });
-
 
 router.param('username', function(req, res, next, username){
   User.findOne({username:username}, function(err, user){
@@ -140,24 +187,126 @@ router.use(function(req, res, next){
   }
 });
 
+router.post('/setup2FA', function(req, res, next){
+  var secret = speakeasy.generateSecret({length:10});
+  
+  //generating QRCode DataURL
+  QRCode.toDataURL(secret.otpauth_url, function(err, dataUrl){
+    if(req.decoded.role == "admin") {
 
-router.get ('/getCurrentUser', function(req, res, next) {
+      //finding the current user document to save the twofactor details
+      User.findOne({username:req.decoded.username}, function(err, user){
+        if (err) {
+          res.json({success:false, message:"some error occured while fetching user " + err});
+        } else if (user) {
+          user.twoFactor = {
+            secret : "",
+            tempSecret : secret.base32,
+            dataUrl : dataUrl,
+            otpURL: secret.otpauth_url
+          };
+          user.save(function(err){
+            if(err){
+              res.json({success:false, message:"error in saving the twofactor field "+ err});
+            } else {
+              res.json({
+                success:true,
+                message: 'Verify OTP',
+                tempSecret: secret.base32,
+                dataURL: dataUrl,
+                otpURL: secret.otpauth_url
+              });
+            }
+          });
+        } else {
+          res.json({success:false, message:"user not found"});
+        }
+      });
+    } else {
+      res.json({success:false, message:"you are not admin"});
+    }
+  });
+});
+
+router.post('/verify2FA', function(req, res, next){
+  if(req.decoded.role == "admin") {
+    User.findOne({username:req.decoded.username}, function(err, user){
+      
+      if(err){
+        res.json({success:false, message:"some error occured while fetching user " + err});
+      } else if (user) {
+        var verified = speakeasy.totp.verify({
+          secret: user.twoFactor.tempSecret, //secret of the logged in user
+          encoding: 'base32',
+          token: req.body.twoFactAuthToken
+        });
+
+        if(verified) {
+          //set secret, confirm 2fa
+          user.twoFactor = {
+            secret : user.twoFactor.tempSecret,
+            tempSecret : user.twoFactor.tempSecret,
+            dataUrl : user.twoFactor.dataUrl,
+            otpURL: user.twoFactor.otpURL
+          }
+          
+          user.save(function(userErr){
+            if(userErr){
+              res.json({success:false, message:"error occured while saving secret in user document" + userErr});
+            } else {
+              User.findOne({username:req.decoded.username}, function(err, user){
+                console.log(user);
+                res.json({success:true, message:"2FA Enabled for you!"});
+              });
+              
+            }
+          });
+        } else {
+          res.json({success:false, message:"Invalid Token Verification failed"});
+        }
+      } 
+    });
+  } else {  
+    res.json({success:false, message:"you are not admin"});
+  }
+});
+
+router.delete('/disable2FA', function(req, res, next){
+  User.findOne({username:req.decoded.username}, function(err, user){
+    if(err) {
+      res.json({success:false, message:"Error occured : " + err});
+    } else if(user){
+      user.twoFactor = {};
+      user.save(function(errorSave){
+        if(errorSave) {
+          res.json({success:false, message:"Error occured while saving : " + errorSave});
+        } else {
+          res.json({success:true, message:"Disabled 2FA for you"});
+        }
+      })
+      
+    } else {
+      res.json({success:false, message:"User not found"});
+    }
+  });
+});
+
+router.get('/getCurrentUser', function(req, res, next) {
     res.json({success:true, token:req.decoded});
 });
 
-router.get ('/getCurrentUserAllDetails', function(req, res, next) {
+router.get('/getCurrentUserAllDetails', function(req, res, next) {
     console.log(req.decoded.username);
     User.findOne({username:req.decoded.username}, function(err, user) {
       res.json({success:true, user:{username:user.username, address:user.address, country:user.country, email:user.email, fullname:user.fullname, phone_no:user.phone_no, role:user.role}});
     });
 });
 
-
-router.get ('/getCurrentUserRole', function(req, res, next) {
+router.get('/getCurrentUserRole', function(req, res, next) {
     res.json({success: true, role: req.decoded.role});
 });
 
-router.get ('/getAllUsers', function(req, res, next) {
+router.get('/getAllUsers', function(req, res, next) {
   User.find({username : {$ne : req.decoded.username}}, 'username address country fullname phone_no role', function(err, users){
     if(req.decoded.role == 'admin'){
       if (users) {
@@ -172,7 +321,7 @@ router.get ('/getAllUsers', function(req, res, next) {
   });
 });
 
-router.delete ('/deleteUser/:id', function(req, res, next){
+router.delete('/deleteUser/:id', function(req, res, next){
   if(req.decoded.role == 'admin') {
     console.log(req.params);
     User.findOneAndRemove({_id:req.params.id}, function(err){
@@ -201,7 +350,6 @@ router.get('/getUserByID/:id', function(req, res, next){
     });
   }
 }); 
-
 
 router.put('/updateUserDetailsByID', function(req, res, next){
   if (req.decoded.role == 'admin') {
@@ -323,8 +471,6 @@ router.post('/addAsset', function(req, res, next){
       });
     }
   });
-
 });
-
 
 module.exports.router = router;

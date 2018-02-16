@@ -1,0 +1,61 @@
+<div class="container-fluid" style="background-color:#2c3e50; padding-bottom:200px;">
+	<div class="row">
+        <div class="col-sm-6 col-sm-offset-3" style="background-color:#FFC312; height:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); margin-top:50px;"></div>
+    </div>
+
+    <!-- login form body -->
+	<div class="row">
+		<div 
+			class="col-sm-6 col-sm-offset-3" 
+			style="
+				font-family: 'Roboto Slab', serif; 
+				font-size:120%; 
+				background-color: #f5f6fa; 
+				padding: 5%; 
+				box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+		>
+			
+			<div class="row">
+				<div class="col-sm-12" style="color:#444">
+					<h1><b>Enable / Disable 2FA</b> </h1>
+					<br>
+				</div>
+			</div>
+
+			<div class="panel">
+				<div class="panel-heading" style="color:#2c3e50; background-color:#FFC312;">
+					<h3>Instructions</h3>
+					By enabling the two factor authentication you can put a two level of security check on your account.
+				</div>
+				<div class="panel-body" style="color:#f5f6fa; background-color:#2c3e50;">
+					<ul>
+						<li> With the help of Google Authenticator scan the QR Code that appears as you press enable.</li>
+						<li> To enable the 2FA enter the TOTP that is displayed in the Google Authenticator.</li>
+					<ul>
+				</div>
+			</div>
+
+			<button class="btn" style="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" ng-click="main.setup2FA()" ng-disabled="main.is2FASetupEnabled">Enable 2FA</button>
+
+			<button class="btn" style="background-color: #e55039; color:#f5f6fa; font-size: 1.2em; outline:none; border: none; float:right;" ng-click="main.disable2FA()" ng-disabled="!main.is2FASetupEnabled">Disable 2FA</button>
+			
+			<br>
+			<br>
+
+			<!-- Enable 2FA division -->
+			<div class="col-sm-4" style="padding: 0;" ng-show="main.isQRGenerated">
+				<img src='{{main.QRCode}}'>
+			
+				<form name="twoFactorAuthform" novalidate>
+					<br>
+					<input class="form-control" type="password" ng-model="main.TOTP" name="TOTPInputField">
+					<br>
+					<button class="btn" style="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none; width:80px;" ng-click="main.verify2FA(twoFactorAuthform.TOTPInputField.$valid, main.TOTP)">verify</button>
+				</form>
+				<br>
+			</div>
+			<span>{{main.ResponseMessage}}</span>
+				
+		</div>
+	</div>
+</div>
