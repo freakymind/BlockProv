@@ -32,7 +32,14 @@
 							>
 							
 							<div ng-show="(SignupForm.fullname.$pristine || SignupForm.fullname.$invalid)">
-								<a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="3 to 30, no special chars or numbers and a space in between." > Info </a>
+								<div style="font-size: 0.75em; color: #e74c3c; margin-top: 10px; padding-top:10px; border: 2px solid #e74c3c; border-radius: 10px;" >
+									<ol>
+										<li>Length varies between 2 to 30 characters.</li>
+										<li>No special characters or numbers. </li>
+										<li>A space required between first name and last name</li>
+									</ol>
+								</div>
+								<!-- <a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="3 to 30, no special chars or numbers and a space in between." > Info </a> -->
 							</div>
 						</div>
 
@@ -50,7 +57,13 @@
 								required>
 
 								<div ng-show="(SignupForm.emailid.$pristine || SignupForm.emailid.$invalid)">
-									<a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="3 to 30, and must be a valid email ID format" > Info </a>
+									<div style="font-size: 0.75em; color: #e74c3c; margin-top: 10px; padding-top:10px; border: 2px solid #e74c3c; border-radius: 10px;" >
+										<ol>
+											<li>Length varies between 2 to 30 characters.</li>
+											<li>Must be a vaild E-Mail ID. </li>
+										</ol>
+									</div>
+									<!-- <a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="3 to 30, and must be a valid email ID format" > Info </a> -->
 								</div>
 								<div ng-show="(!register.isEmailValid && !(SignupForm.emailid.$pristine || SignupForm.emailid.$invalid))">
 									Email Id Exists
@@ -98,7 +111,14 @@
 								required>
 
 							<div ng-show="(SignupForm.username.$pristine || SignupForm.username.$invalid)">
-								<a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="3 to 30, and only alphanumeric" > Info </a>
+								<div style="font-size: 0.75em; color: #e74c3c; margin-top: 10px; padding-top:10px; border: 2px solid #e74c3c; border-radius: 10px;" >
+									<ol>
+										<li>Length varies between 2 to 30 characters.</li>
+										<li>must contain atleast one digit(0-9). </li>
+										<li>must contain alphabets (a-z) or (A-Z).</li>
+									</ol>
+								</div>
+								<!-- <a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="3 to 30, and only alphanumeric" > Info </a> -->
 							</div>
 							<div ng-show="!register.isUsernameValid && !(SignupForm.username.$pristine || SignupForm.username.$invalid)">
 								username taken
@@ -122,14 +142,19 @@
 							>
 
 							<div ng-show="(!register.passwordIsValid || SignupForm.retypepass.$invalid)">
-								<a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="must match the password" > Info </a>
+								<div style="font-size: 0.75em; color: #2f3542; margin-top: 10px; padding-top:10px; border: 2px solid #2f3542; border-radius: 10px;" >
+									<ol>
+										<li>Must match with the password field.</li>
+									</ol>
+								</div>
+								<!-- <a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="must match the password" > Info </a> -->
 							</div>
 						</div>
 
-						<button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="register.submitRegDetails(register.regData, (register.isUsernameValid && register.isEmailValid && SignupForm.$valid && register.passwordIsValid))" data-toggle="modal" data-target="#myModal"><b>Sign Up</b></button>
+						<button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="register.submitRegDetails(register.regData, (register.isUsernameValid && register.isEmailValid && SignupForm.$valid && register.passwordIsValid))"><b>Sign Up</b></button>
 						<br><br>
 						
-						<div class="modal fade" id="myModal" role="dialog">
+						<div class="modal fade" id="userSignupModal" role="dialog">
 						    <div class="modal-dialog">
 						    
 						      <!-- Modal content-->

@@ -1,6 +1,6 @@
 angular.module('managementController', ['authServices', 'managementServices'])
 
-.controller('mgtCtrl', ["$http", "tokenCheck", "mgtService", "$location", function($http, tokenCheck, mgtService, $location){
+.controller('mgtCtrl', ["$http", "tokenCheck", "mgtService", "$location", "authUser", function($http, tokenCheck, mgtService, $location, authUser){
 	
 	console.log('mgtCtrl loaded');
 	var _this = this;
@@ -35,7 +35,7 @@ angular.module('managementController', ['authServices', 'managementServices'])
 	}
 
 	//gets current user Role
-	mgtService.getCurrentUserRole()
+	authUser.getCurrentUserRole()
 	.then(function(res){
 		console.log(res.data);
 	});

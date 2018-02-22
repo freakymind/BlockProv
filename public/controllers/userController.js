@@ -12,20 +12,24 @@ angular.module('userController', ['userRegService'])
 
   this.submitRegDetails = function(regData, valid) {
     if (valid) {
-        userFactory.register(regData)
-        .then(function(res){
-          console.log(res.data);
-          if (res.data.success) {
-            clearOut();
-            _this.signupModalMessage = 'Registration Complete, Login to continue.';
-            _this.signupModalHeader = 'Success';
-          } else {
-            console.log(res.data);
-            _this.signupModalMessage = res.data.message;
-            _this.signupModalHeader = 'Error';
-          }
-        });
-      }
+      userFactory.register(regData)
+      .then(function(res){
+        if (res.data.success) {
+          clearOut();
+          _this.signupModalMessage = 'Registration Complete, Login to continue.';
+          _this.signupModalHeader = 'Success';
+          $('#userSignupModal').modal({backdrop:"static"});
+        } else {
+          _this.signupModalMessage = res.data.message;
+          _this.signupModalHeader = 'Error';
+          $('#userSignupModal').modal({backdrop:"static"});
+        }
+      });
+    } else {
+      _this.signupModalMessage = "Form details are invalid. Some details you might have entered are not valid and all fields are required.";
+      _this.signupModalHeader = 'Error';
+      $('#userSignupModal').modal({backdrop:"static"});
+    }
   }
 
 

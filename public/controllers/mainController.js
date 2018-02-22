@@ -1,8 +1,8 @@
 angular.module('mainController', ['authServices', 'managementServices'])
 
 
-.controller('mainCtrl',["$route", "$window", "$http", "$timeout", "$location", "$rootScope", "authUser", "tokenCheck", "profileDetails", "$interval", "mgtService",
-	function($route, $window, $http, $timeout, $location, $rootScope, authUser, tokenCheck, profileDetails, $interval, mgtService){
+.controller('mainCtrl',["$route", "$window", "$http", "$timeout", "$location", "$rootScope", "authUser", "tokenCheck", "$interval", "mgtService",
+	function($route, $window, $http, $timeout, $location, $rootScope, authUser, tokenCheck, $interval, mgtService){
 	
 	var _this = this;
 
@@ -45,7 +45,7 @@ angular.module('mainController', ['authServices', 'managementServices'])
 	_this.setup2FA = function() {
 		//initiallising response message area
 		_this.ResponseMessage = "";
-		
+
 		authUser.setup2FA()
 		.then(function(res){
 			if(res.data.success){
@@ -207,7 +207,7 @@ angular.module('mainController', ['authServices', 'managementServices'])
 					
 					$location.path('/');
 					_this.checkSession();
-					mgtService.getCurrentUserRole()
+					authUser.getCurrentUserRole()
 					.then(function(res){
 						if(res.data.role == "admin") {
 							_this.isAdmin = true;
@@ -236,7 +236,7 @@ angular.module('mainController', ['authServices', 'managementServices'])
 
 	//function to get all user details for profile view
 	_this.getCurrentUserProfile = function() {
-		profileDetails.getCurrentUserAllDetails()
+		authUser.getCurrentUserAllDetails()
 		.then(function(res) {
 			if(res.data.success) {
 				_this.currentUserFullDet = res.data.user;
@@ -256,8 +256,6 @@ angular.module('mainController', ['authServices', 'managementServices'])
 			if($location.path() == '/login') {
 
 				//initiallize QR related variables
-				_this.QRCode = "";
-				_this.isQRGenerated = true;
 				_this.QRCodeLogin = "";
 				_this.isLoginQRCodeGenerated = false;
 				_this.disableInputFields = "";

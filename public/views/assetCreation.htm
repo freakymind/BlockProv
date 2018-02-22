@@ -17,13 +17,13 @@
 						</div>
 					</div>
 
-					<form name="SignupForm" novalidate>
+					<form name="assetCreationForm" novalidate>
 						<div class="form-group">
 							<label>Product Reference Number:</label>
 							<input  
 								type="text" 
 								class="form-control" 
-								name="fullname" 
+								name="productRefField" 
 								ng-model="assetCrtn.assetData.product_ref" 
 								required
 							>
@@ -34,7 +34,7 @@
 							<input  
 								type="text" 
 								class="form-control" 
-								name="fullname" 
+								name="companyRefField" 
 								ng-model="assetCrtn.assetData.company_ref" 
 								required
 							>
@@ -44,7 +44,7 @@
 							<input  
 								type="text" 
 								class="form-control" 
-								name="fullname" 
+								name="UPCAField" 
 								ng-model="assetCrtn.assetData.upc_a" 
 								required
 							>
@@ -54,7 +54,7 @@
 							<input  
 								type="text" 
 								class="form-control" 
-								name="fullname" 
+								name="countryCodeField" 
 								ng-model="assetCrtn.assetData.country_code" 
 								required
 							>
@@ -64,7 +64,7 @@
 							<input  
 								type="text" 
 								class="form-control" 
-								name="fullname" 
+								name="brandNameField" 
 								ng-model="assetCrtn.assetData.brand" 
 								required
 							>
@@ -75,7 +75,7 @@
 							<input  
 								type="text" 
 								class="form-control" 
-								name="fullname" 
+								name="productNameField" 
 								ng-model="assetCrtn.assetData.product_name" 
 								required
 							>
@@ -85,7 +85,7 @@
 							<input  
 								type="text" 
 								class="form-control" 
-								name="fullname" 
+								name="modelField" 
 								ng-model="assetCrtn.assetData.model" 
 								required
 							>
@@ -95,7 +95,7 @@
 							<input  
 								type="text" 
 								class="form-control" 
-								name="fullname" 
+								name="weightField" 
 								ng-model="assetCrtn.assetData.weight" 
 								required
 							>
@@ -105,7 +105,7 @@
 							<input  
 								type="text" 
 								class="form-control" 
-								name="fullname" 
+								name="productDimensionsField" 
 								ng-model="assetCrtn.assetData.product_dim" 
 								required
 							>
@@ -113,30 +113,32 @@
 						
 	
 
-						<button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="assetCrtn.addAsset()"><b>Create Asset</b></button>
+						<button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="assetCrtn.addAsset(assetCreationForm.$valid && !assetCreationForm.$pristine)"><b>Create Asset</b></button>
 						<br><br>
-						
-						<div class="modal fade" id="assetCreationModal" role="dialog">
-						    <div class="modal-dialog">
-						    
-						      <!-- Modal content-->
-						      <div class="modal-content">
-						        <div class="modal-header">
-						          <button type="button" class="close" data-dismiss="modal">&times;</button>
-						          <h4 class="modal-title"></h4>
-						        </div>
-						        <div class="modal-body">
-						          <p></p>
-						        </div>
-						        <div class="modal-footer">
-						          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						        </div>
-						      </div>
-						      
-						    </div>
-					  	</div>
-
 					</form>
+
+					<!-- Modal start -->
+					<div class="modal fade" id="assetCreationModal" role="dialog">
+					    <div class="modal-dialog">
+					    
+					      <!-- Modal content-->
+					      <div class="modal-content">
+					        <div class="modal-header">
+					          <button type="button" class="close" data-dismiss="modal">&times;</button>
+					          <h4 class="modal-title">{{assetCrtn.assetCreationModal.title}}</h4>
+					        </div>
+					        <div class="modal-body">
+					          <p>{{assetCrtn.assetCreationModal.body}}</p>
+					        </div>
+					        <div class="modal-footer">
+					          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					        </div>
+					      </div>
+					      
+					    </div>
+				  	</div>
+				  	<!-- Modal end -->
+
 				</div>
 			</div>
 		</div>
