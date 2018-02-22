@@ -2,11 +2,11 @@
 var express 		= require('express');			//express framework for creating web applications
 var morgan 			= require('morgan');
 var mongoose 		= require('mongoose');
-var path 				= require('path');
+var path 			= require('path');
 
 //importing LOCAL MODULES
 var routes			= require('./app/router');
-var User 				= require('./app/models/User');
+var User 			= require('./app/models/User');
 
 //creating obects
 var app 				= express();	//invoking express in app variable

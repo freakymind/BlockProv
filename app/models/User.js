@@ -1,8 +1,8 @@
 var mongoose 	= require('mongoose');
-var bcrypt 		= require('bcrypt-nodejs');
+var bcrypt    = require('bcrypt-nodejs');
 var Schema 		= mongoose.Schema;
 var titlize 	= require('mongoose-title-case');
-var validate = require('mongoose-validator');
+var validate 	= require('mongoose-validator');
 
 var fullnameValidation = [
 	validate({
@@ -60,23 +60,26 @@ var UserSchema 	= new Schema({
 	address 	: {type:String, required:true},
 	fullname	: {type:String, required:true, validate : fullnameValidation},
 	phone_no	: {type:Number, required:true},
-	email 		: {type:String, lowercase:true, required:true, unique:true, validate : emailValidation}
+	email 		: {type:String, lowercase:true, required:true, unique:true, validate : emailValidation},
+	role		: {type:String, lowercase:true},
+	assets_created	: [String],
+	twoFactor : Schema.Types.Mixed
 });
 
 // , validate : fullnameValidation
 //console.log(UserSchema);
 
-UserSchema.pre('save', function(next){
-	var user = this;
-	bcrypt.hash(user.password, null, null, function(err, hash){
-		if (err) {
-			return next(err);
-		} else {
-			user.password = hash;
-			next();
-		}
-	});
-});
+// UserSchema.pre('save', function(next){
+// 	var user = this;
+// 	bcrypt.hash(user.password, null, null, function(err, hash){
+// 		if (err) {
+// 			return next(err);
+// 		} else {
+// 			user.password = hash;
+// 			next();
+// 		}
+// 	});
+// });
 
 //hook added to titalize the fullname
 UserSchema.plugin(titlize, {

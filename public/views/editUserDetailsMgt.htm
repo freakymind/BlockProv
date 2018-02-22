@@ -1,0 +1,167 @@
+<div class="container-fluid" ng-controller="editUserCtrl as editCtrl" style="background-color: #333; padding-bottom:100px;"> 
+	<!-- start of first row -->
+	<div class="row">
+		<div class="col-sm-6 col-sm-offset-3">	
+		
+		<!-- start of panel -->
+		<div class="panel" style="margin-top:50px; background-color: #eee">
+			
+			<!-- panel heading -->
+			<div class="panel-heading"><b><h1>Edit User Details of <i><b>{{editCtrl.userToBeEdited.username}}</b></i></h1></b></div>
+			
+			<!-- start of panel body -->
+			<div class="panel-body">
+				
+					<!-- user details list start-->
+					<ul class="list-group">
+					  <li class="list-group-item"><b>Full Name</b> : <i>{{editCtrl.userToBeEdited.fullname}}</i></li>
+					  <li class="list-group-item"><b>Address</b>: <i>{{editCtrl.userToBeEdited.address}}, {{editCtrl.userToBeEdited.country}}</i></li>
+					  <li class="list-group-item"><b>Phone Number</b>: <i>{{editCtrl.userToBeEdited.phone_no}}</i></li>
+					  <li class="list-group-item"><b>User Role</b>: <i>{{editCtrl.userToBeEdited.role}}</i></li>
+					</ul>
+					<!-- user details list end -->
+					
+					<!-- tabs list start -->
+					<ul class="nav nav-tabs">
+					    <li class="active"><a data-toggle="tab" href='' ng-click="editCtrl.toggle('fullname')">Full Name</a></li>
+					    <li><a data-toggle="tab" href='' ng-click="editCtrl.toggle('address')">Address</a></li>
+					    <li><a data-toggle="tab" href='' ng-click="editCtrl.toggle('phone_no')">Phone Number</a></li>
+					    <li><a data-toggle="tab" href='' ng-click="editCtrl.toggle('role')">User Role</a></li>
+					</ul>
+					<!-- tab lists end -->
+					
+					<!-- tab divisions start -->
+					<div class="row" style="margin-top: 10px;">
+						<div class="col-sm-4">
+
+							<!-- full name form start -->
+							<form name="editUserFullName" novalidate>
+								<div ng-show="editCtrl.tabDisplay.fullname">
+									<div class="form-group">
+										<label>Full Name:</label>
+										<input 
+										type="text" 
+										class="form-control" 
+										placeholder="Full Name"
+										ng-model = "editCtrl.changedValues.fullname"
+										ng-pattern="/^(([a-zA-Z]{2,20})+[ ]+([a-zA-Z]{2,20})+)+$/" 
+										ng-maxlength="30"
+										ng-minlength="3"
+										ng-minlength="3"
+										name = "fullNameInputField"
+										required="true" 
+										>
+										<p ng-show="!editUserFullName.fullNameInputField.$valid">Not A valid Name</p>
+									</div>
+									<button class="btn btn-primary" ng-click="editCtrl.updateUserFullName(editUserFullName.fullNameInputField.$valid)">Submit</button>
+								</div>
+							</form>
+							<!-- full name form end -->
+
+							<!-- address form start -->
+							<form name="editUserAddress" ng-init="editCtrl.fetchCountries()" novalidate>
+								<div ng-show="editCtrl.tabDisplay.address">
+									<div class="form-group">
+										<label>Address:</label>
+										<input 
+										type="text" 
+										class="form-control" 
+										placeholder="Address"
+										ng-model="editCtrl.changedValues.address"
+										name="addressInputField"
+										required
+										>
+									</div>
+									<div class="form-group">
+										<label>Country:</label>
+										<input 
+										type="text" 
+										list="countries" 
+										class="form-control" 
+										placeholder="country" 
+										name="countryInputField" 
+										ng-model="editCtrl.changedValues.country" 
+										ng-change = "editCtrl.loadCountries(editCtrl.changedValues.country)" 
+										ng-blur = "editCtrl.countryInList(editCtrl.changedValues.country)" 
+										required>
+										<datalist id="countries">
+										  <option ng-repeat = 'x in editCtrl.dropdCountries' value="{{x}}">
+										</datalist>
+									</div>
+									<button class="btn btn-primary" ng-click="editCtrl.updateUserAddress(editUserAddress.addressInputField.$valid && editUserAddress.countryInputField.$valid)">Submit</button>
+								</div>
+							</form>
+							<!-- address form end -->
+
+							<!-- phone number form start -->
+							<form name="editUserPhoneNumber" novalidate>
+								<div ng-show="editCtrl.tabDisplay.phone_no">
+									<div class="form-group">
+										<label>Phone Number:</label>
+										<input 
+										type="text" 
+										class="form-control" 
+										placeholder="Phone Number"
+										required 
+										ng-pattern="/^\d{10}$/"
+										ng-model="editCtrl.changedValues.phone_no"
+										name="phone_noInputField" 
+										required 
+										>
+										<p ng-show="!editUserPhoneNumber.phone_noInputField.$valid">Not A valid Number</p>
+									</div>
+									<button class="btn btn-primary" ng-click="editCtrl.updateUserPhone(editUserPhoneNumber.phone_noInputField.$valid)">Submit</button>
+								</div>
+							</form>
+							<!-- phone number form end -->
+
+							<!-- role form start -->
+							<form name="editUserRole" novalidate>
+								<div ng-show="editCtrl.tabDisplay.role">
+									<div class="form-group">
+										<label>User Role:</label>
+										<div class="radio">
+										  <label ng-show="!(editCtrl.userToBeEdited.role == 'admin')"><input type="radio" name="userRoleInput" ng-model="editCtrl.changedValues.role" value="admin" required>Admin</label>
+										</div>
+										<div class="radio">
+										  <label ng-show="!(editCtrl.userToBeEdited.role == 'user')"><input type="radio" name="userRoleInput" ng-model="editCtrl.changedValues.role" value="user" required>User</label>
+										</div>
+									</div>
+									<button class="btn btn-primary" ng-click="editCtrl.updateUserRole(editUserRole.userRoleInput.$valid)">Submit</button>
+								</div>
+							</form>
+							<!-- role  form end -->
+						</div>
+					</div>
+					<!-- tab divisions end -->
+				</div>
+				<!-- end of panel body -->
+				
+				<!-- Modal Start -->
+				<div class="modal fade" id="editUserModal" role="dialog">
+					<div class="modal-dialog">    
+					    
+					    <!-- Modal content-->
+					    <div class="modal-content">
+					        <div class="modal-header">
+					        	<button type="button" class="close" data-dismiss="modal" ng-click="editCtrl.getCurrentUserByID()">&times;</button>
+					        	<h4 class="modal-title">{{editCtrl.titleMessage}}</h4>
+					        </div>
+					        <div class="modal-body">
+					        	<b>{{editCtrl.bodyMessage}}</b>
+					        </div>
+					        <div class="modal-footer">
+					        	<button type="button" class="btn {{editCtrl.modalButtonClass}}" data-dismiss="modal" ng-click="editCtrl.getCurrentUserByID()">{{editCtrl.modalSecondButton}}</button>
+					        </div>
+					    </div>
+					    <!-- end of modal content -->
+					</div>
+				</div>
+				<!-- Modal end -->
+    	 	</div>	
+    	 	<!-- end of panel -->
+    	 	
+		</div>
+	</div>
+	<!-- end of the first row -->
+</div>

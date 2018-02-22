@@ -1,58 +1,102 @@
-<div class="container-fluid" style="background-color: #333; padding-bottom:100px; height:600px;"> 
-  
-  <div class="row" style="margin-top: 100px;">
-    <div class="row">
-        <div class="col-sm-6 col-sm-offset-3" style="background-color:#F39C12; height:10px;">
-    </div>
-    <h4>
-    <div class="col-sm-6 col-sm-offset-3" style="background-color: #eee;padding: 50px;">
+<div class="container-fluid" style="background-color:#2c3e50; padding-bottom:100px; height:600px;"> 
+
+  <div class="row" style="margin-top: 50px;">
+
+      <!-- profile style band -->
+      <div class="col-sm-6 col-sm-offset-3" style="background-color:#f5f6fa; height:30px;">
       
-      <div class="row">
-        <div class="col-sm-6 col-sm-offset-1">
-          <h1>Profile</h1>
-        </div>
       </div>
-      <br><br>
-      <div class="row">
-        <div class="col-sm-4 col-sm-offset-1">
-          Name 
+
+      <!-- profile header -->
+      <div class="col-sm-6 col-sm-offset-3" style="background-color:#f5f6fa; text-align:center; font-family: 'Roboto Slab', sans-serif; color:#2c3e50;  height:100px;">
+        <p style="font-size:500%;">
+          Profile
+        </p>
+      </div>
+      <!-- profile header end -->
+      
+      <!-- profile body -->
+      <div 
+        class="col-sm-6 col-sm-offset-3" 
+        style="
+        background-color:#f5f6fa; 
+        color: #0a3d62; 
+        padding: 50px; 
+        padding-top:50px; 
+        font-family: 'Roboto Slab', sans-serif; 
+        font-size: 1.5em" 
+      >
+
+
+        <!-- name -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left">
+            Name 
+          </div>
+
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.fullname}}</i></b>
+          </div>
         </div>
 
-        <div class="col-sm-4">
-          {{main.currentUserFullDet.fullname}}
-        </div>
-      </div>
-      <br>
-      <div class="row">
-        <div class="col-sm-4 col-sm-offset-1">
-          Username 
+        <!-- username -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left">
+            Username 
+          </div>
+
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.username}}</i></b>
+          </div>
         </div>
 
-        <div class="col-sm-4">
-          {{main.currentUserFullDet.username}}
-        </div>
-      </div>
-      <br>
-      <div class="row">
-        <div class="col-sm-4 col-sm-offset-1">
-          Address 
+        <!-- address -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left;">
+            Address 
+          </div>
+
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.address}}, {{main.currentUserFullDet.country}}</i></b>
+          </div>
         </div>
 
-        <div class="col-sm-4">
-          {{main.currentUserFullDet.address}}, {{main.currentUserFullDet.country}}
-        </div>
-      </div>
-      <br>
-      <div class="row">
-        <div class="col-sm-4 col-sm-offset-1">
-          EmailId 
+        <!-- email -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left">
+            EmailId 
+          </div>
+
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.email}}</i></b>
+          </div>
         </div>
 
-        <div class="col-sm-4">
-          {{main.currentUserFullDet.email}}
+        <!-- email -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left">
+            Phone Number 
+          </div>
+
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.phone_no}}</i></b>
+          </div>
         </div>
+
+        <!-- Role -->
+        <div class="row" style="padding: 0.2em;">
+          <div class="col-sm-4 col-sm-offset-2" style="text-align: left">
+            Role 
+          </div>
+
+          <div class="col-sm-4" style="text-align: left">
+            <b><i>{{main.currentUserFullDet.role}}</i></b>
+          </div>
+        </div>
+
+
       </div>
-    </div>
-  </h4>
-  </div>
+      <!-- profile body end -->
+</div>
+
 </div>

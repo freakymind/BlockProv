@@ -1,25 +1,26 @@
 angular.module('userController', ['userRegService'])
 
-.controller('userCtrl', ["$http", "$location", "userFactory", function($http, $location, userFactory) {
+.controller('userCtrl', ["$http", "$location", "userFactory", "tokenCheck", function($http, $location, userFactory, tokenCheck) {
   console.log("controller userCtrl loaded.. ");
-  _this = this;
+  var _this = this;
   this.countryData;
   this.dropdCountries=[];
   this.signupModalMessage = '';
-  this.signupModalHeader = '';
+  this.signupModalHeader = 'Error';
   this.isEmailValid=false;
   this.isUsernameValid=false;
 
   this.submitRegDetails = function(regData, valid) {
     if (valid) {
-
         userFactory.register(regData)
         .then(function(res){
+          console.log(res.data);
           if (res.data.success) {
             clearOut();
             _this.signupModalMessage = 'Registration Complete, Login to continue.';
             _this.signupModalHeader = 'Success';
           } else {
+            console.log(res.data);
             _this.signupModalMessage = res.data.message;
             _this.signupModalHeader = 'Error';
           }
@@ -56,13 +57,16 @@ angular.module('userController', ['userRegService'])
   this.loadCountries = function(word) {
     _this.dropdCountries = [];
     angular.forEach(_this.countryData, function(country) {
-      if (word != "" && (country.name.length >= word.length) && (country.name.toLowerCase().indexOf(word.toLowerCase()) == 0)) {
+      if (word != undefined && word != "" && (country.name.length >= word.length) && (country.name.toLowerCase().indexOf(word.toLowerCase()) == 0)) {
         _this.dropdCountries.push(country.name);
       }
     });
   }
 
   this.countryInList = function(word) {
+    if(_this.dropdCountries.length == 0) {
+      _this.regData.country = "";
+    }
     angular.forEach(_this.dropdCountries, function(country) {
       if (word.toLowerCase() == country.toLowerCase()) {
         _this.regData.country = country;
@@ -75,7 +79,6 @@ angular.module('userController', ['userRegService'])
   var clearOut = function() {
     _this.regData = {};
   }
-
 }])
 
 
