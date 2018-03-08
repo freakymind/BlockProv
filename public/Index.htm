@@ -5,67 +5,148 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="/">
+
+  <!-- bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <!-- angular js -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
 
+  <!-- google fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:700,700i|Roboto+Slab:400,700" rel="stylesheet">
+
+  <!-- font awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
   <style>
+  
   body {
       position: relative;
   }
-  #section1 {padding-top:50px;height:500px;color: #000; background-color: #fff;}
-  #section2 {padding-top:50px;height:500px;color: #000; background-color: #fff;}
-  #section3 {padding-top:50px;height:500px;color: #000; background-color: #fff;}
-  #section4 {padding-top:50px;height:500px;color: #000; background-color: #fff;}
+
+
+  .navbar-button:hover, .navbar-button:focus {
+    color:#2C3A47;
+    background-color:#FFC312;
+    outline: none;
+  }
+  
+  .navbar-button {
+    color:#FFC312; 
+    background-color:#2C3A47; 
+    border:2px solid #FFC312; 
+    outline: none; 
+    border-radius: 10px; 
+    margin:0.5em;
+  }
+
+
+  .emptyFields {
+    background-color: #fce1a4;
+  }
+
   </style>
 </head>
-<body ng-app="mainApp" ng-controller="mainCtrl as main" data-spy="scroll" data-target=".navbar" data-offset="50">
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header"; style = "float : left;">
+<body ng-app="mainApp" ng-controller="mainCtrl as main" data-spy="scroll" data-target=".navbar" data-offset="50" ng-show="{{main.loadme}}" ng-cloak>
 
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">Blockchain</a>
+  <!-- navbar start -->
+  <nav class="navbar navbar-inverse navbar-expand-lg navbar-fixed-top" style="border:0px; background-color:#2C3A47; font-family: 'Roboto Slab', serif; font-size: 120%;">
 
-    </div>
-    <div>
-      <div class="collapse navbar-collapse" style ="float:left;" id="myNavbar">
-        <ul class="nav navbar-nav">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li ng-show="!(main.isLoggedIn)"><a href="/login" style="color : #F39C12;"><b>Login</b></a></li>
-          <li ng-show="!(main.isLoggedIn)"><a href="/signup" style="color: #F39C12;"><b>SignUp</b></a><li>
-          <li ng-show="main.isLoggedIn"><a href="/loggingOut" style="color: #F39C12;" ng-click="main.signOut()"><b>Logout</b></a><li>
-          <li ng-show="main.isLoggedIn"><a href="/profile" ng-click="main.getCurrentUserProfile()">Hello {{main.currentUserDet.username}}</a></li>
-        </ul>
+      <!-- brand logo or text of navbar -->
+      <a class="navbar-brand" href="#"><p style="font-size: 120%">Blockchain</p></a>
+
+      <!-- toggle button of navbar -->
+      <div class="navbar-header"; style = "float : left;">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
       </div>
 
+      <!-- collapsible part of nav bar -->
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <!-- toggle links available all time -->
+          <li><a href="/" style="color: #fff">Home</a></li>
+          <li><a href="/about" style="color: #fff">About</a></li>
+          
+          <!-- toggle links available only on login -->
+          <li ng-show="main.isLoggedIn && main.isAdmin"><a href="/management" style="color: #fff">Management</a></li>
+          <li ng-show="main.isLoggedIn"><a href="/dashboard" style="color: #fff">Dashboard</a></li>
+          <li ng-show="main.isLoggedIn"><a href="/profile" style="color: #fff" ng-click="main.getCurrentUserProfile()">
+            <i class="fa fa-user-circle" aria-hidden="true"></i>  {{main.currentUserDet.username}} 
+          </a></li>
+
+        </ul>
+        <!-- buttons when user logged out -->
+        <button class="btn navbar-right navbar-button" ng-show="!(main.isLoggedIn)" ng-click="main.switchRoute('/signup')">
+            SignUp
+        </button>
+        <button class="btn navbar-right navbar-button" ng-show="!(main.isLoggedIn)" ng-click="main.switchRoute('/login')">
+            Login
+        </button>
+
+        <!-- buttons when user logged in -->
+        <button class="btn navbar-right navbar-button" ng-show="(main.isLoggedIn)" ng-click="main.showModal(2)">
+            LogOut
+        </button>
+      </div>
+      <!-- collapsible part of nav bar end -->
+  </nav>
+  <!-- navbar end -->
+
+
+  <div>
+    <div style="margin-top:50px;" ng-view></div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="loginModal" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" ng-click="main.cancelButtonModal()">&times;</button>
+            <h4 class="modal-title">{{main.titleMessage}}</h4>
+          </div>
+          <div class="modal-body">
+            <b>{{main.bodyMessage}}</b>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-show="main.modalBehaviour" ng-click="main.refreshButton()">{{main.modalFirstRefreshButton}}</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-show="!main.modalBehaviour">{{main.modalFirstNoButton}}</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="main.cancelButtonModal()">{{main.modalSecondButton}}</button>
+          </div>
+        </div>
+        
+      </div>
     </div>
+    <!-- End of modal -->
   </div>
-</nav>
-<div >
-  <div style="margin-top:50px;" ng-view></div>
-</div>
 
-<!--Main app-->
-<script src="app.js"> </script>
+  <!--Main app-->
+  <script src="app.js"> </script>
 
-<!--Routes-->
-<script src="routes.js"> </script>
+  <!--Routes-->
+  <script src="routes.js"> </script>
 
-<!--Controllers-->
-<script src="controllers/userController.js"> </script>
-<script src="controllers/mainController.js"> </script>
+  <!--Controllers-->
+  <script src="controllers/userController.js"> </script>
+  <script src="controllers/mainController.js"> </script>
+  <script src="controllers/managementController.js"> </script>
+  <script src="controllers/editUserDetailsController.js"> </script>
+  <script src="controllers/assetCreationController.js"> </script>
+  <script src="controllers/dashboardController.js"> </script>
+  
+  <!--Services-->
+  <script src="services/userRegService.js"> </script>
+  <script src="services/authServices.js"> </script>
+  <script src="services/mgtService.js"> </script>
 
-<!--Services-->
-<script src="services/userRegService.js"> </script>
-<script src="services/authServices.js"> </script>
 </body>
 </html>

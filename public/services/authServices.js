@@ -1,20 +1,17 @@
 angular.module('authServices', [])
 
-.factory('authUser', ["$http", "tokenCheck", function($http, tokenCheck){
+.factory('authUser', ["$http", "tokenCheck", function($http, tokenCheck) {
   var authFactory={};
 
   authFactory.login = function(loginDetails){
-    console.log('in factory')
     var promise = $http.post('/api/login', loginDetails);
     return promise;
   };
 
   authFactory.isLoggedIn = function() {
     if (tokenCheck.getToken()) {
-      console.log('user is logged in' + tokenCheck.getToken());
       return true;
     } else {
-      console.log('no user logged in');
       return false;
     }
   };
@@ -28,20 +25,39 @@ angular.module('authServices', [])
     }
   };
 
-  authFactory.getUser = function() {
-    return $http.post('/api/getCurrentUser', {token:tokenCheck.getToken()});
+  authFactory.getCurrentUser = function() {
+    return $http.get('/api/getCurrentUser');
+  };
+
+  authFactory.refreshSession = function(username) {
+    return $http.get('/api/refreshSession/' + username);
+  }
+
+  //getting 2FA setup details of the user 
+  authFactory.getSetup2FADetails = function(username) {
+    return $http.get('/api/setup2FA/' + username);
+  }
+
+  authFactory.setup2FA = function() {
+    return $http.post('/api/setup2FA');
+  }
+
+  authFactory.verify2FA = function(TOTP) {
+    return $http.post('/api/verify2FA', {twoFactAuthToken:TOTP});
+  }
+
+  authFactory.disable2FA = function() {
+    return $http.delete('/api/disable2FA');
   }
 
   return authFactory;
 }])
 
-
-
 .factory('profileDetails', ["$http", "tokenCheck", function($http, tokenCheck) {
   var profileDetailsFactory = {};
 
-  profileDetailsFactory.getAllDetails = function() {
-    return $http.post('/api/getCurrentUserAllDetails', {token:tokenCheck.getToken()});
+  profileDetailsFactory.getCurrentUserAllDetails = function() {
+    return $http.get('/api/getCurrentUserAllDetails');
   }
 
   return profileDetailsFactory;
@@ -63,4 +79,17 @@ angular.module('authServices', [])
   };
 
   return tokenCheckFactory;
+}])
+
+.factory('authInterceptor', ["tokenCheck", function(tokenCheck){
+  var authInterceptorFactory = {};
+
+  authInterceptorFactory.request = function(config) {
+    var token = tokenCheck.getToken();
+
+    if (token) config.headers['x-access-token'] = token;
+    return config;
+  } 
+
+  return authInterceptorFactory;
 }]);

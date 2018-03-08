@@ -1,29 +1,115 @@
-<div class="container-fluid" style="background-color: #333; padding-bottom:100px;">
-	<div class="row" style="margin-top:5%; ">
-		<div class="col-sm-6 col-sm-offset-3" style="background-color: #eee; padding: 5%;">
-			<div class="row">
-				<div class="col-sm-12" style="color:#444">
-					<h1><b>Login</b> </h1>
-					<br>
-				</div>
-			</div>
-			<div class="form-group">
-				<label>Username:</label>
-				<input type="text" class="form-control" id="username" ng-model = "main.loginDet.username">
-			</div>
-			<div class="form-group">
-				<label>Password:</label>
-				<input type="password" class="form-control" id="password" ng-model = "main.loginDet.password">
-			</div>
+<div class="container-fluid" style="background-color:#2c3e50; padding-bottom:100px;">
+	<div class = "row" style= "margin:5%">	
 
-			<button type="button" style ="background-color: #F39C12; color: #fff; border: none; width:80px;" class="btn btn-primary" ng-click="main.signIn()">Login</button>
-			<br>
-			<br>
-			<div class="row">
-				<div class="col-sm-10">
-					{{main.message}}
+		<!-- style bar  -->
+		<div class="row">
+	        <div class="col-sm-6 col-sm-offset-3" style="background-color:#FFC312; height:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"></div>
+	    </div>
+
+	    <!-- login form body -->
+		<div class="row">
+			<div 
+				class="col-sm-6 col-sm-offset-3" 
+				style="
+					font-family: 'Roboto Slab', serif; 
+					font-size:120%; 
+					background-color: #f5f6fa; 
+					padding: 5%; 
+					box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+			>
+				
+				<div class="row">
+					<div class="col-sm-12" style="color:#444">
+						<h1><b>Login</b> </h1>
+						<br>
+					</div>
 				</div>
-			<div>
+
+				<form name="LoginForm" novalidate>
+					<div class="form-group" >
+						<label>Username:</label>
+						<input 
+							type="text" 
+							class="form-control" 
+							id="username" 
+							ng-model = "main.loginDet.username" 
+							ng-disabled = "main.isLoginQRCodeGenerated" 
+							required
+							name = "loginUsernameField"
+						>
+					</div>
+					<div class="form-group" >
+						<label>Password:</label>
+						<input 
+							type="password" 
+							class="form-control" 
+							id="password" 
+							ng-model = "main.loginDet.password" 
+							ng-disabled = "main.isLoginQRCodeGenerated" 
+							required
+							name = "loginPasswordField"
+						>
+					</div>
+					<br>
+					<div ng-show="main.isLoginQRCodeGenerated">
+						<div class="panel">
+							<div class="panel-heading" style ="background-color: #FFC312; color:#2c3e50;">
+								Two Factor Authentication
+							</div>
+							<div class="panel-body" style="background-color:#2c3e50; color:#f5f6fa;">
+								Scan the QR code using Google Authenticator
+								and enter the OTP.
+								
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label>Enter OTP:</label>
+							<input 
+								type="password" 
+								class="form-control" 
+								id="totp" 
+								ng-model = "main.loginDet.twoFactAuthToken"
+								name = "loginOTPField"
+								required
+							>
+						</div>
+					</div>
+
+					<!-- button for fist level auth -->
+					<button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none; width:80px;" class="btn btn-primary" ng-click="main.signIn(LoginForm.loginUsernameField.$valid && LoginForm.loginPasswordField.$valid, 1)" ng-show="!main.isLoginQRCodeGenerated"><b>Login</b></button>
+
+					<!-- verify button for 2FA -->
+					<button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none; width:80px;" class="btn btn-primary" ng-click="main.signIn(LoginForm.loginUsernameField.$valid && LoginForm.loginPasswordField.$valid && LoginForm.loginOTPField.$valid, 2)" ng-show="main.isLoginQRCodeGenerated"><b>Verify</b></button>
+					
+				</form>
+				<br>
+				<br>
+				<span>{{main.message}}</span>
+				<!-- Modal -->
+			    <div class="modal fade" id="loginModal" role="dialog">
+			      <div class="modal-dialog">
+			      
+			        <!-- Modal content-->
+			        <div class="modal-content">
+			          <div class="modal-header">
+			            <button type="button" class="close" data-dismiss="modal" ng-click="main.cancelButtonModal()">&times;</button>
+			            <h4 class="modal-title">{{main.loginModalTitleMessage}}</h4>
+			          </div>
+			          <div class="modal-body">
+			            <b>{{main.loginModalBodyMessage}}</b>
+			          </div>
+			          <div class="modal-footer">
+			            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="main.cancelButtonModal()">OK</button>
+			          </div>
+			        </div>
+			        
+			      </div>
+			    </div>
+			    <!-- End of modal -->
+			</div>
 		</div>
+		<!-- login form body end -->
+
 	</div>
 </div>
