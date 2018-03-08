@@ -3,6 +3,8 @@ var express 		= require('express');			//express framework for creating web appli
 var morgan 			= require('morgan');
 var mongoose 		= require('mongoose');
 var path 			= require('path');
+//const driver = require('bigchaindb-driver')
+
 
 //importing LOCAL MODULES
 var routes			= require('./app/router');
@@ -10,7 +12,7 @@ var User 			= require('./app/models/User');
 
 //creating obects
 var app 				= express();	//invoking express in app variable
-var port 				= process.env.PORT || 8082; //var routes			= require('./router');
+var port 				= process.env.PORT || 8080; //var routes			= require('./router');
 
 // middlewares
 app.use(morgan('dev')); 						// dev helps in color coded logs
