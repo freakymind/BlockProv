@@ -6,9 +6,11 @@ var speakeasy   = require('speakeasy');
 var QRCode      = require('qrcode');
 var bcrypt    = require('bcrypt-nodejs');
 
+
 //loacl modules
 var User 				= require('./models/User');
 var Asset       = require('./models/Asset');
+var bigchainUsers= require('./models/BigchainUsers');
 var countryData = require('../resources/countries');
 let appDetails  = require('../package.json')
 
@@ -18,6 +20,9 @@ var app         = express();
 var secret      = "blockchain" //a secret key which helps decrypt out token
 router.use(express.json());
 router.use(express.urlencoded({extended: true}));
+
+//bigchain API Path
+const API_PATH = 'http://localhost:9984/api/v1/'
 
 //User Registeration
 router.post('/user', function(req, res, next){
@@ -431,6 +436,64 @@ router.post('/addAsset', function(req, res, next){
   asset.model         = req.body.model;
   asset.weight        = req.body.weight;
   asset.product_dim   = req.body.product_dim;
+
+  var metadata ={'a':'b'}
+  console.log("alice keypair " + bigchainUsers.alice);
+  var driver= bigchainUsers.driver
+  const txCreateAliceSimple = driver.Transaction.makeCreateTransaction(
+        asset,
+        metadata,
+
+        // A transaction needs an output
+        [ driver.Transaction.makeOutput(
+                        driver.Transaction.makeEd25519Condition(bigchainUsers.alice))
+        ],
+        bigchainUsers.alice
+  )
+
+  const txCreateAliceSimpleSigned = driver.Transaction.signTransaction(txCreateAliceSimple, bigchainUsers.alice)
+  const conn = new driver.Connection(API_PATH)
+  conn.postTransaction(txCreateAliceSimpleSigned)
+        // Check status of transaction every 0.5 seconds until fulfilled
+        .then(() => conn.pollStatusAndFetchTransaction(txCreateAliceSimpleSigned.id))
+        .then(retrievedTx => console.log('Transaction', retrievedTx.id, 'successfully posted.'))
+        // Check status after transaction has completed (result: { 'status': 'valid' })
+        // If you check the status of a transaction to fast without polling,
+        // It returns that the transaction is waiting in the 'backlog'
+        .then(() => conn.getStatus(txCreateAliceSimpleSigned.id))
+        .then(status => console.log('Retrieved status method 2: ', status))
+
+        // Transfer bicycle to Bob
+        .then(() => {
+                const txTransferBob = driver.Transaction.makeTransferTransaction(
+                        // signedTx to transfer and output index
+                        [{ tx: txCreateAliceSimpleSigned, output_index: 0 }],
+                        [driver.Transaction.makeOutput(driver.Transaction.makeEd25519Condition(bigchainUsers.bob))],
+                        // metadata
+                        {'a':'b'}
+                )
+
+                // Sign with alice's private key
+                let txTransferBobSigned = driver.Transaction.signTransaction(txTransferBob, bigchainUsers.alice)
+                console.log('Posting signed transaction: ', txTransferBobSigned)
+
+                // Post and poll status
+                return conn.postTransaction(txTransferBobSigned)
+        })
+        .then(res => {
+                console.log('Response from BDB server:', res)
+                return conn.pollStatusAndFetchTransaction(res.id)
+        })
+        .then(tx => {
+                console.log('Is Bob the owner?', tx['outputs'][0]['public_keys'][0] == bigchainUsers.bob)
+                console.log('Was Alice the previous owner?', tx['inputs'][0]['owners_before'][0] == bigchainUsers.alice )
+        })
+        // Search for asset based on the serial number of the bicycle
+        .then(() => conn.searchAssets('Bicycle Inc.'))
+        .then(assets => console.log('Found assets with serial number Bicycle Inc.:', assets))
+
+
+
   asset.save(function(err){
     console.log(asset);
     if(err) {

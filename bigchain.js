@@ -1,8 +1,6 @@
-const driver = require('bigchaindb-driver')
-//var bigChainConnection = require(path.join(__dirname, '/bigchain.js'))
 
 // BigchainDB server instance or IPDB (e.g. https://test.ipdb.io/api/v1/)
-var assetCr= require('/public/assetCreationController.js')
+//var assetCr= require('/public/assetCreationController.js')
 
 export function bigchain(callback){
 

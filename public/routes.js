@@ -30,7 +30,7 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementSer
     authenticated : true
   })
   .when('/dashboard', {
-    templateUrl : "./views/dashboard.htm",
+    templateUrl : "./views/Dashboard.htm",
     authenticated : true
   })
   .when('/management', {

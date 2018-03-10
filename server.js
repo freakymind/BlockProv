@@ -3,16 +3,17 @@ var express 		= require('express');			//express framework for creating web appli
 var morgan 			= require('morgan');
 var mongoose 		= require('mongoose');
 var path 			= require('path');
-//const driver = require('bigchaindb-driver')
-
 
 //importing LOCAL MODULES
 var routes			= require('./app/router');
 var User 			= require('./app/models/User');
+//var bigchainData = require('./public/controllers/assetCreationController.js')
+
 
 //creating obects
 var app 				= express();	//invoking express in app variable
 var port 				= process.env.PORT || 8080; //var routes			= require('./router');
+
 
 // middlewares
 app.use(morgan('dev')); 						// dev helps in color coded logs
@@ -29,6 +30,7 @@ mongoose.connect('mongodb://localhost:27017/blockchain', function(err) {
 		console.log('Connection to mongodb successful ..')
 	}
 });
+
 
 
 app.get('*', function(req, res) {
