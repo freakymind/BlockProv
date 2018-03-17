@@ -51,6 +51,11 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementSer
     templateUrl : "./views/twoFactorSetup.htm",
     authenticated : true,
     permissions : ["admin"]
+  })
+  .when('/addApprovedUsers', {
+    templateUrl : "./views/addApprovedUsers.htm",
+    authenticated : true,
+    permissions : ["admin"]
   });
 
   //https://scotch.io/tutorials/pretty-urls-in-angularjs-removing-the-hashtag#toc-setting-for-relative-links
@@ -66,7 +71,7 @@ app.run(['$rootScope', 'authUser', '$location', 'mgtService', function($rootScop
         event.preventDefault();
         $location.path('/');
       } else if (authUser.isLoggedIn() && next.$$route.permissions) {
-        mgtService.getCurrentUserRole()
+        authUser.getCurrentUserRole()
         .then(function(res){
           if (next.$$route.permissions.find(function(permission){
             return permission == res.data.role;

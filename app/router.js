@@ -10,6 +10,8 @@ var bcrypt      = require('bcrypt-nodejs');
 var User 				= require('./models/User');
 var Asset       = require('./models/Asset');
 var countryData = require('../resources/countries');
+var userDAO     = require('./userDAO')
+var approvedUserDAO = require('./approvedUserDAO')
 let appDetails  = require('../package.json')
 
 //instances
@@ -18,6 +20,63 @@ var app         = express();
 var secret      = "blockchain" //a secret key which helps decrypt out jwt token
 router.use(express.json());
 router.use(express.urlencoded({extended: true}));
+
+
+router.post('/testuser', function(req, res, next){
+    userDAO.insertUser(req.body, function(err, label){
+        if (label == "hash" && err) {
+          res.json({success:false, message : "error in creating hash"})
+        } else if (label == "save" && err) {
+            if (err.errors != null) {
+              if (err.errors.fullname) {
+                res.json({success: false, message : err.errors.fullname.message});
+              } else if (err.errors.username) {
+                res.json({success: false, message : err.errors.username.message});
+              } else if (err.errors.email) {
+                res.json({success: false, message : err.errors.email.message});
+              } 
+            } else if (err.code = "11000") {
+              res.json({success: false, message : err.errmsg});
+            }
+        } else {
+            res.json({success:true, message: "User Successfully Signed Up"})
+        }          
+    });
+});
+  
+router.get('/getApprovedUsersList', function(req, res, next){
+  approvedUserDAO.getApprovedUserList(function(err, userListDoc){
+    if(err) {
+      res.json({success:false, message:"could not find the list" + err})
+    } else {
+      res.json({success:true, list:userListDoc.userList})
+    }
+  });
+});
+
+var getUserListArray = function(userList, cb) {
+  /*  
+    regex takes comma seperated, space seperated and newline char seperated
+  */
+  var newUserList = userList.split(/\s+,+\s+|\s+,|,\s+|,+|\s/g);
+  cb(newUserList);
+}
+
+
+
+router.get('/checkIfAuthorised/:emailid',function(req, res, next){
+  // console.log("hey")
+  approvedUserDAO.checkAuthorised(req.params.emailid, function(err, approvedUserDoc){
+    if (err){
+      res.json({success:false, message:"error occured" + err});
+    } else if (approvedUserDoc) {
+      res.json({success:true, message:"user is approved"});
+    } else {
+      res.json({success:false, message:"user is not approved"});
+    }
+  });
+});
+
 
 //-------------------------------------------------------------------------//
 //**************  API REALTED TO USER SIGNUP/REGISTEATIONS  ***************//
@@ -63,6 +122,7 @@ router.post('/user', function(req, res, next){
     }
   });
 });
+
 
 //User Registeration : check if username exists during. 
 router.post('/checkUsername', function(req, res, next) {
@@ -273,6 +333,11 @@ router.post('/addAsset', function(req, res, next){
   });
 });
 
+
+//------------------------------------------------------------------------//
+//*********************** For Admin Purposes Only ************************//
+//------------------------------------------------------------------------//
+
 router.use(function(req, res, next){
   if(req.decoded.role == "admin") {
     next();
@@ -480,6 +545,39 @@ router.delete('/disable2FA', function(req, res, next){
     } else {
       res.json({success:false, message:"User not found"});
     }
+  });
+});
+
+router.post('/addApprovedUserList', function(req, res, next){
+  getUserListArray(req.body.newUserList, function(newUserList){
+    approvedUserDAO.addUsers(newUserList, function(err, tag){
+      if(err) {
+        if(tag == "find") {
+          res.json({success:false, message: "could not find the user" + err});
+        } else if (tag == "save") {
+          res.json({success:false, message: "could not save the user" + err});
+        }
+      } else {
+        res.json({success:true, message:"Successfully Added new users"});
+      }
+    });
+  });  
+});
+
+router.post('/removeApprovedUserList', function(req, res, next){
+  getUserListArray(req.body.newUserList, function(newUserList){
+    console.log(newUserList);
+    approvedUserDAO.removeUsers(newUserList, function(err, tag){
+      if(err) {
+        if(tag == "find") {
+          res.json({success:false, message: "could not find the user" + err});
+        } else if (tag == "save") {
+          res.json({success:false, message: "could not save the user" + err});
+        }
+      } else {
+        res.json({success:true, message:"Successfully removed Users"});
+      }
+    });
   });
 });
 

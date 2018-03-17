@@ -8,23 +8,41 @@ angular.module('userController', ['userRegService'])
   this.signupModalMessage = '';
   this.signupModalHeader = 'Error';
   this.isEmailValid=false;
+  this.isEmailAuthorised=false;
   this.isUsernameValid=false;
+
+  this.checkIfAuthorised = function(emailid){
+    userFactory.checkIfAuthorised(emailid)
+    .then(function(res){
+      _this.isEmailAuthorised = res.data.success;
+    });
+  }
 
   this.submitRegDetails = function(regData, valid) {
     if (valid) {
-      userFactory.register(regData)
-      .then(function(res){
-        if (res.data.success) {
-          clearOut();
-          _this.signupModalMessage = 'Registration Complete, Login to continue.';
-          _this.signupModalHeader = 'Success';
-          $('#userSignupModal').modal({backdrop:"static"});
+      userFactory.checkIfAuthorised(regData.emailid)
+      .then(function(response){
+        if(response.data.success) {
+          userFactory.register(regData)
+          .then(function(res){
+            if (res.data.success) {
+              clearOut();
+              _this.signupModalMessage = 'Registration Complete, Login to continue.';
+              _this.signupModalHeader = 'Success';
+              $('#userSignupModal').modal({backdrop:"static"});
+            } else {
+              _this.signupModalMessage = res.data.message;
+              _this.signupModalHeader = 'Error';
+              $('#userSignupModal').modal({backdrop:"static"});
+            }
+          });
         } else {
-          _this.signupModalMessage = res.data.message;
+          _this.signupModalMessage = response.data.message;
           _this.signupModalHeader = 'Error';
           $('#userSignupModal').modal({backdrop:"static"});
         }
       });
+      
     } else {
       _this.signupModalMessage = "Form details are invalid. Some details you might have entered are not valid and all fields are required.";
       _this.signupModalHeader = 'Error';

@@ -23,6 +23,10 @@ angular.module('userRegService', [])
 		return $http.post('/api/checkEmail', emailId);
 	}
 
+	UserReg.checkIfAuthorised = function(emailId) {
+		return $http.get('/api/checkIfAuthorised/' + emailId);	
+	}
+
 	//get a user using id
 	UserReg.getUserByID = function(id) {
 		return $http.get('/api/getUserByID/' + id);
