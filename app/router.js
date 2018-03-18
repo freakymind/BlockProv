@@ -1,5 +1,5 @@
 //core modules
-var express 		= require('express');
+var express         = require('express');
 var path        = require('path');
 var jwt         = require('jsonwebtoken');
 var speakeasy   = require('speakeasy');
@@ -8,14 +8,14 @@ var bcrypt    = require('bcrypt-nodejs');
 
 
 //loacl modules
-var User 				= require('./models/User');
+var User                 = require('./models/User');
 var Asset       = require('./models/Asset');
-var bigchainUsers= require('./models/BigchainUsers');
+var Company     = require('./models/Company');
 var countryData = require('../resources/countries');
 let appDetails  = require('../package.json')
 
 //instances
-var router  		= express.Router();
+var router          = express.Router();
 var app         = express();
 var secret      = "blockchain" //a secret key which helps decrypt out token
 router.use(express.json());
@@ -36,6 +36,7 @@ router.post('/user', function(req, res, next){
   user.fullname = req.body.fullname;
   user.role     = "user";
   user.assets_created = [];
+  user.companies_created = [];
   user.twoFactor = {};
   bcrypt.hash(user.password, null, null, function(err, hash){
     if (err) {
@@ -149,12 +150,12 @@ router.post('/login', function(req, res, next){
 });
 
 router.get('/userRegCountries', function(req, res, next) {
-	res.json(countryData);
+    res.json(countryData);
 });
 
 //Ping health check
 router.get('/ping', function(req, res, next) {
-	res.end(`PONG, verzion ${appDetails.version}`);
+    res.end(`PONG, verzion ${appDetails.version}`);
 });
 
 router.param('username', function(req, res, next, username){
@@ -424,6 +425,57 @@ router.put('/updateUserDetailsByID', function(req, res, next){
   }
 });
 
+router.post('/addCompany', function(req,res, next){
+  var company= new Company();
+  company.companyName  =  req.body.companyName;
+  company.companyId    =  req.body.companyId;
+  company.location     =  req.body.location;
+  company.regNumber    =  req.body.regNumber;
+  company.type         =  req.body.type;
+
+  company.save(function(err){
+    console.log(company);
+    if(err) {
+       res.json({success:false, message:err});
+    } else{
+      //finding the user to which the asset is added
+      User.findOne({username : req.decoded.username}, function(error, user) {
+        if(error){
+          Company.deleteOne({_id:company._id}, function(err){
+            if(err){
+              res.json({success:false, message:"user not found but could not delete company"});
+            } else {
+              res.json({success:false, message:"user not found deleted the company"});
+            }
+          });
+          res.json({success:false, message:error});
+        } else if (user) {
+          //add asset to assets_created array for the user
+          user.companies_created = user.companies_created.concat([company._id]);
+          //saving the model
+          user.save(function(errorUser){
+            if(errorUser) {
+              res.json({success: false, message:"could not save the user" + errorUser});
+            } else {
+              res.json({success: true, message:"Company Created", company:company});
+            }
+          });
+        } else {
+          //deleting the asset just created if no user found
+          Company.deleteOne({_id:company._id}, function(err){
+            if(err){
+              res.json({success:false, message:"user not found but could not delete asset"});
+            } else {
+              res.json({success:false, message:"user not found deleted the asset"});
+            }
+          });
+        }
+      })
+    }
+  });
+}); 
+
+
 //ading asset for the user
 router.post('/addAsset', function(req, res, next){
   var asset = new Asset();
@@ -437,12 +489,32 @@ router.post('/addAsset', function(req, res, next){
   asset.weight        = req.body.weight;
   asset.product_dim   = req.body.product_dim;
 
-  var metadata ={'a':'b'}
-  console.log("alice keypair " + bigchainUsers.alice);
+
+  /*var asset1 = {
+        'bicycle': {
+                'serial_number': 'cde',
+                'manufacturer': 'Bicycle Inc.',
+        }
+    }
+
+  var  asset2= {
+  'product_ref'   : req.body.product_ref,
+  'company_ref'   : req.body.company_ref,
+  'upc_a'         : req.body.upc_a,
+  'country_code'  : req.body.country_code,
+  'brand'         : req.body.brand,
+  'product_name'  : req.body.product_name,
+  'model'         : req.body.model,
+  'weight'        : req.body.weight,
+  'product_dim'   : req.body.product_dim,
+  }
+  var metadata = { 'weight1' : 'req.body.weight'}
+  console.log("alice keypair " + bigchainUsers.alice + " bob public_keys " + bigchainUsers.bob);
   var driver= bigchainUsers.driver
   const txCreateAliceSimple = driver.Transaction.makeCreateTransaction(
-        asset,
-        metadata,
+        //{'shreya' : {JSON.stringify(asset, null, '\t')}},
+        asset2,
+        metadata, 
 
         // A transaction needs an output
         [ driver.Transaction.makeOutput(
@@ -450,12 +522,13 @@ router.post('/addAsset', function(req, res, next){
         ],
         bigchainUsers.alice
   )
-
   const txCreateAliceSimpleSigned = driver.Transaction.signTransaction(txCreateAliceSimple, bigchainUsers.alice)
+
   const conn = new driver.Connection(API_PATH)
   conn.postTransaction(txCreateAliceSimpleSigned)
         // Check status of transaction every 0.5 seconds until fulfilled
         .then(() => conn.pollStatusAndFetchTransaction(txCreateAliceSimpleSigned.id))
+
         .then(retrievedTx => console.log('Transaction', retrievedTx.id, 'successfully posted.'))
         // Check status after transaction has completed (result: { 'status': 'valid' })
         // If you check the status of a transaction to fast without polling,
@@ -470,7 +543,7 @@ router.post('/addAsset', function(req, res, next){
                         [{ tx: txCreateAliceSimpleSigned, output_index: 0 }],
                         [driver.Transaction.makeOutput(driver.Transaction.makeEd25519Condition(bigchainUsers.bob))],
                         // metadata
-                        {'a':'b'}
+                        {'alice':'abcd'}
                 )
 
                 // Sign with alice's private key
@@ -491,7 +564,7 @@ router.post('/addAsset', function(req, res, next){
         // Search for asset based on the serial number of the bicycle
         .then(() => conn.searchAssets('Bicycle Inc.'))
         .then(assets => console.log('Found assets with serial number Bicycle Inc.:', assets))
-
+*/
 
 
   asset.save(function(err){

@@ -63,6 +63,7 @@ var UserSchema 	= new Schema({
 	email 		: {type:String, lowercase:true, required:true, unique:true, validate : emailValidation},
 	role		: {type:String, lowercase:true},
 	assets_created	: [String],
+	companies_created : [String],
 	twoFactor : Schema.Types.Mixed
 });
 
