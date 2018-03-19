@@ -1,0 +1,110 @@
+	<div class="container-fluid" style="background-color:#2c3e50;" ng-controller="assetCreation as assetCrtn" >
+
+    <div class="row" style="margin-top: 50px;">
+        <div class="col-sm-10 col-sm-offset-1">
+            
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3" style="background-color:#FFC312; height:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); background-color:#f5f6fa; color: #2C3A47; font-family: 'Roboto Slab', serif; padding: 5%; font-size: 120%; margin-bottom: 10%;">
+                    
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h1><b>Company Creation</b> </h1>
+                            <h3><i>Fill in the Company details</i> </h3>
+                            <br>
+                        </div>
+                    </div>
+
+                    <form name="SignupForm" novalidate>
+                        <div class="form-group">
+                            <label>Company Name:</label>
+                            <input  
+                                type="text" 
+                                class="form-control" 
+                                name="companyname" 
+                                ng-model="assetCrtn.companyData.companyName" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label>Company ID:</label>
+                            <input  
+                                type="text" 
+                                class="form-control" 
+                                name="id" 
+                                ng-model="assetCrtn.companyData.companyId" 
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label>Location:</label>
+                            <input  
+                                type="text" 
+                                class="form-control" 
+                                name="location" 
+                                ng-model="assetCrtn.companyData.location" 
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label>Reg no:</label>
+                            <input  
+                                type="text" 
+                                class="form-control" 
+                                name="regno" 
+                                ng-model="assetCrtn.companyData.regNumber" 
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label>Type:</label>
+                            <input  
+                                type="text" 
+                                class="form-control" 
+                                name="type" 
+                                ng-model="assetCrtn.companyData.type" 
+                                required
+                            >
+                        </div>                    
+    
+
+                        <button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="assetCrtn.addCompany()"><b>Create Company</b></button>
+                        <br><br>
+                        
+                        <div class="modal fade" id="companyCreationModal" role="dialog">
+                            <div class="modal-dialog">
+                            
+                              <!-- Modal content-->
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                  <h4 class="modal-title"></h4>
+                                </div>
+                                <div class="modal-body">
+                                  <p></p>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                              </div>
+                              
+                            </div>
+                          </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('[data-toggle="popover"]').popover(); 
+    });
+
+</script>
