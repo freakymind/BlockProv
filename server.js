@@ -12,7 +12,7 @@ var User 			= require('./app/models/User');
 
 //creating obects
 var app 				= express();	//invoking express in app variable
-var port 				= process.env.PORT || 8080; //var routes			= require('./router');
+var port 				= process.env.PORT || 8082; //var routes			= require('./router');
 
 
 // middlewares
