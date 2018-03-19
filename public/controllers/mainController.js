@@ -1,8 +1,8 @@
 angular.module('mainController', ['authServices', 'managementServices'])
 
 
-.controller('mainCtrl',["$route", "$window", "$http", "$timeout", "$location", "$rootScope", "authUser", "tokenCheck", "profileDetails", "$interval", "mgtService",
-	function($route, $window, $http, $timeout, $location, $rootScope, authUser, tokenCheck, profileDetails, $interval, mgtService){
+.controller('mainCtrl',["$route", "$window", "$http", "$timeout", "$location", "$rootScope", "authUser", "tokenCheck", "$interval", "mgtService",
+	function($route, $window, $http, $timeout, $location, $rootScope, authUser, tokenCheck, $interval, mgtService){
 	
 	var _this = this;
 
@@ -15,6 +15,7 @@ angular.module('mainController', ['authServices', 'managementServices'])
 	_this.loadme = true;				// loading the page once all the information is fetched
 	_this.isCheckingSession = false;
 	_this.isAdmin = false;				// if user is admin or not
+	_this.userCurrentRole = '';
 
 	// Bootstrap logout Modal related data
 	_this.titleMessage = "";
@@ -45,7 +46,7 @@ angular.module('mainController', ['authServices', 'managementServices'])
 	_this.setup2FA = function() {
 		//initiallising response message area
 		_this.ResponseMessage = "";
-		
+
 		authUser.setup2FA()
 		.then(function(res){
 			if(res.data.success){
@@ -170,7 +171,7 @@ angular.module('mainController', ['authServices', 'managementServices'])
 				//fetching two factor auth realted data to check if 2FA enabld 
 				authUser.getSetup2FADetails(_this.loginDet.username)
 				.then(function(res){
-					
+					console.log(res);
 					if(res.data.success) {
 						//if 2FA enabled, display QR Code
 						if (res.data.twoFactorDetails && res.data.twoFactorDetails.secret){
@@ -181,7 +182,9 @@ angular.module('mainController', ['authServices', 'managementServices'])
 							//if 2FA not enabled login using the first level auth only
 							_this.loginAndVerify2FA();
 						}
-					}
+					} else {
+						_this.message = res.data.message
+					} 
 				});
 			} else if (level == 2) {
 
@@ -193,6 +196,10 @@ angular.module('mainController', ['authServices', 'managementServices'])
 
 	//utility for signin function that calls api for login.
 	_this.loginAndVerify2FA = function() {
+
+		//converting the username to lowercase
+		_this.loginDet.username = _this.loginDet.username.toLowerCase();
+
 		authUser.login(_this.loginDet)
 		.then(function(res){
 			if (res.data.success) {
@@ -207,7 +214,7 @@ angular.module('mainController', ['authServices', 'managementServices'])
 					
 					$location.path('/');
 					_this.checkSession();
-					mgtService.getCurrentUserRole()
+					authUser.getCurrentUserRole()
 					.then(function(res){
 						if(res.data.role == "admin") {
 							_this.isAdmin = true;
@@ -236,7 +243,7 @@ angular.module('mainController', ['authServices', 'managementServices'])
 
 	//function to get all user details for profile view
 	_this.getCurrentUserProfile = function() {
-		profileDetails.getCurrentUserAllDetails()
+		authUser.getCurrentUserAllDetails()
 		.then(function(res) {
 			if(res.data.success) {
 				_this.currentUserFullDet = res.data.user;
@@ -256,8 +263,6 @@ angular.module('mainController', ['authServices', 'managementServices'])
 			if($location.path() == '/login') {
 
 				//initiallize QR related variables
-				_this.QRCode = "";
-				_this.isQRGenerated = true;
 				_this.QRCodeLogin = "";
 				_this.isLoginQRCodeGenerated = false;
 				_this.disableInputFields = "";
@@ -269,14 +274,15 @@ angular.module('mainController', ['authServices', 'managementServices'])
 
 			//check whether the 2FA is enabled or disabled
 			if($location.path() == '/twoFactorSetup') {
+				_this.ResponseMessage = "" 
 				authUser.getCurrentUser()
 				.then(function(res){
 					if(res.data.success) {
 						authUser.getSetup2FADetails(res.data.token.username)
 						.then(function(res){
-							if(res.data.twoFactorDetails.secret == res.data.twoFactorDetails.tempSecret) {
+							if(res.data.twoFactorDetails.tempSecret && res.data.twoFactorDetails.secret == res.data.twoFactorDetails.tempSecret) {
 								_this.is2FASetupEnabled = true;
-							} else {
+							} else if (!res.data.twoFactorDetails.tempSecret) {
 								_this.is2FASetupEnabled = false;	
 							}
 						});

@@ -52,6 +52,13 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementSer
     authenticated : true,
     permissions : ["admin"]
   })
+
+  .when('/addApprovedUsers', {
+    templateUrl : "./views/addApprovedUsers.htm",
+    authenticated : true,
+    permissions : ["admin"]
+  })
+  
   .when('/companyCreation', {
     templateUrl : "./views/companyCreation.htm",
     authenticated : true,
@@ -71,7 +78,7 @@ app.run(['$rootScope', 'authUser', '$location', 'mgtService', function($rootScop
         event.preventDefault();
         $location.path('/');
       } else if (authUser.isLoggedIn() && next.$$route.permissions) {
-        mgtService.getCurrentUserRole()
+        authUser.getCurrentUserRole()
         .then(function(res){
           if (next.$$route.permissions.find(function(permission){
             return permission == res.data.role;

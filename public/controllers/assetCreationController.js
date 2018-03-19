@@ -1,17 +1,30 @@
 angular.module('assetCreationController', [])
 
 .controller('assetCreation', ["$http", function($http){
-	console.log('heyy asset creation');
 	var _this = this;
 
-	_this.addAsset = function() {
-		$http.post('/api/addAsset', _this.assetData)
-		.then(function(res){
-			console.log(res.data);
-		});
-
+	_this.assetCreationModal = {};
+	
+	_this.addAsset = function(valid) {
+		if(valid) {
+			$http.post('/api/addAsset', _this.assetData)
+			.then(function(res){
+				_this.assetData = {};
+				_this.assetCreationModal = {
+					title : "Success",
+					body : "Asset is succesfully created"
+				}
+				$("#assetCreationModal").modal({backdrop: "static"});
+			});
+		} else {
+			_this.assetCreationModal = {
+				title : "Error",
+				body : "Form is invalid, All fields are required."
+			}
+			$("#assetCreationModal").modal({backdrop: "static"});
+		}
 	}
-
+  
 	_this.addCompany = function() {
 		$http.post('/api/addCompany', _this.companyData)
 		.then(function(res){
@@ -19,6 +32,4 @@ angular.module('assetCreationController', [])
 		});
 
 	}
-
-
 }]);

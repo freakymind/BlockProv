@@ -1,6 +1,6 @@
-angular.module('dashboardController', ['managementServices'])
+angular.module('dashboardController', ['managementServices', 'authServices'])
 
-.controller('dashboardCtrl', ["$http", "$location", 'mgtService', function($http, $location, mgtService){
+.controller('dashboardCtrl', ["$http", "$location", 'mgtService', 'authUser', function($http, $location, mgtService, authUser){
 	var _this = this;
 
 	_this.goTo = function(path){
@@ -9,7 +9,7 @@ angular.module('dashboardController', ['managementServices'])
 
 	_this.currentUserRole = "";
 
-	mgtService.getCurrentUserRole()
+	authUser.getCurrentUserRole()
 	.then(function(res){
 		_this.currentUserRole = res.data.role;
 	});
