@@ -18,6 +18,8 @@ angular.module('userController', ['userRegService'])
     });
   }
 
+  //console.log(_this.regData.userRole)
+
   this.submitRegDetails = function(regData, valid) {
     if (valid) {
       userFactory.checkIfAuthorised(regData.emailid)

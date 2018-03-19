@@ -174,7 +174,9 @@ router.get('/setup2FA/:username', function(req, res, next){
     } else {
       res.json({success:false, message:"user not found"});
     }
+
   }); 
+  console.log("in here");
 });
 
 //User Login
@@ -223,23 +225,28 @@ router.get('/ping', function(req, res, next) {
 });
 
 //api to refresh the user session by signing a new json web token
-router.param('username', function(req, res, next, username){
-  User.findOne({username:username}, function(err, user){
-    if(user) {
-      var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname, role: user.role}, secret, { expiresIn: '1h' })
-      req.token = token;
-      next();
-    } else {
-      res.json({success:false, message:"could not refresh"})
-    }
-  }); 
-});
+// router.param('username', function(req, res, next, username){
+//   User.findOne({username:username}, function(err, user){
+//     if(user) {
+//       var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname, role: user.role}, secret, { expiresIn: '1h' })
+//       req.token = token;
+//       next();
+//     } else {
+//       res.json({success:false, message:"could not refresh"})
+//     }
+//   }); 
+// });
 
 //api that sends back the response with the new token
 router.get('/refreshSession/:username', function(req, res, next){
-  if (req.token) {
-    res.json({success:true, token:req.token});
-  }
+  User.findOne({username:req.params.username}, function(err, user){
+    if(user) {
+      var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname, role: user.role}, secret, { expiresIn: '1h' })
+      res.json({success:true, token:token});
+    } else {
+      res.json({success:false, message:"could not refresh"})
+    }
+  });
 });
 
 //-----------------------------------------------------------------------------//
@@ -335,7 +342,7 @@ router.post('/addAsset', function(req, res, next){
 
 
 //------------------------------------------------------------------------//
-//*********************** For Admin Purposes Only ************************//
+//*********************** API that require Admin LOGIN *******************//
 //------------------------------------------------------------------------//
 
 router.use(function(req, res, next){
