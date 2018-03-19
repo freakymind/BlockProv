@@ -7,10 +7,13 @@ var path 			= require('path');
 //importing LOCAL MODULES
 var routes			= require('./app/router');
 var User 			= require('./app/models/User');
+//var bigchainData = require('./public/controllers/assetCreationController.js')
+
 
 //creating obects
 var app 				= express();	//invoking express in app variable
-var port 				= process.env.PORT || 8082; //var routes			= require('./router');
+var port 				= process.env.PORT || 8080; //var routes			= require('./router');
+
 
 // middlewares
 app.use(morgan('dev')); 						// dev helps in color coded logs
@@ -27,6 +30,7 @@ mongoose.connect('mongodb://localhost:27017/blockchain', function(err) {
 		console.log('Connection to mongodb successful ..')
 	}
 });
+
 
 
 app.get('*', function(req, res) {
