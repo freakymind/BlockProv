@@ -99,10 +99,12 @@ router.post('/user', function(req, res, next){
   user.phone_no = req.body.phone_no;
   user.address  = req.body.address;
   user.fullname = req.body.fullname;
-  user.role     = "user";
+  user.role     = req.body.role;
+  user.companyName = req.body.companyName;
   user.assets_created = [];
   user.companies_created = [];
   user.twoFactor = {};
+  
   bcrypt.hash(user.password, null, null, function(err, hash){
     if (err) {
       res.json({success:false, message:"error converting password to hash"});
@@ -167,6 +169,23 @@ router.post('/checkEmail', function(req, res, next) {
 router.get('/userRegCountries', function(req, res, next) {
   res.json(countryData);
 });
+
+//get all company Values
+router.get('/allCompanyNames', function(req, res, next){
+  Company.find({}, {'_id':0, 'companyName':1}, function(err, companies){
+    if(err){
+      res.json({success:false, message:"some error occured" + err})
+    } else if(companies){
+      var compArr = companies.map(function(company){
+        return company.companyName;
+      });
+      res.json({success:true, companies:compArr});
+    } else {
+      res.json({success:false, message:"no companies to display"})
+    }
+  });
+});
+
 
 //--------------------------------------------------------------//
 //***************  API RELATED TO LOGIN  ***********************//
@@ -297,55 +316,6 @@ router.get('/getCurrentUserAllDetails', function(req, res, next) {
 });
 
 
-router.post('/addCompany', function(req,res, next){
-  var company= new Company();
-  company.companyName  =  req.body.companyName;
-  company.companyId    =  req.body.companyId;
-  company.location     =  req.body.location;
-  company.regNumber    =  req.body.regNumber;
-  company.type         =  req.body.type;
-
-  company.save(function(err){
-    console.log(company);
-    if(err) {
-       res.json({success:false, message:err});
-    } else{
-      //finding the user to which the asset is added
-      User.findOne({username : req.decoded.username}, function(error, user) {
-        if(error){
-          Company.deleteOne({_id:company._id}, function(err){
-            if(err){
-              res.json({success:false, message:"user not found but could not delete company"});
-            } else {
-              res.json({success:false, message:"user not found deleted the company"});
-            }
-          });
-          res.json({success:false, message:error});
-        } else if (user) {
-          //add asset to assets_created array for the user
-          user.companies_created = user.companies_created.concat([company._id]);
-          //saving the model
-          user.save(function(errorUser){
-            if(errorUser) {
-              res.json({success: false, message:"could not save the user" + errorUser});
-            } else {
-              res.json({success: true, message:"Company Created", company:company});
-            }
-          });
-        } else {
-          //deleting the asset just created if no user found
-          Company.deleteOne({_id:company._id}, function(err){
-            if(err){
-              res.json({success:false, message:"user not found but could not delete asset"});
-            } else {
-              res.json({success:false, message:"user not found deleted the asset"});
-            }
-          });
-        }
-      })
-    }
-  });
-}); 
 
 
 //ading asset for the user
@@ -727,5 +697,56 @@ router.post('/removeApprovedUserList', function(req, res, next){
     });
   });
 });
+
+router.post('/addCompany', function(req,res, next){
+  var company = new Company();
+  company.companyName  =  req.body.companyName;
+  company.companyId    =  req.body.companyId;
+  company.location     =  req.body.location;
+  company.regNumber    =  req.body.regNumber;
+  company.type         =  req.body.type;
+
+  company.save(function(err){
+    console.log(company);
+    if(err) {
+       res.json({success:false, message:err});
+    } else{
+      //finding the user to which the asset is added
+      User.findOne({username : req.decoded.username}, function(error, user) {
+        if(error){
+          Company.deleteOne({_id:company._id}, function(err){
+            if(err){
+              res.json({success:false, message:"user not found but could not delete company"});
+            } else {
+              res.json({success:false, message:"user not found deleted the company"});
+            }
+          });
+          res.json({success:false, message:error});
+        } else if (user) {
+          //add asset to assets_created array for the user
+          user.companies_created = user.companies_created.concat([company._id]);
+          //saving the model
+          user.save(function(errorUser){
+            if(errorUser) {
+              res.json({success: false, message:"could not save the user" + errorUser});
+            } else {
+              res.json({success: true, message:"Company Created", company:company});
+            }
+          });
+        } else {
+          //deleting the asset just created if no user found
+          Company.deleteOne({_id:company._id}, function(err){
+            if(err){
+              res.json({success:false, message:"user not found but could not delete asset"});
+            } else {
+              res.json({success:false, message:"user not found deleted the asset"});
+            }
+          });
+        }
+      })
+    }
+  });
+}); 
+
 
 module.exports.router = router;

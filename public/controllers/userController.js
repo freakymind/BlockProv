@@ -10,6 +10,9 @@ angular.module('userController', ['userRegService'])
   this.isEmailValid=false;
   this.isEmailAuthorised=false;
   this.isUsernameValid=false;
+  this.companyNameList=[];
+
+
 
   this.checkIfAuthorised = function(emailid){
     userFactory.checkIfAuthorised(emailid)
@@ -87,6 +90,15 @@ angular.module('userController', ['userRegService'])
     });
   }
 
+  this.fetchAllCompanyNames = function() {
+    $http.get('/api/allCompanyNames')
+    .then(function(res){
+      console.log(res.data.companies)
+      _this.companyNameList = res.data.companies;
+      console.log(_this.companyNameList)
+    });
+  }
+
   this.countryInList = function(word) {
     if(_this.dropdCountries.length == 0) {
       _this.regData.country = "";
@@ -103,6 +115,10 @@ angular.module('userController', ['userRegService'])
   var clearOut = function() {
     _this.regData = {};
   }
+
+
+
+
 }])
 
 
