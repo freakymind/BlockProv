@@ -13,6 +13,8 @@ userDAO.insertUser = function(userDetails, cb){
 	user.phone_no = userDetails.phone_no;
 	user.address  = userDetails.address;
 	user.fullname = userDetails.fullname;
+	user.role	  = userDetails.role;
+	user.companyName = userDetails.companyName;
 	bcrypt.hash(userDetails.password, null, null, function(err, hash){
 		if (err) {
 			cb(err, "hash");
