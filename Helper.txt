@@ -1,0 +1,19 @@
+git clone
+git checkout<branch name>
+
+
+1) create public private keys.
+
+
+npm install mongoose -save && morgan, express , jsonwebtoken, speakeasy, qrcode, bcrypt-nodejs, mongoose-title-case
+, mongoose-validator-- for starting Server.js
+npm init
+npm install
+npm install body-parser --save	
+nodemon server.js
+
+mongo OR use robomongo
+>>use blockchain
+>>show collections
+>>db.mongomods.find.pretty() // >> db.users.find(),pretty()
+>>db.users.updateOne({"username" : "shrsin123" },{$set:{"role" : "admin"}});
