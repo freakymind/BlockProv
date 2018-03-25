@@ -23,7 +23,7 @@ testAsset.createAsset( alice.privateKey,alice.publicKey, {"one":"two"}, {"three"
 				testAsset.getAssetStatus(resolved.asset.id).then((resolved)=>{
 					//console.log(prettyjson.render(resolved));
 					let viewAssets = bcwrapper.getViewObject();
-					viewAssets.getAllAssetsForPublicKey(alice.publickey).then((op)=>{
+					viewAssets.getAllAssetsForPublicKey(alice.publicKey).then((op)=>{
 						console.log(op);
 					})
 
