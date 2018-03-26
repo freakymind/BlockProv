@@ -2,7 +2,7 @@
 
 To use bigchainDb wrapper functions, assuming we are accessing from base directory
 ```
-let bigchain-wrapper = require('./app/bigchain/index.js')
+let bcwrapper = require('./app/bigchain/index.js')
 ```
 ## Objects
 ### View object
