@@ -1,7 +1,8 @@
 var express = require('express');
 var bcrypt = require('bcrypt-nodejs');
-
+var bcwrapper = require('./bigchain/index.js')
 var User = require('./models/User');
+const ADMIN = "admin"
 
 var userDAO = {};
 
@@ -15,6 +16,8 @@ userDAO.insertUser = function(userDetails, cb){
 	user.fullname = userDetails.fullname;
 	user.role	  = userDetails.role;
 	user.companyName = userDetails.companyName;
+	user.bigchainKeyPair = bcwrapper.generateKeyPair();
+	
 	bcrypt.hash(userDetails.password, null, null, function(err, hash){
 		if (err) {
 			cb(err, "hash");
