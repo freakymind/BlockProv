@@ -1,6 +1,8 @@
 "use strict";
 const driver = require('bigchaindb-driver');
 const prettyjson = require('prettyjson');
+const Utils = require('./utils.js')
+
 module.exports = class Asset{
 
 
@@ -8,11 +10,7 @@ module.exports = class Asset{
 	constructor(conn){
 		this.conn = conn;
 		this.isValid = false;
-
 	}
-
-
-
 	//TODO: Validate asset
 	//Currently passes all types of asset data
 	validateAsset(asset){
@@ -20,21 +18,16 @@ module.exports = class Asset{
 		{
 			throw new Error("Asset validation failed");
 		}
-
 	}
-
-
 	//Create the asset
 	createAsset(privateKey, publicKey, assetdata, metadata ){
 		this.publicKey = publicKey;
 		this.assetdata = assetdata;
 		this.metadata = metadata;
 		//THis variable checks if the asset is valid i.e createAsset has been called successfully atleast once
-		
 		this.validateAsset(assetdata);
 		return new Promise((resolve, reject)=>{
 
-			console.log("Here");
 			const createdTransaction = driver.Transaction.makeCreateTransaction(
 				this.assetdata,
 				this.metadata,
@@ -45,34 +38,69 @@ module.exports = class Asset{
 		    )
 			// Sign the transaction with private keys of user who is creating this
 			this.signedTransaction = driver.Transaction.signTransaction(createdTransaction, privateKey);
+			
+			//Incase create transaction asset id is same as transaction id
 			this.transactionId = this.signedTransaction.id;
-						console.log("Here2");
+			this.assetId = this.signedTransaction.id;
 
+			//Posting the 
 			this.conn.postTransaction(this.signedTransaction).then(()=>{
-							console.log("Here3");
-
 				return this.conn.pollStatusAndFetchTransaction(this.transactionId)
 			}).then((res)=>{
 				//Incase of success
+				//The asset has been successfully initialised
+				this.valid = true;
 				resolve(res);
-
 			},(res)=>{
 				//Incase of failure
 				reject(res)
 			})
-
 		});
 		//Creating the transaction object
-
 	}
 
+	createAssetFromId(fromTransactionId){
 
+		return new Promise((resolve,reject)=>{
+			let util = new Utils(this.conn)
+			util.getTransactionDetails(fromTransactionId).then((responseObj)=>{
 
+				this.transactionId = responseObj.id;
+				this.publicKey = responseObj['outputs'][0]['public_keys'][0];
+				this.signedTransaction = responseObj;
+				if(responseObj.operation == "CREATE"){
+					this.assetID = responseObj.id;
+					this.assetdata = responseObj.asset.data;
+					this.isValid = true;
+					resolve(responseObj);
+				}
+				else {
+					//We have to fetch the asset, since only assetid present incase of TRANSFER transaction
+					util.getCreatedAsset(responseObj.asset.id).then((resp)=>{
+						this.assetID = responseObj.asset.id
+						this.assetdata = resp[0].asset.data;
+						this.isValid = true;
+						resolve(responseObj);
+					});
+					
+				}
+				
+				//Initialized from
+				
+			}).catch((err)=>{
+				reject(err);
+			});
+		})
+	}
 
 	transferAsset(fromPrivateKey, toPublicKey, metadata){
-		//
-
 		return new Promise((resolve, reject)=>{
+			//This for checking that if create methods have run on this object
+			//This is necessary since constructors couldn't handle async tasks
+			//So initialization was not possible in constructor
+			if(this.valid == false){
+				reject(new Error("Not initiated"))
+			}
 			this.getAssetState().then((status)=>{
 				if(status["status"] != "valid")
 					throw Error("Asset is not in valid state")
@@ -106,16 +134,9 @@ module.exports = class Asset{
 	        	reject(e);
 	        })
 		})
-
-
-
-
 	}
-
-
-
 	getAssetState(){
-		if(this.transactionId == undefined){
+		if(this.valid == false){
 			throw Error("Asset id is not set for this asset");
 		}
 		return new Promise((resolve,reject)=>{
@@ -125,22 +146,7 @@ module.exports = class Asset{
 			});
 		});
 	}
+	
 
-	getAssetStatus(id){
-		if(this.transactionId == undefined){
-			throw Error("Asset id is not set for this asset");
-		}
-		return new Promise((resolve,reject)=>{
-			this.conn.listTransactions(id).then(status => {
-				if(status) resolve(status);
-				else reject();
-			});
-		});
-	}
-
-
-
-
-
-
+	
 }

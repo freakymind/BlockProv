@@ -14,6 +14,7 @@
   "author": "Yash Bansal",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.0",
     "bcrypt-nodejs": "0.0.3",
     "bigchaindb-driver": "^3.2.0",
     "express": "^4.16.2",
@@ -25,6 +26,8 @@
     "nodemon": "^1.17.1",
     "prettyjson": "^1.2.1",
     "qrcode": "^1.2.0",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
     "speakeasy": "^2.0.0"
   }
 }
