@@ -24,27 +24,7 @@ router.use(express.json());
 router.use(express.urlencoded({extended: true}));
 
 
-router.post('/testuser', function(req, res, next){
-    userDAO.insertUser(req.body, function(err, label){
-        if (label == "hash" && err) {
-          res.json({success:false, message : "error in creating hash"})
-        } else if (label == "save" && err) {
-            if (err.errors != null) {
-              if (err.errors.fullname) {
-                res.json({success: false, message : err.errors.fullname.message});
-              } else if (err.errors.username) {
-                res.json({success: false, message : err.errors.username.message});
-              } else if (err.errors.email) {
-                res.json({success: false, message : err.errors.email.message});
-              } 
-            } else if (err.code = "11000") {
-              res.json({success: false, message : err.errmsg});
-            }
-        } else {
-            res.json({success:true, message: "User Successfully Signed Up"})
-        }          
-    });
-});
+
   
 router.get('/getApprovedUsersList', function(req, res, next){
   approvedUserDAO.getApprovedUserList(function(err, userListDoc){
@@ -90,49 +70,28 @@ router.get('/checkIfAuthorised/:emailid',function(req, res, next){
 const API_PATH = 'http://localhost:9984/api/v1/'
 
 //User Registeration
+//V2 using UserDAO functions
 router.post('/user', function(req, res, next){
-  var user = new User();
-  user.username = req.body.username;
-  user.password = req.body.password;
-  user.email    = req.body.emailid;
-  user.country  = req.body.country;
-  user.phone_no = req.body.phone_no;
-  user.address  = req.body.address;
-  user.fullname = req.body.fullname;
-  user.role     = req.body.role;
-  user.companyName = req.body.companyName;
-  user.assets_created = [];
-  user.companies_created = [];
-  user.twoFactor = {};
-  
-  bcrypt.hash(user.password, null, null, function(err, hash){
-    if (err) {
-      res.json({success:false, message:"error converting password to hash"});
-    } else {
-      user.password = hash;
-      user.save(function(err){
-        if (err) {
-          if (err.errors != null) {
-            if (err.errors.fullname) {
-              res.json({success: false, message : err.errors.fullname.message});
-            } else if (err.errors.username) {
-              res.json({success: false, message : err.errors.username.message});
-            } else if (err.errors.email) {
-              res.json({success: false, message : err.errors.email.message});
-            } 
-          } else {
-            if (err.code = "11000") {
-              res.json({success: false, message : err.errmsg})
+    userDAO.insertUser(req.body, function(err, label){
+        if (label == "hash" && err) {
+          res.json({success:false, message : "error in creating hash"})
+        } else if (label == "save" && err) {
+            if (err.errors != null) {
+              if (err.errors.fullname) {
+                res.json({success: false, message : err.errors.fullname.message});
+              } else if (err.errors.username) {
+                res.json({success: false, message : err.errors.username.message});
+              } else if (err.errors.email) {
+                res.json({success: false, message : err.errors.email.message});
+              } 
+            } else if (err.code = "11000") {
+              res.json({success: false, message : err.errmsg});
             }
-          }
         } else {
-          res.json({success: true, message : "Signup Successful"});
-        }
-      });
-    }
-  });
+            res.json({success:true, message: "User Successfully Signed Up"})
+        }          
+    });
 });
-
 
 //User Registeration : check if username exists during. 
 router.post('/checkUsername', function(req, res, next) {
