@@ -5,7 +5,7 @@ var jwt         = require('jsonwebtoken');
 var speakeasy   = require('speakeasy');
 var QRCode      = require('qrcode');
 var bcrypt      = require('bcrypt-nodejs');
-
+var util        = require('util');
 
 //loacl modules
 var User                 = require('./models/User');
@@ -275,7 +275,28 @@ router.get('/getCurrentUserAllDetails', function(req, res, next) {
 });
 
 
+router.get('/getAsset', function(req, res, next){
 
+});
+
+router.get('/viewAssets', function(req, res, next){
+  userDAO.findUser({username:req.decoded.username}, "bigchainKeyPair", function(err, user){
+    console.log(user.bigchainKeyPair.publicKey)
+    console.log(req.body)
+
+    let NewViewObject = bcwrapper.getViewObject();
+    NewViewObject.getAllCurrentlyOwnedAssetsForPublicKey(user.bigchainKeyPair.publicKey)
+    .then(function(assets){
+      
+      console.log("All Assets : " + util.inspect(assets, false, null));
+      res.json({success:true, Assets : assets})
+    })
+    .catch(function(err){
+      console.log("error : " + err);
+      res.json({success:false, message:"Error occured"});
+    });
+  });
+});
 
 //ading asset for the user
 router.post('/addAsset', function(req, res, next){
@@ -285,13 +306,13 @@ router.post('/addAsset', function(req, res, next){
 
     let NewAsset = bcwrapper.createAssetObj();
     NewAsset.createAsset(user.bigchainKeyPair.privateKey, user.bigchainKeyPair.publicKey, req.body, {AssetType:"createTestAsset"})
-    .then(function(res){
-      console.log("Asset Created" + res);
-      resp.json({success:true, message:"Asset is Successfully Created"})
+    .then(function(asset){
+      console.log("Asset Created" + asset);
+      res.json({success:true, message:"Asset is Successfully Created"})
     })
     .catch(function(err){
       console.log("error : " + err);
-      resp.json({success:false, message:"Error occured"});
+      res.json({success:false, message:"Error occured"});
     });
   });
 
