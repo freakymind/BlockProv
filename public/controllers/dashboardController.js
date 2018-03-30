@@ -14,4 +14,10 @@ angular.module('dashboardController', ['managementServices', 'authServices'])
 		_this.currentUserRole = res.data.role;
 	});
 
+	_this.viewAssets = function(){
+		$http.get('/api/viewAssets')
+		.then(function(res){
+			console.log(res.data);
+		});
+	}
 }]);

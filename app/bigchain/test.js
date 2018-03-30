@@ -20,19 +20,19 @@ testAsset.createAsset( alice.privateKey,alice.publicKey, {"one":"two"}, {"three"
 	return testAsset.transferAsset(alice.privateKey, bob.publicKey)
 }).then((resolved)=>{
 	console.log("Second");
-	//console.log(prettyjson.render(resolved));
+	console.log(prettyjson.render(resolved));
 	return testAsset.transferAsset(bob.privateKey, chris.publicKey, {"new":"fresh"});
 }).then((resolved)=>{
-	//console.log("Third");
-	//console.log(prettyjson.render(resolved));
+	console.log("Third");
+	console.log(prettyjson.render(resolved));
 	return testAsset.transferAsset(chris.privateKey, alice.publicKey, {"new":"freshest"});
 }).then((resolved)=>{
 	thirdTxId = resolved.id;
 	console.log("Fourth");
-	//console.log(prettyjson.render(resolved));
+	console.log(prettyjson.render(resolved));
 	return ;
 }).then(()=>{	
-	return view.getAllCurrentlyOwnedAssetsForPublicKey(chris.publicKey);
+	return view.getAllCurrentlyOwnedAssetsForPublicKey(alice.publicKey);
 	
 }).then((resp)=>{
 	//This was returned from the view.getAllCurrentlyOwnedAssetsForPublicKey(alice.publicKey);
@@ -41,12 +41,12 @@ testAsset.createAsset( alice.privateKey,alice.publicKey, {"one":"two"}, {"three"
 	return view.getAllPreviouslyOwnedAssetsForPublicKey(alice.publicKey);
 }).then((resp)=>{
 	//This is the reponse from view.getAllPreviouslyOwnedAssetsForPublicKey(alice.publicKey);
-	//console.log(prettyjson.render(resp))
+	console.log(prettyjson.render(resp))
 	testAsset2 = bcwrapper.createAssetObj();
 	return testAsset2.createAssetFromId(thirdTxId);
 
 }).then((respCreated)=>{
-	return respCreated;// testAsset2.transferAsset(bob.privateKey, chris.publicKey,{"Zoop":"Zoop"});
+	console.log(respCreated);// testAsset2.transferAsset(bob.privateKey, chris.publicKey,{"Zoop":"Zoop"});
 
 }).catch((err) =>{
 
