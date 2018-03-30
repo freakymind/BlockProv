@@ -1,4 +1,4 @@
-	<div class="container-fluid" style="background-color:#2c3e50;" ng-controller="assetCreation as assetCrtn" >
+	<div class="container-fluid" style="background-color:#2c3e50;" ng-controller="companyCreation as cmpCrtn" >
 
     <div class="row" style="margin-top: 50px;">
         <div class="col-sm-10 col-sm-offset-1">
@@ -24,7 +24,7 @@
                                 type="text" 
                                 class="form-control" 
                                 name="companyname" 
-                                ng-model="assetCrtn.companyData.companyName" 
+                                ng-model="cmpCrtn.companyData.companyName" 
                                 required
                             >
                         </div>
@@ -35,7 +35,7 @@
                                 type="text" 
                                 class="form-control" 
                                 name="id" 
-                                ng-model="assetCrtn.companyData.companyId" 
+                                ng-model="cmpCrtn.companyData.companyId" 
                                 required
                             >
                         </div>
@@ -45,7 +45,7 @@
                                 type="text" 
                                 class="form-control" 
                                 name="location" 
-                                ng-model="assetCrtn.companyData.location" 
+                                ng-model="cmpCrtn.companyData.location" 
                                 required
                             >
                         </div>
@@ -55,7 +55,7 @@
                                 type="text" 
                                 class="form-control" 
                                 name="regno" 
-                                ng-model="assetCrtn.companyData.regNumber" 
+                                ng-model="cmpCrtn.companyData.regNumber" 
                                 required
                             >
                         </div>
@@ -65,13 +65,13 @@
                                 type="text" 
                                 class="form-control" 
                                 name="type" 
-                                ng-model="assetCrtn.companyData.type" 
+                                ng-model="cmpCrtn.companyData.type" 
                                 required
                             >
                         </div>                    
     
 
-                        <button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="assetCrtn.addCompany()"><b>Create Company</b></button>
+                        <button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="cmpCrtn.addCompany()"><b>Create Company</b></button>
                         <br><br>
                         
                         <div class="modal fade" id="companyCreationModal" role="dialog">
