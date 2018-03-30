@@ -7,7 +7,7 @@
 		</div>
 	</div>
 	<div class = "row">
-		<div class = "col-sm-3 col-sm-offset-1" style="margin-top: 50px;">
+		<div class = "col-sm-3 col-sm-offset-1" style="margin-top: 50px;" ng-show="dashCtrl.currentUserRole == 'user'">
 			<div class="panel" style="border:0px;">
 				<div class="panel-heading" style="background-color: #FFC312; color:#2c3e50;">
 					<h3>
@@ -23,6 +23,27 @@
 					<br>
 					<button class="btn" ng-click="dashCtrl.goTo('/assetCreation')" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;">
 							Create
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class = "col-sm-3" style="margin-top: 50px;" ng-show="dashCtrl.currentUserRole == 'user'">
+			<div class="panel" style="border:0px;">
+				<div class="panel-heading" style="background-color: #FFC312; color:#2c3e50;">
+					<h3>
+						View Assets
+					</h3>
+				</div>
+				<div class="panel-body" style="background-color: #f5f6fa;">
+					<div>
+						<p>
+							Use this to view currently owned Assets
+						</p>
+					</div>
+					<br>
+					<button class="btn" ng-click="dashCtrl.viewAssets()" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;">
+							View
 					</button>
 				</div>
 			</div>
@@ -74,26 +95,26 @@
 		</div>
     	
 	</div>
-	<div class="row">
-		<div class = "col-sm-3 col-sm-offset-1" style="margin-top: 50px;" ng-show="dashCtrl.currentUserRole == 'admin'">
-			<div class="panel" style="border:0px;">
-				<div class="panel-heading" style="background-color: #FFC312; color:#2c3e50;">
-					<h3>
-						Create Company
-					</h3>
+	
+	<div class = "col-sm-3" style="margin-top: 50px;" ng-show="dashCtrl.currentUserRole == 'admin'">
+		<div class="panel" style="border:0px;">
+			<div class="panel-heading" style="background-color: #FFC312; color:#2c3e50;">
+				<h3>
+					Create Company
+				</h3>
+			</div>
+			<div class="panel-body" style="background-color: #f5f6fa;">
+				<div>
+					<p>
+						Use this to create a new company 
+					</p>
 				</div>
-				<div class="panel-body" style="background-color: #f5f6fa;">
-					<div>
-						<p>
-							Use this to create a new company 
-						</p>
-					</div>
-					<br>
-					<button class="btn" ng-click="dashCtrl.goTo('/companyCreation')" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;">
-							Create
-					</button>
-				</div>
+				<br>
+				<button class="btn" ng-click="dashCtrl.goTo('/companyCreation')" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;">
+						Create
+				</button>
 			</div>
 		</div>
 	</div>
+
 </div>
