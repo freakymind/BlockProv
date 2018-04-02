@@ -31,5 +31,25 @@
 				<button class="btn" style="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" ng-click="apprUsers.removeApprovedUsers(apprUsers.UserListDelete)">Remove Users</button> 
 			</div>
 		</div>
+
+		<div class="modal fade" id="approvedUsersModal" role="dialog">
+		    <div class="modal-dialog">
+		    
+		      <!-- Modal content-->
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal">&times;</button>
+		          <h4 class="modal-title">{{apprUsers.approvedUsersHeader}}</h4>
+		        </div>
+		        <div class="modal-body">
+		          <p>{{apprUsers.approvedUsersMessage}}</p>
+		        </div>
+		        <div class="modal-footer">
+		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        </div>
+		      </div>
+		      
+		    </div>
+	  	</div>
 	</div>
 </div>
