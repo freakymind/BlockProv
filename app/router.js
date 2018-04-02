@@ -584,40 +584,44 @@ router.delete('/disable2FA', function(req, res, next){
 });
 
 router.post('/addApprovedUserList', function(req, res, next){
-  getUserListArray(req.body.newUserList, function(newUserList){
-    if (newUserList.length > 0) {
-      approvedUserDAO.addUsers(newUserList, function(err, tag){
-        if(err) {
-          if(tag == "find") {
-            res.json({success:false, message: "could not find the user"});
-          } else if (tag == "save") {
-            res.json({success:false, message: "could not save the user"});
+  if (req.body.newUserList != undefined && req.body.newUserList.length > 0) {
+    getUserListArray(req.body.newUserList, function(newUserList){
+        approvedUserDAO.addUsers(newUserList, function(err, tag){
+          if(err) {
+            if(tag == "find") {
+              res.json({success:false, message: "could not find the user"});
+            } else if (tag == "save") {
+              res.json({success:false, message: "could not save the user"});
+            }
+          } else {
+            res.json({success:true, message:"Successfully Added new users"});
           }
-        } else {
-          res.json({success:true, message:"Successfully Added new users"});
-        }
-      });
-    } else {
-      res.json({success:false, message: "please enter a user emailID"});
-    }
-  });  
+        });  
+    });  
+  } else {
+    res.json({success:false, message: "please enter a user emailID"});
+  }
 });
 
 router.post('/removeApprovedUserList', function(req, res, next){
-  getUserListArray(req.body.newUserList, function(newUserList){
-    console.log(newUserList);
-    approvedUserDAO.removeUsers(newUserList, function(err, tag){
-      if(err) {
-        if(tag == "find") {
-          res.json({success:false, message: "could not find the user" + err});
-        } else if (tag == "save") {
-          res.json({success:false, message: "could not save the user" + err});
+  if (req.body.newUserList != undefined && req.body.newUserList.length > 0) {
+    getUserListArray(req.body.newUserList, function(newUserList){
+      console.log(newUserList);
+      approvedUserDAO.removeUsers(newUserList, function(err, tag){
+        if(err) {
+          if(tag == "find") {
+            res.json({success:false, message: "could not find the user" + err});
+          } else if (tag == "save") {
+            res.json({success:false, message: "could not save the user" + err});
+          }
+        } else {
+          res.json({success:true, message:"Successfully removed Users"});
         }
-      } else {
-        res.json({success:true, message:"Successfully removed Users"});
-      }
+      });
     });
-  });
+  } else {
+    res.json({success:false, message: "please enter a user emailID"});
+  }
 });
 
 router.post('/addCompany', function(req,res, next){
