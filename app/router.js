@@ -13,9 +13,11 @@ var Asset       = require('./models/Asset');
 var Company     = require('./models/Company');
 var countryData = require('../resources/countries');
 var userDAO     = require('./userDAO')
+var prDistDAO   = require('./PrimaryDistributorDAO')
 var approvedUserDAO = require('./ApprovedUserDAO')
 let appDetails  = require('../package.json')
 const bcwrapper = require('./bigchain/index.js')
+
 //instances
 var router          = express.Router();
 var app         = express();
@@ -367,6 +369,40 @@ router.post('/addAsset', function(req, res, next){
   // });
 });
 
+
+var findUserCompanyName = function (username, cb) {
+  userDAO.findUser({username:username}, 'companyName', function(err, user){
+    cb(err, user);
+  });
+};
+
+var findCompanyIdByName = function (companyName, cb) {
+  Company.findOne({companyName:companyName}, function(err, company){
+    cb(err, company)
+  });
+}
+
+router.post('/addPrimDistributor', function(req, res, next){
+  findUserCompanyName(req.decoded.username, function(err, user){
+    if(err) {
+      res.json({success:false, message:"could not find user " + err});
+    } else {
+      findCompanyIdByName(user.companyName, function(err, company){
+        if (err) {
+          res.json({success:false, message: "could not find company "+ err});
+        } else {
+          prDistDAO.addPrimDistributor(req.body.DistId, company.companyId, req.decoded.email, function(err){
+            if(err) {
+              res.json({success:false, message: "could not save the distributor " + err});
+            } else {
+              res.json({success:true, message: "Successfully saved the distributor"});
+            }
+          });
+        }
+      });
+    }
+  })
+});
 
 
 //------------------------------------------------------------------------//

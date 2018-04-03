@@ -29,24 +29,42 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementSer
     templateUrl : "./views/profile.htm",
     authenticated : true
   })
+  
   .when('/dashboard', {
     templateUrl : "./views/Dashboard.htm",
     authenticated : true
   })
+  
   .when('/management', {
     templateUrl : "./views/management.htm",
     authenticated : true, 
     permissions : ["admin"]
   })
   .when('/editUserDetailsMgt/:id', {
+  
     templateUrl : "./views/editUserDetailsMgt.htm",
     authenticated : true, 
     permissions : ["admin"]
   })
+  
   .when('/assetCreation', {
     templateUrl : "./views/assetCreation.htm",
-    authenticated : true
+    authenticated : true,
+    permissions : ["user"]
   })
+  
+  .when('/viewAssets', {
+    templateUrl : "./views/viewAssets.htm",
+    authenticated : true,
+    permissions : ["user"]
+  })
+  
+  .when('/primDist', {
+    templateUrl : "./views/PrimDist.htm",
+    authenticated : true,
+    permissions : ["user"]
+  })
+
   .when('/twoFactorSetup', {
     templateUrl : "./views/twoFactorSetup.htm",
     authenticated : true,
@@ -59,10 +77,7 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementSer
     permissions : ["admin"]
   })
   
-  .when('/viewAssets', {
-    templateUrl : "./views/viewAssets.htm",
-    authenticated : true
-  })
+
 
   .when('/companyCreation', {
     templateUrl : "./views/companyCreation.htm",

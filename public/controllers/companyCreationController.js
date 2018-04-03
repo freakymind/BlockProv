@@ -4,7 +4,7 @@ angular.module('companyCreationController',[])
 	var _this = this;
 
 	_this.addCompany = function() {
-		http.post('/api/addCompany', _this.companyData)
+		$http.post('/api/addCompany', _this.companyData)
 		.then(function(res){
 			console.log(res.data);
 		});
