@@ -59,6 +59,11 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementSer
     permissions : ["admin"]
   })
   
+  .when('/viewAssets', {
+    templateUrl : "./views/viewAssets.htm",
+    authenticated : true
+  })
+
   .when('/companyCreation', {
     templateUrl : "./views/companyCreation.htm",
     authenticated : true,

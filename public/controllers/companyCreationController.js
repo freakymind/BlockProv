@@ -7,5 +7,6 @@ angular.module('companyCreationController',[])
 		http.post('/api/addCompany', _this.companyData)
 		.then(function(res){
 			console.log(res.data);
-		}
+		});
+	}
 }]);

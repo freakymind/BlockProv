@@ -25,7 +25,4 @@ angular.module('assetCreationController', [])
 		}
 	}
   
-	
-
-	}
 }]);
