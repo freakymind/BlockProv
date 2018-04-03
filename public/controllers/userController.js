@@ -8,8 +8,10 @@ angular.module('userController', ['userRegService'])
   this.signupModalMessage = '';
   this.signupModalHeader = 'Error';
   this.isEmailValid=false;
+  this.showEmailAvailability = false;
   this.isEmailAuthorised=false;
   this.isUsernameValid=false;
+  this.showUsernameAvailability = false;
   this.companyNameList=[];
 
 
@@ -57,19 +59,23 @@ angular.module('userController', ['userRegService'])
 
 
   this.checkUsername = function(valid) {
+    
     if(valid) {
       userFactory.checkUsername({username:_this.regData.username})
       .then(function(res){
         _this.isUsernameValid = res.data.success;
+        _this.showUsernameAvailability = true;
       });
     }
   }
 
   this.checkEmail = function(valid) {
+    
     if(valid) {
       userFactory.checkEmail({email:_this.regData.emailid})
       .then(function(res){
         _this.isEmailValid = res.data.success;
+        _this.showEmailAvailability = true;
       });
     }
   }

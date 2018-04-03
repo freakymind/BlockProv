@@ -32,17 +32,20 @@
 							>
 							
 							<div ng-show="(SignupForm.fullname.$pristine || SignupForm.fullname.$invalid)">
-								<div style="font-size: 0.75em; color: #e74c3c; margin-top: 10px; padding-top:10px; border: 2px solid #e74c3c; border-radius: 10px;" >
-									<ol>
+
+								<div style="font-size: 0.75em; color: #2d3436; margin-top: 10px;  padding : 5px; padding-top:10px; background-color: #fdcb6e" >
+
+									<ul>
 										<li>Length varies between 2 to 30 characters.</li>
 										<li>No special characters or numbers. </li>
 										<li>A space required between first name and last name</li>
-									</ol>
+									</ul>
 								</div>
+								<div class="col-sm-12" style = "height:3px; background-color: #2c3e50"></div>
 								<!-- <a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="3 to 30, no special chars or numbers and a space in between." > Info </a> -->
 							</div>
 						</div>
-
+						
 						<div class="form-group">
 							<br>
 							<label>Are you a Company User or a Distributor ?</label>
@@ -61,7 +64,7 @@
 							</datalist>
 
 						</div>
-
+						<br>
 						<div class="form-group">
 							<label>Email ID:</label>
 							<input 
@@ -76,16 +79,19 @@
 								required>
 
 								<div ng-show="(SignupForm.emailid.$pristine || SignupForm.emailid.$invalid)">
-									<div style="font-size: 0.75em; color: #e74c3c; margin-top: 10px; padding-top:10px; border: 2px solid #e74c3c; border-radius: 10px;" >
-										<ol>
+									<div style="font-size: 0.75em; color: #2d3436; margin-top: 10px;  padding : 5px; padding-top:10px; background-color: #fdcb6e" >
+										<ul>
 											<li>Length varies between 2 to 30 characters.</li>
 											<li>Must be a vaild E-Mail ID. </li>
-										</ol>
+										</ul>
 									</div>
+									<div class="col-sm-12" style = "height:3px; background-color: #2c3e50"></div>	
 									<!-- <a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="3 to 30, and must be a valid email ID format" > Info </a> -->
 								</div>
-								<div ng-show="(!register.isEmailValid && !(SignupForm.emailid.$pristine || SignupForm.emailid.$invalid))">
-									Email Id Exists
+
+								<div style="color : #e55039; font-size: 0.75em; float:center" ng-show="(register.showEmailAvailability && !register.isEmailValid && !(SignupForm.emailid.$pristine || SignupForm.emailid.$invalid))">
+									
+									<p><i>* This email ID is already registered</i></p>
 								</div>
 						</div>
 
@@ -129,17 +135,19 @@
 								required>
 
 							<div ng-show="(SignupForm.username.$pristine || SignupForm.username.$invalid)">
-								<div style="font-size: 0.75em; color: #e74c3c; margin-top: 10px; padding-top:10px; border: 2px solid #e74c3c; border-radius: 10px;" >
-									<ol>
-										<li>Length varies between 2 to 30 characters.</li>
+								<div style="font-size: 0.75em; color: #2d3436; margin-top: 10px;  padding : 5px; padding-top:10px; background-color: #fdcb6e" >
+									<ul>
+										<li>Length varies between 8 to 30 characters.</li>
 										<li>must contain atleast one digit(0-9). </li>
 										<li>must contain alphabets (a-z) or (A-Z).</li>
-									</ol>
+									</ul>
+									
 								</div>
+								<div class="col-sm-12" style = "height:3px; background-color: #2c3e50"></div>
 								<!-- <a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="3 to 30, and only alphanumeric" > Info </a> -->
 							</div>
-							<div ng-show="!register.isUsernameValid && !(SignupForm.username.$pristine || SignupForm.username.$invalid)">
-								username taken
+							<div style="color : #e55039; font-size: 0.75em;" ng-show="register.showUsernameAvailability && !register.isUsernameValid && !(SignupForm.username.$pristine || SignupForm.username.$invalid)">
+								<p><i>* This username is not available</i></p>
 							</div>
 						</div>
 
@@ -160,11 +168,13 @@
 							>
 
 							<div ng-show="(!register.passwordIsValid || SignupForm.retypepass.$invalid)">
-								<div style="font-size: 0.75em; color: #2f3542; margin-top: 10px; padding-top:10px; border: 2px solid #2f3542; border-radius: 10px;" >
-									<ol>
+								<div style="font-size: 0.75em; color: #2d3436; margin-top: 10px;  padding : 5px; padding-top:10px; background-color: #fdcb6e" >
+									<ul>
 										<li>Must match with the password field.</li>
-									</ol>
+									</ul>
+
 								</div>
+								<div class="col-sm-12" style = "height:3px; background-color: #2c3e50"></div>
 								<!-- <a href="#" title="Info" data-toggle="popover" data-trigger="hover focus" data-content="must match the password" > Info </a> -->
 							</div>
 						</div>
