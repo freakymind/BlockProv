@@ -110,8 +110,8 @@ angular.module('mainController', ['authServices', 'managementServices'])
 				}
 				var expireTime = self.parseJwt(token);
 				var timestamp = Math.floor(Date.now()/1000);
-				console.log(timestamp);
-				console.log(tokenCheck.getToken());
+				// console.log(timestamp);
+				// console.log(tokenCheck.getToken());
 				if ((expireTime.exp - timestamp) <= 0) {	
 					_this.showModal(1);
 					$interval.cancel(interval);

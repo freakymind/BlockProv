@@ -25,11 +25,4 @@ angular.module('assetCreationController', [])
 		}
 	}
   
-	_this.addCompany = function() {
-		$http.post('/api/addCompany', _this.companyData)
-		.then(function(res){
-			console.log(res.data);
-		});
-
-	}
 }]);
