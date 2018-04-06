@@ -48,17 +48,32 @@ var getUserListArray = function(userList, cb) {
 
 
 
-router.get('/checkIfAuthorised/:emailid',function(req, res, next){
-  // console.log("hey")
-  approvedUserDAO.checkAuthorised(req.params.emailid, function(err, approvedUserDoc){
-    if (err){
-      res.json({success:false, message:"error occured" + err});
-    } else if (approvedUserDoc) {
-      res.json({success:true, message:"user is approved"});
-    } else {
-      res.json({success:false, message:"user is not approved"});
-    }
-  });
+router.get('/checkIfAuthorised/:emailid/:role',function(req, res, next){
+  if(req.params.role == "user") {
+    approvedUserDAO.checkAuthorised(req.params.emailid, function(err, approvedUserDoc){
+      if (err){
+        res.json({success:false, message:"error occured" + err});
+      } else if (approvedUserDoc) {
+        res.json({success:true, role:"user", message:"user is approved"});
+      } else {
+        res.json({success:false, message:"user is not approved"});
+      }
+    });
+  } else if (req.params.role = "distributor") {
+    prDistDAO.findPrimDistributor(req.params.emailid, function(err, primDist){
+      if(err){
+        res.json({success:false, message:"some error in accessing the records"});
+      } else {
+
+        //if primary Distributors
+        if(primDist != null){
+          res.json({success:true, role:"primDist", message:"you are an authorised primary Distributor"});
+        } else {
+          res.json({success:false, message:"you are not approved"});
+        }
+      }
+    });
+  }
 });
 
 

@@ -7,6 +7,7 @@ angular.module('primDistributorsController', [])
 		$http.post('/api/addPrimDistributor', {DistId : user})
 		.then(function(res){
 			_this.clearOut();
+			
 			if(res.data.success){
 				_this.primDistHeader = "Success"
 				_this.primDistMessage = res.data.message

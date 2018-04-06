@@ -26,10 +26,16 @@ angular.module('userController', ['userRegService'])
   //console.log(_this.regData.userRole)
 
   this.submitRegDetails = function(regData, valid) {
-    if (valid) {
-      userFactory.checkIfAuthorised(regData.emailid)
+    if (valid && !(_this.regData.companyName == undefined && _this.regData.role == "user")) {
+
+      userFactory.checkIfAuthorised(regData.emailid, regData.role)
       .then(function(response){
         if(response.data.success) {
+
+          // setting up role as returned by the API 
+          // considering what option was chosen company/distributor.
+          regData.role = response.data.role;
+
           userFactory.register(regData)
           .then(function(res){
             if (res.data.success) {

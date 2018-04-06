@@ -15,4 +15,11 @@ PrDistDAO.addPrimDistributor = function(distID, companyID, creatorID, cb) {
 	});
 }
 
+PrDistDAO.findPrimDistributor = function(distID, cb){
+
+	PrDist.findOne({PrimDistributorID:distID}, function(err, primDist){
+		cb(err, primDist);
+	}); 
+}
+
 module.exports = PrDistDAO;
