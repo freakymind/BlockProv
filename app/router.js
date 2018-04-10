@@ -13,9 +13,11 @@ var Asset       = require('./models/Asset');
 var Company     = require('./models/Company');
 var countryData = require('../resources/countries');
 var userDAO     = require('./userDAO')
+var prDistDAO   = require('./PrimaryDistributorDAO')
 var approvedUserDAO = require('./ApprovedUserDAO')
 let appDetails  = require('../package.json')
 const bcwrapper = require('./bigchain/index.js')
+
 //instances
 var router          = express.Router();
 var app         = express();
@@ -46,17 +48,32 @@ var getUserListArray = function(userList, cb) {
 
 
 
-router.get('/checkIfAuthorised/:emailid',function(req, res, next){
-  // console.log("hey")
-  approvedUserDAO.checkAuthorised(req.params.emailid, function(err, approvedUserDoc){
-    if (err){
-      res.json({success:false, message:"error occured" + err});
-    } else if (approvedUserDoc) {
-      res.json({success:true, message:"user is approved"});
-    } else {
-      res.json({success:false, message:"user is not approved"});
-    }
-  });
+router.get('/checkIfAuthorised/:emailid/:role',function(req, res, next){
+  if(req.params.role == "user") {
+    approvedUserDAO.checkAuthorised(req.params.emailid, function(err, approvedUserDoc){
+      if (err){
+        res.json({success:false, message:"error occured" + err});
+      } else if (approvedUserDoc) {
+        res.json({success:true, role:"user", message:"user is approved"});
+      } else {
+        res.json({success:false, message:"user is not approved"});
+      }
+    });
+  } else if (req.params.role = "distributor") {
+    prDistDAO.findPrimDistributor(req.params.emailid, function(err, primDist){
+      if(err){
+        res.json({success:false, message:"some error in accessing the records"});
+      } else {
+
+        //if primary Distributors
+        if(primDist != null){
+          res.json({success:true, role:"primDist", message:"you are an authorised primary Distributor"});
+        } else {
+          res.json({success:false, message:"you are not approved"});
+        }
+      }
+    });
+  }
 });
 
 
@@ -367,6 +384,40 @@ router.post('/addAsset', function(req, res, next){
   // });
 });
 
+
+var findUserCompanyName = function (username, cb) {
+  userDAO.findUser({username:username}, 'companyName', function(err, user){
+    cb(err, user);
+  });
+};
+
+var findCompanyIdByName = function (companyName, cb) {
+  Company.findOne({companyName:companyName}, function(err, company){
+    cb(err, company)
+  });
+}
+
+router.post('/addPrimDistributor', function(req, res, next){
+  findUserCompanyName(req.decoded.username, function(err, user){
+    if(err) {
+      res.json({success:false, message:"could not find user " + err});
+    } else {
+      findCompanyIdByName(user.companyName, function(err, company){
+        if (err) {
+          res.json({success:false, message: "could not find company "+ err});
+        } else {
+          prDistDAO.addPrimDistributor(req.body.DistId, company.companyId, req.decoded.email, function(err){
+            if(err) {
+              res.json({success:false, message: "could not save the distributor " + err});
+            } else {
+              res.json({success:true, message: "Successfully saved the distributor"});
+            }
+          });
+        }
+      });
+    }
+  })
+});
 
 
 //------------------------------------------------------------------------//

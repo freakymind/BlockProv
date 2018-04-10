@@ -1,0 +1,47 @@
+<div ng-controller="primDist as primDist" class="container-fluid" style="background-color:#2c3e50; padding-bottom:200px;">
+	<div class="row">
+        <div class="col-sm-6 col-sm-offset-3" style="background-color:#FFC312; height:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); margin-top:50px;"></div>
+    </div>
+
+    <!--  -->
+	<div class="row">
+		<div 
+			class="col-sm-6 col-sm-offset-3" 
+			style="
+				font-family: 'Roboto Slab', serif; 
+				font-size:120%; 
+				background-color: #f5f6fa; 
+				padding: 5%; 
+				box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+		>
+			<div class="form-group">
+				<label>Add Email IDs to authorise distributors:</label>
+				<br><br>
+				<textarea ng-model="primDist.primDistUsersAdd" class="form-control" rows="5" id="comment"></textarea>
+				<br><br>	
+				<button class="btn" style="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" ng-click="primDist.addPrimDistributor(primDist.primDistUsersAdd)">Add Distributors</button> 
+			</div>
+			
+		</div>
+
+		<div class="modal fade" id="primDistModal" role="dialog">
+		    <div class="modal-dialog">
+		    
+		      <!-- Modal content-->
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal">&times;</button>
+		          <h4 class="modal-title">{{primDist.primDistHeader}}</h4>
+		        </div>
+		        <div class="modal-body">
+		          <p>{{primDist.primDistMessage}}</p>
+		        </div>
+		        <div class="modal-footer">
+		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        </div>
+		      </div>
+		      
+		    </div>
+	  	</div>
+	</div>
+</div>

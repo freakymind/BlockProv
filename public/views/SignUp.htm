@@ -57,7 +57,7 @@
 
 						<div class="form-group" ng-show = "(register.regData.role == 'user')">
 							<label>Company:</label>
-							<input type="text" list="companies" class="form-control {{register.inputFields.address}}" name="comapnyName" ng-model="register.regData.companyName" required>
+							<input type="text" list="companies" class="form-control {{register.inputFields.address}}" name="comapnyName" ng-model="register.regData.companyName">
 
 							<datalist id="companies">
 							  <option ng-repeat = 'x in register.companyNameList' value="{{x}}">
@@ -69,7 +69,7 @@
 							<label>Email ID:</label>
 							<input 
 								type="text" 
-								class="form-control {{register.inputFields.emailid}}" 
+								class="form-control" 
 								name="emailid" 
 								ng-model="register.regData.emailid" 
 								ng-pattern='/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i'
@@ -179,7 +179,13 @@
 							</div>
 						</div>
 
-						<button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="register.submitRegDetails(register.regData, (register.isUsernameValid && register.isEmailValid && SignupForm.$valid && register.passwordIsValid))"><b>Sign Up</b></button>
+						<button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " 
+						ng-click="register.submitRegDetails(register.regData,(register.isUsernameValid 
+						&& register.isEmailValid 
+						&& SignupForm.$valid 
+						&& register.passwordIsValid))">
+							<b>Sign Up</b>
+						</button>
 						<br><br>
 						
 						<div class="modal fade" id="userSignupModal" role="dialog">
