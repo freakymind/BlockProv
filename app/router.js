@@ -419,6 +419,42 @@ router.post('/addPrimDistributor', function(req, res, next){
   })
 });
 
+var findPublicKeyDistributor = function(userEmailid, cb){
+  userDAO.findUser({email: userEmailid} , 'bigchainKeyPair',function(err, dist){
+    cb(err, dist)
+  });
+}
+
+router.post('/transferAsset', function(req, res, next){
+  console.log(req.body)
+  findPublicKeyDistributor(req.body.email , function(err, dist){
+    console.log("dist" + dist)
+    if(err){
+      res.json({success:false, message:"could not find distributor by email" + err});
+    }
+    else{
+      userDAO.findUser({username:req.decoded.username}, "bigchainKeyPair", function(err, user){
+    console.log("user"+user.bigchainKeyPair.publicKey)
+
+    let TransferAsset = bcwrapper.createAssetObj();
+    
+    //TODO correct the code 
+
+    var Asset = TransferAsset.createAssetFromId(req.body.Transid)
+    .then(function(Asset){
+      Asset.transferAsset(user.bigchainKeyPair.privateKey, dist.bigchainKeyPair.publicKey, req.body.metaData)
+      .then(function(asset){
+        console.log("Asset Tranfered" + Asset);
+        res.json({success:true, message:"Asset is Successfully Tranfered"})
+      })
+      .catch(function(err){
+        console.log("error : " + err);
+        res.json({success:false, message:"Error occured"});
+      })
+    })   
+    })}
+  })
+});
 
 //------------------------------------------------------------------------//
 //*********************** API that require Admin LOGIN *******************//

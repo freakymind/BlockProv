@@ -33,7 +33,7 @@
 								</thead>
 								<tbody>
 									<tr ng-repeat="asset in view.AssetsArray">
-										<td></td>
+										<td>{{asset.seqNo}}</td>
 										<td>{{asset.assetdata.brand}}</td>
 										<td>{{asset.assetdata.company_ref}}</td>
 										<td>{{asset.assetdata.country_code}}</td>
@@ -43,7 +43,9 @@
 										<td>{{asset.assetdata.product_ref}}</td>
 										<td>{{asset.assetdata.upc_a}}</td>
 										<td>{{asset.assetdata.weight}}</td>
-										<td><button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="view.transferAsset(asset.assetdata.id)">Transfer</button></td>
+										<td>
+											<button class="btn btn-primary" style="font-size: 1em; " ng-click="view.gototransferAsset(asset)">Tranfer</button>
+										</td>
 									</tr>
 									
 								</tbody> 

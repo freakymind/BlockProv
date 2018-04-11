@@ -1,4 +1,4 @@
-angular.module('mainApp', ['primDistributorsController', 'viewAssetsController', 'approvedUsersController', 'appRoutes','mainController', 'userController', 'userRegService', 'authServices', 'managementController', 'managementServices', 'editUserDetailsController', 'assetCreationController', 'dashboardController','companyCreationController'])
+angular.module('mainApp', ['primDistributorsController', 'viewAssetsController', 'approvedUsersController', 'appRoutes','mainController', 'userController', 'userRegService', 'authServices', 'managementController', 'managementServices', 'editUserDetailsController', 'assetCreationController', 'dashboardController','companyCreationController','assetTransferController'])
 
 .config(function($httpProvider) {
 	$httpProvider.interceptors.push('authInterceptor');

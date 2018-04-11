@@ -77,7 +77,11 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementSer
     permissions : ["admin"]
   })
   
-
+  .when('/assetTransfer/:name/:id' , {
+    templateUrl : "./views/assetTransfer.htm",
+    authenticated : true,
+    permissions : ["user"]
+  })
 
   .when('/companyCreation', {
     templateUrl : "./views/companyCreation.htm",
