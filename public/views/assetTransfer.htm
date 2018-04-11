@@ -1,8 +1,61 @@
-<div class="container-fluid" ng-controller="" style="background-color:#2c3e50; font-family: 'Roboto Slab', serif; padding-bottom:100px; height:600px;" >
-	
-	<div class="row">
-			<div class="col-sm-10 col-sm-offset-1">
+<div class="container-fluid" ng-controller="assetTransCtrl as trans" style="background-color:#2c3e50; font-family: 'Roboto Slab', serif; padding-bottom:100px;"> 
 
-				<!-- management sheet -->
-				<div class="row" style=" background-color: #f5f6fa; margin-top: 50px">
-					<div class="col-sm-10 col-sm-offset-1">
+	<!-- start of first row -->
+	<div class="row">
+		<div class="col-sm-6 col-sm-offset-3">	
+		
+		<!-- start of panel -->
+		<div class="panel" style="margin-top:50px; background-color: #eee">
+			
+			<!-- panel heading -->
+			<div class="panel-heading"><b><h1>Transfer Asset <i><b>{{trans.assetId}}</b></i></h1></b></div>
+			
+				<!-- start of panel body -->
+				<div class="panel-body">
+
+					<!-- asset transfer details -->
+					<div class="form-group">
+						<label>Add Email IDs of distributor to transfer asset:</label>
+						<br><br>
+						<textarea ng-model="trans.TransAsset.email" class="form-control" rows="5" id="comment"></textarea>
+						<br><br>
+						<label>Add price meta-data:</label>
+						<br><br>
+						<textarea ng-model="trans.TransAsset.metaData" class="form-control" rows="5" id="comment"></textarea>
+						<br><br>	
+						<button class="btn" style="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" ng-click="trans.addDistributor(TransAsset)">Add Distributor</button> 
+					</div>
+
+					<!-- asset transfer details -->
+					
+				</div>
+				<!-- end of panel body -->
+				
+				<!-- Modal Start -->
+				<!--<div class="modal fade" id="assetTransferModal" role="dialog">
+					<div class="modal-dialog">    
+					    
+					    <!-- Modal content-->
+					    <!--<div class="modal-content">
+					        <div class="modal-header">
+					        	<button type="button" class="close" data-dismiss="modal" ng-click="editCtrl.getCurrentUserByID()">&times;</button>
+					        	<h4 class="modal-title">{{editCtrl.titleMessage}}</h4>
+					        </div>
+					        <div class="modal-body">
+					        	<b>{{editCtrl.bodyMessage}}</b>
+					        </div>
+					        <div class="modal-footer">
+					        	<button type="button" class="btn {{editCtrl.modalButtonClass}}" data-dismiss="modal" ng-click="editCtrl.getCurrentUserByID()">{{editCtrl.modalSecondButton}}</button>
+					        </div>
+					    </div>
+					    <!-- end of modal content -->
+					<!--</div>
+				</div>
+				<!-- Modal end -->
+    	 	</div>	
+    	 	<!-- end of panel -->
+    	 	
+		</div>
+	</div>
+	<!-- end of the first row -->
+</div>

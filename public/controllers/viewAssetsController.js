@@ -13,7 +13,9 @@ angular.module('viewAssetsController', [])
 			if(res.data.success){
 				_this.AssetsArray = res.data.Assets
 				console.log(_this.AssetsArray)
-				_this.loadme=true
+				_this.addSequence(function(){
+					_this.loadme=true;
+				});
 			} else {
 
 			}
@@ -22,4 +24,17 @@ angular.module('viewAssetsController', [])
 
 	 _this.getAssetArray();
 
+
+	 _this.addSequence = function(cb){
+	 	var itr = 1;
+	 	_this.AssetsArray.forEach(function(asset){
+	 		asset.seqNo = itr++;
+	 	})
+	 	cb();
+	 }
+
+	 _this.gototransferAsset = function(asset){
+	 	console.log(asset.assetID)
+	 	$location.path('/assetTransfer/' + asset.assetdata.product_name+'/'+asset.transactionId)
+	 }
 }]);
