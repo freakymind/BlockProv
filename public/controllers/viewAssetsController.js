@@ -7,8 +7,6 @@ angular.module('viewAssetsController', [])
 
 	_this.AssetsArray = [];
 
-	_this.getAssetArray;
-
 	_this.getAssetArray = function(){
 		$http.get('/api/viewAssets')
 		.then(function(res){
