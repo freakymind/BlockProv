@@ -6,9 +6,9 @@ var speakeasy   = require('speakeasy');
 var QRCode      = require('qrcode');
 var bcrypt      = require('bcrypt-nodejs');
 var util        = require('util');
-
+var prettyjson = require('prettyjson');
 //loacl modules
-var User                 = require('./models/User');
+var User        = require('./models/User');
 var Asset       = require('./models/Asset');
 var Company     = require('./models/Company');
 var countryData = require('../resources/countries');
@@ -427,32 +427,44 @@ var findPublicKeyDistributor = function(userEmailid, cb){
 
 router.post('/transferAsset', function(req, res, next){
   console.log(req.body)
+
   findPublicKeyDistributor(req.body.email , function(err, dist){
     console.log("dist" + dist)
+    
     if(err){
       res.json({success:false, message:"could not find distributor by email" + err});
-    }
-    else{
+    } else {
       userDAO.findUser({username:req.decoded.username}, "bigchainKeyPair", function(err, user){
-    console.log("user"+user.bigchainKeyPair.publicKey)
+        
+        console.log("user"+user.bigchainKeyPair.publicKey)
 
-    let TransferAsset = bcwrapper.createAssetObj();
+        let AssetToTransfer = bcwrapper.createAssetObj();
     
-    //TODO correct the code 
+        //TODO correct the code 
 
-    var Asset = TransferAsset.createAssetFromId(req.body.Transid)
-    .then(function(Asset){
-      Asset.transferAsset(user.bigchainKeyPair.privateKey, dist.bigchainKeyPair.publicKey, req.body.metaData)
-      .then(function(asset){
-        console.log("Asset Tranfered" + Asset);
-        res.json({success:true, message:"Asset is Successfully Tranfered"})
-      })
-      .catch(function(err){
-        console.log("error : " + err);
-        res.json({success:false, message:"Error occured"});
-      })
-    })   
-    })}
+        AssetToTransfer.createAssetFromId(req.body.Transid)
+        .then(function(responseObj){
+
+          //console.log("Response Obj : " + prettyjson.render(responseObj));
+          //console.log("AssetToTransfer Obj : " + prettyjson.render(AssetToTransfer));
+
+          //metadata should be in form of a js object
+          AssetToTransfer.transferAsset(user.bigchainKeyPair.privateKey, dist.bigchainKeyPair.publicKey, {"price" :req.body.metaData})
+          .then(function(txn){
+            console.log("txn : " + txn);
+            res.json({success:true, message:"Asset is Successfully Tranfered"})
+          })
+          .catch(function(err){
+            console.log("error : " + prettyjson.render(err));
+            res.json({success:false, message:"Error occured"});
+          });
+        })
+        .catch(function(err){
+          console.log(err);
+          res.json({success:false, message:"error occured while creating asset by ID"})
+        });   
+      });
+    }
   })
 });
 

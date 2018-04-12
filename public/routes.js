@@ -56,7 +56,7 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementSer
   .when('/viewAssets', {
     templateUrl : "./views/viewAssets.htm",
     authenticated : true,
-    permissions : ["user"]
+    permissions : ["user", "primdist"]
   })
   
   .when('/primDist', {
