@@ -94,6 +94,7 @@ module.exports = class Asset{
 	}
 
 	transferAsset(fromPrivateKey, toPublicKey, metadata){
+		
 		return new Promise((resolve, reject)=>{
 			//This for checking that if create methods have run on this object
 			//This is necessary since constructors couldn't handle async tasks
@@ -102,6 +103,8 @@ module.exports = class Asset{
 				reject(new Error("Not initiated"))
 			}
 			this.getAssetState().then((status)=>{
+			 console.log("in this function1")
+
 				if(status["status"] != "valid")
 					throw Error("Asset is not in valid state")
 
@@ -116,8 +119,8 @@ module.exports = class Asset{
 	                this.signedTransaction = driver.Transaction.signTransaction(txTransfer, fromPrivateKey)
 	                // Post and poll status
 	                return this.conn.postTransaction(this.signedTransaction);
-
-			}).then(res => {
+			})
+			.then(res => {
 	                return this.conn.pollStatusAndFetchTransaction(res.id)
 	        })
 	        .then(tx => {

@@ -13,6 +13,9 @@ angular.module('assetTransferController',[])
 				_this.TransAsset = {};
 				console.log("success")
 			}
+			 else {
+			 	console.log(res.data)
+			 }
 
 			/*_this.assetCreationModal = {
 					title : "Success",
