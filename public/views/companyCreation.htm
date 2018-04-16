@@ -17,7 +17,7 @@
                         </div>
                     </div>
 
-                    <form name="SignupForm" novalidate>
+                    <form name="CompanyCreationForm" novalidate>
                         <div class="form-group">
                             <label>Company Name:</label>
                             <input  
@@ -71,7 +71,7 @@
                         </div>                    
     
 
-                        <button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="cmpCrtn.addCompany()"><b>Create Company</b></button>
+                        <button type="button" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" class="btn btn-primary " ng-click="cmpCrtn.addCompany(CompanyCreationForm.$valid)"><b>Create Company</b></button>
                         <br><br>
                         
                         <div class="modal fade" id="companyCreationModal" role="dialog">
@@ -81,10 +81,10 @@
                               <div class="modal-content">
                                 <div class="modal-header">
                                   <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                  <h4 class="modal-title"></h4>
+                                  <h4 class="modal-title">{{cmpCrtn.modalHead}}</h4>
                                 </div>
                                 <div class="modal-body">
-                                  <p></p>
+                                  <p>{{cmpCrtn.modalBody}}</p>
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
