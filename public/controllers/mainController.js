@@ -37,11 +37,19 @@ angular.module('mainController', ['authServices', 'managementServices'])
 	_this.isLoginQRCodeGenerated = false;
 	_this.disableInputFields = "";
 
+	//navebar style
+	_this.NavBarStyleMgt= ""
+	_this.NavBarStyleAbt= ""
+	_this.NavBarStyleDsh= ""
+	_this.NavBarStyleHome= ""
+	_this.NavBarStyleProf= ""
+
 	//for changing routes on button click
 	_this.switchRoute = function(path) {
 		$location.path(path);
 	}
 
+	
 	//setup 2FA 
 	_this.setup2FA = function() {
 		//initiallising response message area
@@ -254,13 +262,56 @@ angular.module('mainController', ['authServices', 'managementServices'])
 	//check Session on route change
 	$rootScope.$on('$routeChangeStart', function (next, last) {
 			
-			//if get user details if route is set to profile
-			if($location.path() == '/profile'){
-				_this.getCurrentUserProfile();
-			}				
+			if($location.path() == '/management') {
+				_this.NavBarStyleMgt= "selectedNav"
+				_this.NavBarStyleAbt= ""
+				_this.NavBarStyleDsh= ""
+				_this.NavBarStyleHome= ""
+				_this.NavBarStyleProf= ""
 
-			//if path is login
-			if($location.path() == '/login') {
+			} else if($location.path() == '/about') {
+				_this.NavBarStyleMgt= ""
+				_this.NavBarStyleAbt= "selectedNav"
+				_this.NavBarStyleDsh= ""
+				_this.NavBarStyleHome= ""
+				_this.NavBarStyleProf= ""
+
+			} else if($location.path() == '/dashboard') {
+				_this.NavBarStyleMgt= ""
+				_this.NavBarStyleAbt= ""
+				_this.NavBarStyleDsh= "selectedNav"
+				_this.NavBarStyleHome= ""
+				_this.NavBarStyleProf= ""
+
+			} else if($location.path() == '/') {
+				_this.NavBarStyleMgt= ""
+				_this.NavBarStyleAbt= ""
+				_this.NavBarStyleDsh= ""
+				_this.NavBarStyleHome= "selectedNav"
+				_this.NavBarStyleProf= ""
+
+			} else if($location.path() == '/profile'){
+				_this.NavBarStyleMgt= ""
+				_this.NavBarStyleAbt= ""
+				_this.NavBarStyleDsh= ""
+				_this.NavBarStyleHome= ""
+				_this.NavBarStyleProf= "selectedNav"
+				_this.getCurrentUserProfile();
+			} else if ($location.path() == '/signup') {
+				//navbar style
+				_this.NavBarStyleMgt= ""
+				_this.NavBarStyleAbt= ""
+				_this.NavBarStyleDsh= ""
+				_this.NavBarStyleHome= ""
+				_this.NavBarStyleProf= ""
+
+			} else if($location.path() == '/login') {
+				//navbar style
+				_this.NavBarStyleMgt= ""
+				_this.NavBarStyleAbt= ""
+				_this.NavBarStyleDsh= ""
+				_this.NavBarStyleHome= ""
+				_this.NavBarStyleProf= ""
 
 				//initiallize QR related variables
 				_this.QRCodeLogin = "";
