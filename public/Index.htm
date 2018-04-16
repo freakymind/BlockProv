@@ -51,6 +51,10 @@
     background-color: #fce1a4;
   }
 
+  .selectedNav {
+    background-color: #FFC312;
+  }
+
   </style>
 </head>
 
@@ -75,13 +79,14 @@
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav">
           <!-- toggle links available all time -->
-          <li><a href="/" style="color: #fff">Home</a></li>
-          <li><a href="/about" style="color: #fff">About</a></li>
+          <li class = "{{main.NavBarStyleHome}}"><a href="/" style="color: #fff">Home</a></li>
+          <li class = "{{main.NavBarStyleAbt}}"><a href="/about" style="color: #fff">About</a></li>
           
           <!-- toggle links available only on login -->
-          <li ng-show="main.isLoggedIn && main.isAdmin"><a href="/management" style="color: #fff">Management</a></li>
-          <li ng-show="main.isLoggedIn"><a href="/dashboard" style="color: #fff">Dashboard</a></li>
-          <li ng-show="main.isLoggedIn"><a href="/profile" style="color: #fff" ng-click="main.getCurrentUserProfile()">
+          <li class = "{{main.NavBarStyleMgt}}" ng-show="main.isLoggedIn && main.isAdmin"><a  href="/management" style="color: #fff">Management</a></li>
+
+          <li class = "{{main.NavBarStyleDsh}}" ng-show="main.isLoggedIn"><a href="/dashboard" style="color: #fff">Dashboard</a></li>
+          <li class = "{{main.NavBarStyleProf}}" ng-show="main.isLoggedIn"><a href="/profile" style="color: #fff" ng-click="main.getCurrentUserProfile()">
             <i class="fa fa-user-circle" aria-hidden="true"></i>  {{main.currentUserDet.username}} 
           </a></li>
 
