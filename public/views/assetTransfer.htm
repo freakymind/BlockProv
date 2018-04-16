@@ -1,4 +1,4 @@
-<div class="container-fluid" ng-controller="assetTransCtrl as trans" style="background-color:#2c3e50; font-family: 'Roboto Slab', serif; padding-bottom:100px;"> 
+<div class="container-fluid" ng-controller="assetTransCtrl as trans" ng-init="trans.loadAllDistributors()" style="background-color:#2c3e50; font-family: 'Roboto Slab', serif; padding-bottom:100px;"> 
 
 	<!-- start of first row -->
 	<div class="row">
@@ -12,44 +12,50 @@
 			
 				<!-- start of panel body -->
 				<div class="panel-body">
+					<form name = "TransferAsset" novalidate> 
+					<!-- asset transfer details -->
+						<div class="form-group">
+							<label>Add Email IDs of distributor to transfer asset:</label>
+							<br><br>
+							<input type="text" list="PrimDist" ng-model="trans.TransAsset.email" class="form-control" id="distributor" required>
+								
+							</input>
+							<datalist id="PrimDist">
+							  <option ng-repeat = 'x in trans.distList' value="{{x}}">
+							</datalist>
+							<br><br>
+							<label>Add price meta-data:</label>
+							<br><br>
+							<textarea ng-model="trans.TransAsset.metaData" class="form-control" rows = "5" id="comment" required></textarea>
+							<br><br>	
+							<button class="btn" style="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" ng-click="trans.addDistributor(TransferAsset.$valid)">Transfer Asset</button> 
+						</div>
+
 
 					<!-- asset transfer details -->
-					<div class="form-group">
-						<label>Add Email IDs of distributor to transfer asset:</label>
-						<br><br>
-						<textarea ng-model="trans.TransAsset.email" class="form-control" rows="5" id="comment"></textarea>
-						<br><br>
-						<label>Add price meta-data:</label>
-						<br><br>
-						<textarea ng-model="trans.TransAsset.metaData" class="form-control" rows="5" id="comment"></textarea>
-						<br><br>	
-						<button class="btn" style="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;" ng-click="trans.addDistributor(TransAsset)">Add Distributor</button> 
-					</div>
-
-					<!-- asset transfer details -->
-					
+					</form>
 				</div>
 				<!-- end of panel body -->
 				
 				<!-- Modal Start -->
-				<!--<div class="modal fade" id="assetTransferModal" role="dialog">
+				<div class="modal fade" id="assetTransferModal" role="dialog">
 					<div class="modal-dialog">    
 					    
 					    <!-- Modal content-->
-					    <!--<div class="modal-content">
+					    <div class="modal-content">
 					        <div class="modal-header">
 					        	<button type="button" class="close" data-dismiss="modal" ng-click="editCtrl.getCurrentUserByID()">&times;</button>
-					        	<h4 class="modal-title">{{editCtrl.titleMessage}}</h4>
+					        	<h4 class="modal-title">{{trans.titleMessage}}</h4>
 					        </div>
 					        <div class="modal-body">
-					        	<b>{{editCtrl.bodyMessage}}</b>
+					        	<b>{{trans.bodyMessage}}</b>
 					        </div>
 					        <div class="modal-footer">
-					        	<button type="button" class="btn {{editCtrl.modalButtonClass}}" data-dismiss="modal" ng-click="editCtrl.getCurrentUserByID()">{{editCtrl.modalSecondButton}}</button>
+					        	<button type="button" class="btn {{editCtrl.modalButtonClass}}" data-dismiss="modal">Close</button>
 					        </div>
 					    </div>
 					    <!-- end of modal content -->
-					<!--</div>
+					</div>
 				</div>
 				<!-- Modal end -->
     	 	</div>	
