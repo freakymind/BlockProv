@@ -12,11 +12,13 @@ var User        = require('./models/User');
 var Asset       = require('./models/Asset');
 var Company     = require('./models/Company');
 var countryData = require('../resources/countries');
-var userDAO     = require('./userDAO')
-var prDistDAO   = require('./PrimaryDistributorDAO')
-var approvedUserDAO = require('./ApprovedUserDAO')
-let appDetails  = require('../package.json')
-const bcwrapper = require('./bigchain/index.js')
+var userDAO     = require('./userDAO');
+var prDistDAO   = require('./PrimaryDistributorDAO');
+var approvedUserDAO = require('./ApprovedUserDAO');
+var companyDAO = require('./companyDAO');
+
+let appDetails  = require('../package.json');
+const bcwrapper = require('./bigchain/index.js');
 
 //instances
 var router          = express.Router();
@@ -228,18 +230,6 @@ router.get('/ping', function(req, res, next) {
     res.end(`PONG, verzion ${appDetails.version}`);
 });
 
-//api to refresh the user session by signing a new json web token
-// router.param('username', function(req, res, next, username){
-//   User.findOne({username:username}, function(err, user){
-//     if(user) {
-//       var token = jwt.sign({username: user.username, email: user.email, fullname: user.fullname, role: user.role}, secret, { expiresIn: '1h' })
-//       req.token = token;
-//       next();
-//     } else {
-//       res.json({success:false, message:"could not refresh"})
-//     }
-//   }); 
-// });
 
 //api that sends back the response with the new token
 router.get('/refreshSession/:username', function(req, res, next){
@@ -317,71 +307,38 @@ router.get('/viewAssets', function(req, res, next){
 
 //ading asset for the user
 router.post('/addAsset', function(req, res, next){
-  userDAO.findUser({username:req.decoded.username}, "bigchainKeyPair", function(err, user){
-    console.log(user.bigchainKeyPair.publicKey)
-    console.log(req.body)
+  userDAO.findUser({username:req.decoded.username}, "companyName bigchainKeyPair", function(err, user){
+    if(err) {
+      res.json({success:false, mesage : "some error occured while finding Current user"})
+    } else if (user != null) {
+      //adding compaby/brand name to asset
+      req.body.brand = user.companyName;
+      findCompanyIdByName(user.companyName, function(err, company){
+        if(err) {
+          res.json({success: false, message : "error occured while finding company"})
+        } else if (company == null) {
+          res.json({success : false, message : "company not found"})
+        } else {
+          //adding company ID to asset
+          req.body.company_ref = company.companyId;
+          let NewAsset = bcwrapper.createAssetObj();
+          NewAsset.createAsset(user.bigchainKeyPair.privateKey, user.bigchainKeyPair.publicKey, req.body, {AssetType:"createTestAsset"})
+          .then(function(asset){
+            console.log("Asset Created" + asset);
+            res.json({success:true, message:"Asset is Successfully Created"})
+          })
+          .catch(function(err){
+            console.log("error : " + err);
+            res.json({success:false, message:"Error occured"});
+          });
+        }
+      });
+    } else {
+      res.json({success:false, message:"user not found"})
+    }
 
-    let NewAsset = bcwrapper.createAssetObj();
-    NewAsset.createAsset(user.bigchainKeyPair.privateKey, user.bigchainKeyPair.publicKey, req.body, {AssetType:"createTestAsset"})
-    .then(function(asset){
-      console.log("Asset Created" + asset);
-      res.json({success:true, message:"Asset is Successfully Created"})
-    })
-    .catch(function(err){
-      console.log("error : " + err);
-      res.json({success:false, message:"Error occured"});
-    });
   });
 
-  // var asset = new Asset();
-  // asset.product_ref   = req.body.product_ref;
-  // asset.company_ref   = req.body.company_ref;
-  // asset.upc_a         = req.body.upc_a;
-  // asset.country_code  = req.body.country_code;
-  // asset.brand         = req.body.brand;
-  // asset.product_name  = req.body.product_name;
-  // asset.model         = req.body.model;
-  // asset.weight        = req.body.weight;
-  // asset.product_dim   = req.body.product_dim;
-  // asset.save(function(err){
-  //   if(err) {
-  //      res.json({success:false, message:err});
-  //   } else{
-  //     //finding the user to which the asset is added
-  //     User.findOne({username : req.decoded.username}, function(error, user) {
-  //       if(error){
-  //         Asset.deleteOne({_id:asset._id}, function(err){
-  //           if(err){
-  //             res.json({success:false, message:"user not found but could not delete asset"});
-  //           } else {
-  //             res.json({success:false, message:"user not found deleted the asset"});
-  //           }
-  //         });
-  //         res.json({success:false, message:error});
-  //       } else if (user) {
-  //         //add asset to assets_created array for the user
-  //         user.assets_created = user.assets_created.concat([asset._id]);
-  //         //saving the model
-  //         user.save(function(errorUser){
-  //           if(errorUser) {
-  //             res.json({success: false, message:"could not save the user" + errorUser});
-  //           } else {
-  //             res.json({success: true, message:"Asset Created", asset:asset});
-  //           }
-  //         });
-  //       } else {
-  //         //deleting the asset just created if no user found
-  //         Asset.deleteOne({_id:asset._id}, function(err){
-  //           if(err){
-  //             res.json({success:false, message:"user not found but could not delete asset"});
-  //           } else {
-  //             res.json({success:false, message:"user not found deleted the asset"});
-  //           }
-  //         });
-  //       }
-  //     });
-  //   }
-  // });
 });
 
 
@@ -392,7 +349,7 @@ var findUserCompanyName = function (username, cb) {
 };
 
 var findCompanyIdByName = function (companyName, cb) {
-  Company.findOne({companyName:companyName}, function(err, company){
+  companyDAO.findCompany({companyName:companyName}, 'companyId', function(err, company){
     cb(err, company)
   });
 }
