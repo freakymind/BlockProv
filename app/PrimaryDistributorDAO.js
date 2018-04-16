@@ -22,4 +22,10 @@ PrDistDAO.findPrimDistributor = function(distID, cb){
 	}); 
 }
 
+PrDistDAO.findAllDistForUser = function(username, cb) {
+	PrDist.find({ApprovedBy:username}, "PrimDistributorID", function(err, PrimDist){
+		cb(err, PrimDist);
+	});
+}
+
 module.exports = PrDistDAO;

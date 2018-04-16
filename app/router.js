@@ -376,6 +376,19 @@ router.post('/addPrimDistributor', function(req, res, next){
   })
 });
 
+
+router.get('/allDistributorsForAUser', function(req, res, next){
+  prDistDAO.findAllDistForUser(req.decoded.email, function(err, PrimDists){
+    if (err) { 
+      res.json({success:false, message:"Some error Occured"});
+    } else if (PrimDists == null){
+      res.json({success:false, message:"No Distributors"});
+    } else {
+      res.json({success:true, PrimDists: PrimDists});
+    }
+  });
+});
+
 var findPublicKeyDistributor = function(userEmailid, cb){
   userDAO.findUser({email: userEmailid} , 'bigchainKeyPair',function(err, dist){
     cb(err, dist)
