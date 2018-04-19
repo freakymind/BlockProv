@@ -3,9 +3,9 @@ var PrDist = require('./models/PrimaryDistributor')
 
 var PrDistDAO = {};
 
-PrDistDAO.addPrimDistributor = function(distID, companyID, creatorID, cb) {
+PrDistDAO.addPrimDistributor = function(level, distID, companyID, creatorID, cb) {
 	var prdist = new PrDist
-
+	prdist.level = level;
 	prdist.PrimDistributorID = distID;
 	prdist.CompanyAssociated = companyID;
 	prdist.ApprovedBy = creatorID;
@@ -27,5 +27,12 @@ PrDistDAO.findAllDistForUser = function(username, cb) {
 		cb(err, PrimDist);
 	});
 }
+
+PrDistDAO.findDistAssociatedCompany = function(email, cb) {
+	PrDist.find({PrimDistributorID:email}, "CompanyAssociated",function(err, PrimDist){
+		cb(err, PrimDist);
+	});
+}
+
 
 module.exports = PrDistDAO;

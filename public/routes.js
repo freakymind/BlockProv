@@ -56,13 +56,13 @@ var app = angular.module('appRoutes', ["ngRoute", "authServices", "managementSer
   .when('/viewAssets', {
     templateUrl : "./views/viewAssets.htm",
     authenticated : true,
-    permissions : ["user", "primdist"]
+    permissions : ["user", "primdist", "secdist"]
   })
   
   .when('/primDist', {
     templateUrl : "./views/PrimDist.htm",
     authenticated : true,
-    permissions : ["user"]
+    permissions : ["user", "primdist"]
   })
 
   .when('/twoFactorSetup', {

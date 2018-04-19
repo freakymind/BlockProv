@@ -29,7 +29,11 @@ angular.module('viewAssetsController', [])
 			// console.log("hey")
 			if(res.data.success){
 				_this.AssetHist=res.data.history
+				_this.AssetHist.forEach(function(asset){
+					asset.id = _this.AssetHist.indexOf(asset)
+				});
 				_this.noErrorTxnHist = true;
+
 				console.log(_this.AssetHist)
 			} else {
 				_this.noErrorTxnHist = false;

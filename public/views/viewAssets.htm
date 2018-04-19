@@ -72,12 +72,45 @@
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h3>Owner History</h3>
         </div>
-        <div class="modal-body">
-          <ol>
-	          <li ng-repeat= "owner in view.AssetHist" ng-show="view.noErrorTxnHist">
-	          	{{owner.fullname}}
-	          </li>
-      	  </ol>
+        <div class="modal-body" >
+        	<div class="row">
+        		<div class = "col-sm-5">
+			    	<table style="float:right;">
+			    		<div>
+				          <tr ng-repeat= "owner in view.AssetHist" ng-show="view.noErrorTxnHist" style="text-align: right;">
+				          	<td style="padding:10px; padding-right: 0px" ng-show="(owner.id == 0)">
+				          		<div style="height:2.0em; width: 10.0em;"><b><i>Current Owner</i></b></div>
+				          	</td>
+				          	<td style="padding:10px; padding-right: 0px" ng-show="(owner.id > 0 && owner.id < (view.AssetHist.length - 1))">
+				          		<div style="height:2.0em; width: 5.0em; "></div>
+				          	</td>
+				          	<td style="padding:10px;padding-right: 0px;" ng-show="(owner.id == (view.AssetHist.length - 1))">
+				          		
+				          		<div style="height:2.0em; width: 10.0em;"><b><i>Asset Creator</i></b></div>
+				          	</td>
+				          	
+				          </tr>
+			  	  	</table>
+			  	 </div>
+        		<div class = "col-sm-6">
+			    	<table>
+			    		<div>
+			    		  
+				          <tr ng-repeat= "owner in view.AssetHist" ng-show="view.noErrorTxnHist">
+				          	<td style="padding:10px;" ng-show="(owner.id == 0)">
+				          		<div style="height:2.0em; width: 2.0em; border: 5px solid #2ecc71; border-radius: 20px;"></div>
+				          	</td>
+				          	<td style="padding:10px;" ng-show="(owner.id > 0 && owner.id < (view.AssetHist.length - 1))">
+				          		<div style="height:2.0em; width: 2.0em; border: 5px solid #FFC312; border-radius: 20px;"></div>
+				          	</td>
+				          	<td style="padding:10px;" ng-show="(owner.id == (view.AssetHist.length - 1))">
+				          		<div style="height:2.0em; width: 2.0em; border: 5px solid #2980b9; border-radius: 20px;"></div>
+				          	</td>
+				          	<td>{{owner.fullname}}</td>
+				          </tr>
+			  	  	</table>
+			  	 </div>
+      	  	</div>
           <div ng-show="!view.noErrorTxnHist">
           		<p>Some error Occured While Fetching Transactions
           		</p>

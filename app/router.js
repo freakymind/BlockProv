@@ -111,7 +111,9 @@ router.get('/checkIfAuthorised/:emailid/:role',function(req, res, next){
       } else {
 
         //if primary Distributors
-        if(primDist != null){
+        if(primDist != null && primDist.level && primDist.level == 2){
+          res.json({success:true, role:"secDist", message:"you are an authorised primary Distributor"});
+        } else if (primDist != null){
           res.json({success:true, role:"primDist", message:"you are an authorised primary Distributor"});
         } else {
           res.json({success:false, message:"you are not approved"});
@@ -398,25 +400,42 @@ var findCompanyIdByName = function (companyName, cb) {
 }
 
 router.post('/addPrimDistributor', function(req, res, next){
-  findUserCompanyName(req.decoded.username, function(err, user){
-    if(err) {
-      res.json({success:false, message:"could not find user " + err});
-    } else {
-      findCompanyIdByName(user.companyName, function(err, company){
-        if (err) {
-          res.json({success:false, message: "could not find company "+ err});
-        } else {
-          prDistDAO.addPrimDistributor(req.body.DistId, company.companyId, req.decoded.email, function(err){
-            if(err) {
-              res.json({success:false, message: "could not save the distributor " + err});
-            } else {
-              res.json({success:true, message: "Successfully saved the distributor"});
-            }
-          });
-        }
-      });
-    }
-  })
+  if(req.decoded.role == 'user'){
+    findUserCompanyName(req.decoded.username, function(err, user){
+      if(err) {
+        res.json({success:false, message:"could not find user " + err});
+      } else {
+        findCompanyIdByName(user.companyName, function(err, company){
+          if (err) {
+            res.json({success:false, message: "could not find company "+ err});
+          } else {
+            prDistDAO.addPrimDistributor(1, req.body.DistId, company.companyId, req.decoded.email, function(err){
+              if(err) {
+                res.json({success:false, message: "could not save the distributor " + err});
+              } else {
+                res.json({success:true, message: "Successfully saved the distributor"});
+              }
+            });
+          }
+        });
+      }
+    })
+  } else if (req.decoded.role == 'primdist') {
+    console.log(req.decoded.email);
+    prDistDAO.findDistAssociatedCompany(req.decoded.email, function(err, user){
+      if(err) {
+        res.json({success:false, message:"could not find user " + err});
+      } else {
+        prDistDAO.addPrimDistributor(2, req.body.DistId, user[0].CompanyAssociated, req.decoded.email, function(err){
+          if(err) {
+            res.json({success:false, message: "could not save the distributor " + err});
+          } else {
+            res.json({success:true, message: "Successfully saved the distributor"});
+          }
+        });
+      }
+    });
+  }
 });
 
 
