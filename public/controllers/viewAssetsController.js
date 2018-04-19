@@ -4,9 +4,9 @@ angular.module('viewAssetsController', [])
 	var _this = this;
 
 	_this.loadme = false;
-
+	_this.noErrorTxnHist = true;
 	_this.AssetsArray = [];
-
+	_this.AssetHist = [];
 	_this.getAssetArray = function(){
 		$http.get('/api/viewAssets')
 		.then(function(res){
@@ -20,6 +20,25 @@ angular.module('viewAssetsController', [])
 
 			}
 		})
+	}
+
+	_this.showHist = function(asset){
+		console.log(asset.transactionId);
+		$http.get('/api/getTransHist/' + asset.transactionId)
+		.then(function(res){
+			// console.log("hey")
+			if(res.data.success){
+				_this.AssetHist=res.data.history
+				_this.noErrorTxnHist = true;
+				console.log(_this.AssetHist)
+			} else {
+				_this.noErrorTxnHist = false;
+			}
+			return res;
+		})
+		.then(function(res){
+			$('#txnHist').modal({backdrop:"static"});
+		});
 	}
 
 	 _this.getAssetArray();

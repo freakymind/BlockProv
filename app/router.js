@@ -27,9 +27,52 @@ var secret      = "blockchain" //a secret key which helps decrypt out jwt token
 router.use(express.json());
 router.use(express.urlencoded({extended: true}));
 
+var assetHist = [];
+
+var tranHist = function(txnID){
+  return new Promise(function(resolve, reject){
+    let asset = bcwrapper.createAssetObj();
+    asset.createAssetFromId(txnID)
+    .then(function(assetResObj){
+      console.log(asset.publicKey);
+      userDAO.findUser({'bigchainKeyPair.publicKey' : asset.publicKey}, "username email fullname companyName", function(err, user) {
+        if (err) {
+          res.json({success:false, message:err})
+        } else if(user != null) {
+          assetHist.push(user);
+          if (assetResObj.operation != 'CREATE'){
+            resolve(tranHist(assetResObj.inputs[0].fulfills.transaction_id));
+          } else {
+            resolve(assetResObj.id);
+          }
+        } else {
+          res.json({success:false, message:"no user"})
+        }
+      });
+
+      
+
+    })
+    .catch(function (err) {
+      reject(err);
+    });
+  });
+}
+ 
+
+router.get('/getTransHist/:txnID', function(req, res, next){
+  assetHist = [];
+  tranHist(req.params.txnID)
+  .then(function(finalTxn){
+    res.json({success:true, history:assetHist});
+  })
+  .catch(function (err) {
+    res.json({success:false, message:err});
+    console.log(err)
+  });
+}); 
 
 
-  
 router.get('/getApprovedUsersList', function(req, res, next){
   approvedUserDAO.getApprovedUserList(function(err, userListDoc){
     if(err) {
