@@ -1,5 +1,5 @@
 //core modules
-var express         = require('express');
+var express     = require('express');
 var path        = require('path');
 var jwt         = require('jsonwebtoken');
 var speakeasy   = require('speakeasy');
@@ -16,6 +16,7 @@ var userDAO     = require('./userDAO');
 var prDistDAO   = require('./PrimaryDistributorDAO');
 var approvedUserDAO = require('./ApprovedUserDAO');
 var companyDAO = require('./companyDAO');
+var async = require('async');
 
 let appDetails  = require('../package.json');
 const bcwrapper = require('./bigchain/index.js');
@@ -59,17 +60,70 @@ var tranHist = function(txnID){
   });
 }
  
-
+var cb = function() {
+  console.log("hey")
+}
 router.get('/getTransHist/:txnID', function(req, res, next){
-  assetHist = [];
-  tranHist(req.params.txnID)
-  .then(function(finalTxn){
-    res.json({success:true, history:assetHist});
+  var curAsset = bcwrapper.createAssetObj();
+  curAsset.createAssetFromId(req.params.txnID)
+  .then(function(responseObj){
+    if(responseObj) {
+      curAsset.getAssetHistory()
+      .then(function(history){
+        if(history) {
+          
+          var assetHistArr = [];
+          //find the user details from the public keys
+          //from each transaction in the history array
+          console.log("heyyyyy resp obj :: " + prettyjson.render(history))
+          async.eachSeries(history, function(assetHist){
+            console.log("heyyyyyyyy : " + prettyjson.render(assetHist, cb));
+            // userDAO.findUser({'bigchainKeyPair.publicKey' : assetHist.outputs[0].public_keys[0]}, "username email fullname companyName", function(err, user) {
+            //   if (err) {
+            //     res.json({success:false, message:err})
+            //   } else if(user != null) {
+            //     assetHistArr.push(user);
+            //   } else {
+            //     res.json({success:false, message:"no user"})
+            //   }
+            // });
+            cb();
+          }, function(err) {
+              // if any of the file processing produced an error, err would equal that error
+              if( err ) {
+                // One of the iterations produced an error.
+                // All processing will now stop.
+                console.log('som error');
+              } else {
+                console.log('All files have been processed successfully');
+              }
+          });  
+
+
+
+          res.json({success:true, history:assetHistArr});
+        } else{
+          res.json({success:false, message:"no history could be fetched"})
+        }
+      })
+    } else {
+      res.json({success:false, message:"no asset could be fetched"})
+    }
   })
-  .catch(function (err) {
-    res.json({success:false, message:err});
-    console.log(err)
+  .catch(function(err){
+    if (err){
+      res.json({success:false, message:"some error occured : " + err});
+    }
   });
+  // assetHist = [];
+  // tranHist(req.params.txnID)
+  // .then(function(finalTxn){
+  //   res.json({success:true, history:assetHist});
+  // })
+  // .catch(function (err) {
+  //   res.json({success:false, message:err});
+  //   console.log(err)
+  // });
 }); 
 
 

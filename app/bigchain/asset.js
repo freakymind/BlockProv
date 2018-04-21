@@ -6,6 +6,7 @@ const Utils = require('./utils.js')
 module.exports = class Asset{
 
 
+
 	//Constructor for the object in case asset is being newly created
 	constructor(conn){
 		this.conn = conn;
@@ -103,7 +104,6 @@ module.exports = class Asset{
 				reject(new Error("Not initiated"))
 			}
 			this.getAssetState().then((status)=>{
-			 console.log("in this function1")
 
 				if(status["status"] != "valid")
 					throw Error("Asset is not in valid state")
@@ -138,6 +138,7 @@ module.exports = class Asset{
 	        })
 		})
 	}
+	
 	getAssetState(){
 		if(this.valid == false){
 			throw Error("Asset id is not set for this asset");
@@ -149,7 +150,21 @@ module.exports = class Asset{
 			});
 		});
 	}
-	
 
-	
+	getAssetHistory(){
+		return new Promise((resolve, reject)=>{
+			// if(this.valid == false){
+			// 	throw Error("Asset id is not set for this asset");
+			// }
+			
+			let util = new Utils(this.conn)
+			util.getAssetHistory(this.assetID)
+			.then(function(res){
+				resolve(res);
+			})
+			.catch(function(err){
+				reject(err);
+			});
+		});   
+	}
 }

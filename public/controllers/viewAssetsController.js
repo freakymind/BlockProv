@@ -23,10 +23,11 @@ angular.module('viewAssetsController', [])
 	}
 
 	_this.showHist = function(asset){
-		console.log(asset.transactionId);
+		//console.log(asset);
 		$http.get('/api/getTransHist/' + asset.transactionId)
 		.then(function(res){
 			// console.log("hey")
+			// console.log(res.data);
 			if(res.data.success){
 				_this.AssetHist=res.data.history
 				_this.AssetHist.forEach(function(asset){
