@@ -1,5 +1,5 @@
 //core modules
-var express         = require('express');
+var express     = require('express');
 var path        = require('path');
 var jwt         = require('jsonwebtoken');
 var speakeasy   = require('speakeasy');
@@ -16,6 +16,7 @@ var userDAO     = require('./userDAO');
 var prDistDAO   = require('./PrimaryDistributorDAO');
 var approvedUserDAO = require('./ApprovedUserDAO');
 var companyDAO = require('./companyDAO');
+var async = require('async');
 
 let appDetails  = require('../package.json');
 const bcwrapper = require('./bigchain/index.js');
@@ -27,9 +28,63 @@ var secret      = "blockchain" //a secret key which helps decrypt out jwt token
 router.use(express.json());
 router.use(express.urlencoded({extended: true}));
 
+var assetHistArr = [];
 
 
+router.get('/getTransHist/:txnID', function(req, res, next){
+  var curAsset = bcwrapper.createAssetObj();
   
+  //creating an asset object from transacion ID
+  curAsset.createAssetFromId(req.params.txnID)
+  .then(function(responseObj){
+    if(responseObj) {
+      
+      //calling GetAssetHistory wrpper function 
+      //from the asset object
+      curAsset.getAssetHistory()
+      .then(function(history){
+        if(history) {
+          assetHistArr = [];
+          
+          //find the user details from the public keys
+          //from each transaction in the history array
+          async.eachSeries(history, function(assetHist, cb){
+            userDAO.findUser({'bigchainKeyPair.publicKey' : assetHist.outputs[0].public_keys[0]}, "username email fullname companyName", function(err, user) {
+              if (err) {
+                res.json({success:false, message:err})
+              } else if(user != null) {
+                assetHistArr.push(user);
+                cb(null);
+              } else {
+                res.json({success:false, message:"no user"})
+              }
+            })
+            
+          }, function(err){
+            if(err) {
+              res.json({success:false, message:"error occured"});
+            } else {
+              res.json({success:true, history:assetHistArr});
+            }
+          });  
+
+      
+        } else{
+          res.json({success:false, message:"no history could be fetched"})
+        }
+      })
+    } else {
+      res.json({success:false, message:"no asset could be fetched"})
+    }
+  })
+  .catch(function(err){
+    if (err){
+      res.json({success:false, message:"some error occured : " + err});
+    }
+  });
+}); 
+
+
 router.get('/getApprovedUsersList', function(req, res, next){
   approvedUserDAO.getApprovedUserList(function(err, userListDoc){
     if(err) {
@@ -67,8 +122,9 @@ router.get('/checkIfAuthorised/:emailid/:role',function(req, res, next){
         res.json({success:false, message:"some error in accessing the records"});
       } else {
 
-        //if primary Distributors
-        if(primDist != null){
+        if(primDist != null && primDist.level && primDist.level == 2){
+          res.json({success:true, role:"secDist", message:"you are an authorised secondary Distributor"});
+        } else if (primDist != null){
           res.json({success:true, role:"primDist", message:"you are an authorised primary Distributor"});
         } else {
           res.json({success:false, message:"you are not approved"});
@@ -354,26 +410,42 @@ var findCompanyIdByName = function (companyName, cb) {
   });
 }
 
-router.post('/addPrimDistributor', function(req, res, next){
-  findUserCompanyName(req.decoded.username, function(err, user){
-    if(err) {
-      res.json({success:false, message:"could not find user " + err});
-    } else {
-      findCompanyIdByName(user.companyName, function(err, company){
-        if (err) {
-          res.json({success:false, message: "could not find company "+ err});
-        } else {
-          prDistDAO.addPrimDistributor(req.body.DistId, company.companyId, req.decoded.email, function(err){
-            if(err) {
-              res.json({success:false, message: "could not save the distributor " + err});
-            } else {
-              res.json({success:true, message: "Successfully saved the distributor"});
-            }
-          });
-        }
-      });
-    }
-  })
+router.post('/addDistributor', function(req, res, next){
+  if(req.decoded.role == 'user'){
+    findUserCompanyName(req.decoded.username, function(err, user){
+      if(err) {
+        res.json({success:false, message:"could not find user " + err});
+      } else {
+        findCompanyIdByName(user.companyName, function(err, company){
+          if (err) {
+            res.json({success:false, message: "could not find company "+ err});
+          } else {
+            prDistDAO.addPrimDistributor(1, req.body.DistId, company.companyId, req.decoded.email, function(err){
+              if(err) {
+                res.json({success:false, message: "could not save the distributor " + err});
+              } else {
+                res.json({success:true, message: "Successfully saved the distributor"});
+              }
+            });
+          }
+        });
+      }
+    })
+  } else if (req.decoded.role == 'primdist') {
+    prDistDAO.findDistAssociatedCompany(req.decoded.email, function(err, user){
+      if(err) {
+        res.json({success:false, message:"could not find user " + err});
+      } else {
+        prDistDAO.addPrimDistributor(2, req.body.DistId, user[0].CompanyAssociated, req.decoded.email, function(err){
+          if(err) {
+            res.json({success:false, message: "could not save the distributor " + err});
+          } else {
+            res.json({success:true, message: "Successfully saved the distributor"});
+          }
+        });
+      }
+    });
+  }
 });
 
 
@@ -398,44 +470,54 @@ var findPublicKeyDistributor = function(userEmailid, cb){
 router.post('/transferAsset', function(req, res, next){
   console.log(req.body)
 
-  findPublicKeyDistributor(req.body.email , function(err, dist){
-    console.log("dist" + dist)
-    
-    if(err){
-      res.json({success:false, message:"could not find distributor by email" + err});
-    } else {
-      userDAO.findUser({username:req.decoded.username}, "bigchainKeyPair", function(err, user){
+  //check if distributor can be transferred the asset.
+  prDistDAO.findPrimDistributor(req.body.email, function(err, primdist){
+    if(err) {
+      res.json({success: false, message :"Some error occured : Cannot be transferred to a non distributor"})
+    } else if (primdist) {
+      if(primdist.ApprovedBy == req.decoded.email) {
         
-        console.log("user"+user.bigchainKeyPair.publicKey)
-
-        let AssetToTransfer = bcwrapper.createAssetObj();
-    
-        //TODO correct the code 
-
-        AssetToTransfer.createAssetFromId(req.body.Transid)
-        .then(function(responseObj){
-
-          //console.log("Response Obj : " + prettyjson.render(responseObj));
-          //console.log("AssetToTransfer Obj : " + prettyjson.render(AssetToTransfer));
-
-          //metadata should be in form of a js object
-          AssetToTransfer.transferAsset(user.bigchainKeyPair.privateKey, dist.bigchainKeyPair.publicKey, {"price" :req.body.metaData})
-          .then(function(txn){
-            console.log("txn : " + txn);
-            res.json({success:true, message:"Asset is Successfully Tranfered"})
-          })
-          .catch(function(err){
-            console.log("error : " + prettyjson.render(err));
-            res.json({success:false, message:"Error occured"});
-          });
+        //now we neet two more details
+        //1) public key of the Reciever
+        //2) privatekey of the Sender
+        findPublicKeyDistributor(req.body.email , function(err, dist){
+          if(err){
+            res.json({success:false, message:"could not find distributor by email" + err});
+          } else {
+            
+            //trying to find the private key of the sender
+            userDAO.findUser({username:req.decoded.username}, "bigchainKeyPair", function(err, user){
+              let AssetToTransfer = bcwrapper.createAssetObj();
+              //TODO correct the code 
+              AssetToTransfer.createAssetFromId(req.body.Transid)
+              .then(function(responseObj){
+                //metadata should be in form of a js object
+                AssetToTransfer.transferAsset(user.bigchainKeyPair.privateKey, dist.bigchainKeyPair.publicKey, {"price" :req.body.metaData})
+                .then(function(txn){
+                  console.log("txn : " + txn);
+                  res.json({success:true, message:"Asset is Successfully Transfered"})
+                })
+                .catch(function(err){
+                  console.log("error : " + prettyjson.render(err));
+                  res.json({success:false, message:"Error occured"});
+                });
+              })
+              .catch(function(err){
+                console.log(err);
+                res.json({success:false, message:"error occured while creating asset by ID"})
+              });   
+            });
+          }
         })
-        .catch(function(err){
-          console.log(err);
-          res.json({success:false, message:"error occured while creating asset by ID"})
-        });   
-      });
+      } else {
+        res.json({success: false, message:"The distributor is not approved by you, could not complete the transfer."});
+      }
+    } else {
+      res.json({success:false, message :"Cannot be transferred to a non distributor"}); 
     }
-  })
+  });
+
+  
 });
 
 //------------------------------------------------------------------------//

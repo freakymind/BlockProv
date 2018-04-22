@@ -28,30 +28,60 @@ testAsset.createAsset( alice.privateKey,alice.publicKey, {"one":"two"}, {"three"
 	return testAsset.transferAsset(chris.privateKey, alice.publicKey, {"new":"freshest"});
 }).then((resolved)=>{
 	thirdTxId = resolved.id;
+	
+	tranHist(resolved.id)
+	.then(function(createId){
+		assetHist.forEach(function(asset){
+			console.log("in txn hist")
+			console.log(prettyjson.render(asset));
+		})
+	});
+
 	console.log("Fourth");
 	console.log(prettyjson.render(resolved));
 	return ;
-}).then(()=>{	
-	return view.getAllCurrentlyOwnedAssetsForPublicKey(alice.publicKey);
+})
+// .then(()=>{	
+// 	return view.getAllCurrentlyOwnedAssetsForPublicKey(alice.publicKey);
 	
-}).then((resp)=>{
-	//This was returned from the view.getAllCurrentlyOwnedAssetsForPublicKey(alice.publicKey);
+// }).then((resp)=>{
+// 	//This was returned from the view.getAllCurrentlyOwnedAssetsForPublicKey(alice.publicKey);
 	
-	console.log(prettyjson.render(resp))
-	return view.getAllPreviouslyOwnedAssetsForPublicKey(alice.publicKey);
-}).then((resp)=>{
-	//This is the reponse from view.getAllPreviouslyOwnedAssetsForPublicKey(alice.publicKey);
-	console.log(prettyjson.render(resp))
-	testAsset2 = bcwrapper.createAssetObj();
-	return testAsset2.createAssetFromId(thirdTxId);
+// 	console.log(prettyjson.render(resp))
+// 	return view.getAllPreviouslyOwnedAssetsForPublicKey(alice.publicKey);
+// }).then((resp)=>{
+// 	//This is the reponse from view.getAllPreviouslyOwnedAssetsForPublicKey(alice.publicKey);
+// 	console.log(prettyjson.render(resp))
+// 	testAsset2 = bcwrapper.createAssetObj();
+// 	return testAsset2.createAssetFromId(thirdTxId);
 
-}).then((respCreated)=>{
-	console.log(respCreated);// testAsset2.transferAsset(bob.privateKey, chris.publicKey,{"Zoop":"Zoop"});
+// }).then((respCreated)=>{
+// 	console.log(respCreated);// testAsset2.transferAsset(bob.privateKey, chris.publicKey,{"Zoop":"Zoop"});
 
-}).catch((err) =>{
+// })
+.catch((err) =>{
 
 	console.log(err);
 })
+
+var assetHist = [];
+
+var tranHist = function(txnID){
+  return new Promise(function(resolve, reject){
+
+    let asset = bcwrapper.createAssetObj();
+    asset.createAssetFromId(txnID)
+    .then(function(assetResObj){
+      assetHist.push(assetResObj);
+      if (assetResObj.operation != 'CREATE'){
+        resolve(tranHist(assetResObj.inputs[0].fulfills.transaction_id));
+      } else {
+        resolve(assetResObj.id)
+      }
+    });
+  });
+}
+
 
 
 

@@ -2,6 +2,7 @@
 "use strict";
 let prettyjson = require('prettyjson');
 let request = require('request-promise');
+
 module.exports = class Utils{
 	constructor(conn){
 		this.conn = conn;
@@ -20,6 +21,7 @@ module.exports = class Utils{
 
 		}) 
 	}
+
 	getCreatedAsset(assetId) {
 		let options = {
 		    uri: this.conn.path+'transactions',
@@ -28,6 +30,17 @@ module.exports = class Utils{
 		        operation:"CREATE"
 		    },
 		    json: true 
+		};
+		return request(options);
+	}
+
+	getAssetHistory(assetId) {
+		let options = {
+			uri: this.conn.path+'transactions',
+			qs: {
+				asset_id: assetId
+			},
+			json: true
 		};
 		return request(options);
 	}

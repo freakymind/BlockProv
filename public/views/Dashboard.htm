@@ -7,7 +7,7 @@
 		</div>
 	</div>
 	<div class = "row">
-		<div class = "col-sm-3 col-sm-offset-1" style="margin-top: 50px;" ng-show="dashCtrl.currentUserRole == 'primdist'">
+		<div class = "col-sm-3 col-sm-offset-1" style="margin-top: 50px;" ng-show="dashCtrl.currentUserRole == 'primdist' || dashCtrl.currentUserRole == 'secdist'">
 			<div class="panel" style="border:0px;">
 				<div class="panel-heading" style="background-color: #FFC312; color:#2c3e50;">
 					<h3>
@@ -23,6 +23,26 @@
 					<br>
 					<button class="btn" ng-click="dashCtrl.goTo('/viewAssets')" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;">
 							View
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class = "col-sm-3" style="margin-top: 50px;" ng-show="dashCtrl.currentUserRole == 'primdist'">
+			<div class="panel" style="border:0px;">
+				<div class="panel-heading" style="background-color: #FFC312; color:#2c3e50;">
+					<h3>
+						Add Distributor
+					</h3>
+				</div>
+				<div class="panel-body" style="background-color: #f5f6fa; height: 12em;">
+					<div>
+						<p>
+							Use this to Add a distributor to the system.
+						</p>
+					</div>
+					<br>
+					<button class="btn" ng-click="dashCtrl.goTo('/primDist')" style ="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;">
+							Add
 					</button>
 				</div>
 			</div>

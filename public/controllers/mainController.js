@@ -177,9 +177,8 @@ angular.module('mainController', ['authServices', 'managementServices'])
 			if (level == 1) {
 
 				//fetching two factor auth realted data to check if 2FA enabld 
-				authUser.getSetup2FADetails(_this.loginDet.username)
+				authUser.getSetup2FADetails(_this.loginDet.username.toLowerCase())
 				.then(function(res){
-					console.log(res);
 					if(res.data.success) {
 						//if 2FA enabled, display QR Code
 						if (res.data.twoFactorDetails && res.data.twoFactorDetails.secret){

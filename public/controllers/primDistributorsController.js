@@ -4,7 +4,7 @@ angular.module('primDistributorsController', [])
 	var _this = this;
 
 	_this.addPrimDistributor = function(user) { 
-		$http.post('/api/addPrimDistributor', {DistId : user})
+		$http.post('/api/addDistributor', {DistId : user})
 		.then(function(res){
 			_this.clearOut();
 			
