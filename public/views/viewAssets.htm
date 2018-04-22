@@ -79,14 +79,14 @@
 			    		<div>
 				          <tr ng-repeat= "owner in view.AssetHist" ng-show="view.noErrorTxnHist" style="text-align: right;">
 				          	<td style="padding:10px; padding-right: 0px" ng-show="(owner.id == 0)">
-				          		<div style="height:2.0em; width: 10.0em;"><b><i>Current Owner</i></b></div>
+				          		<div style="height:2.0em; width: 10.0em;"><b><i>Asset Creator</i></b></div>
 				          	</td>
 				          	<td style="padding:10px; padding-right: 0px" ng-show="(owner.id > 0 && owner.id < (view.AssetHist.length - 1))">
 				          		<div style="height:2.0em; width: 5.0em; "></div>
 				          	</td>
 				          	<td style="padding:10px;padding-right: 0px;" ng-show="(owner.id == (view.AssetHist.length - 1)) && (view.AssetHist.length > 1)">
 				          		
-				          		<div style="height:2.0em; width: 10.0em;"><b><i>Asset Creator</i></b></div>
+				          		<div style="height:2.0em; width: 10.0em;"><b><i>Current Owner</i></b></div>
 				          	</td>
 				          	
 				          </tr>
@@ -98,13 +98,13 @@
 			    		  
 				          <tr ng-repeat= "owner in view.AssetHist" ng-show="view.noErrorTxnHist">
 				          	<td style="padding:10px;" ng-show="(owner.id == 0)">
-				          		<div style="height:2.0em; width: 2.0em; border: 5px solid #2ecc71; border-radius: 20px;"></div>
+				          		<div style="height:2.0em; width: 2.0em; border: 5px solid #2980b9; border-radius: 20px;"></div>
 				          	</td>
 				          	<td style="padding:10px;" ng-show="(owner.id > 0 && owner.id < (view.AssetHist.length - 1))">
 				          		<div style="height:2.0em; width: 2.0em; border: 5px solid #FFC312; border-radius: 20px;"></div>
 				          	</td>
 				          	<td style="padding:10px;" ng-show="(owner.id == (view.AssetHist.length - 1)) && (view.AssetHist.length > 1)">
-				          		<div style="height:2.0em; width: 2.0em; border: 5px solid #2980b9; border-radius: 20px;"></div>
+				          		<div style="height:2.0em; width: 2.0em; border: 5px solid #2ecc71; border-radius: 20px;"></div>
 				          	</td>
 				          	<td>{{owner.fullname}}</td>
 				          </tr>

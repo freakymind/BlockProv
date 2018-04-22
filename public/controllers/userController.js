@@ -27,15 +27,21 @@ angular.module('userController', ['userRegService'])
 
   this.submitRegDetails = function(regData, valid) {
     if (valid && !(_this.regData.companyName == undefined && _this.regData.role == "user")) {
+      
+      //lowercase username and email ID.
+      regData.emailid = regData.emailid.toLowerCase();
+      regData.username = regData.username.toLowerCase();
 
-      userFactory.checkIfAuthorised(regData.emailid, regData.role)
+      //check if user/distributor is authorised
+      userFactory.checkIfAuthorised(regData.emailid.toLowerCase(), regData.role)
       .then(function(response){
         if(response.data.success) {
 
           // setting up role as returned by the API 
           // considering what option was chosen company/distributor.
           regData.role = response.data.role;
-
+          
+          //reigister User/Distributor
           userFactory.register(regData)
           .then(function(res){
             if (res.data.success) {

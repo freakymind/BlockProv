@@ -470,44 +470,54 @@ var findPublicKeyDistributor = function(userEmailid, cb){
 router.post('/transferAsset', function(req, res, next){
   console.log(req.body)
 
-  findPublicKeyDistributor(req.body.email , function(err, dist){
-    console.log("dist" + dist)
-    
-    if(err){
-      res.json({success:false, message:"could not find distributor by email" + err});
-    } else {
-      userDAO.findUser({username:req.decoded.username}, "bigchainKeyPair", function(err, user){
+  //check if distributor can be transferred the asset.
+  prDistDAO.findPrimDistributor(req.body.email, function(err, primdist){
+    if(err) {
+      res.json({success: false, message :"Some error occured : Cannot be transferred to a non distributor"})
+    } else if (primdist) {
+      if(primdist.ApprovedBy == req.decoded.email) {
         
-        console.log("user"+user.bigchainKeyPair.publicKey)
-
-        let AssetToTransfer = bcwrapper.createAssetObj();
-    
-        //TODO correct the code 
-
-        AssetToTransfer.createAssetFromId(req.body.Transid)
-        .then(function(responseObj){
-
-          //console.log("Response Obj : " + prettyjson.render(responseObj));
-          //console.log("AssetToTransfer Obj : " + prettyjson.render(AssetToTransfer));
-
-          //metadata should be in form of a js object
-          AssetToTransfer.transferAsset(user.bigchainKeyPair.privateKey, dist.bigchainKeyPair.publicKey, {"price" :req.body.metaData})
-          .then(function(txn){
-            console.log("txn : " + txn);
-            res.json({success:true, message:"Asset is Successfully Tranfered"})
-          })
-          .catch(function(err){
-            console.log("error : " + prettyjson.render(err));
-            res.json({success:false, message:"Error occured"});
-          });
+        //now we neet two more details
+        //1) public key of the Reciever
+        //2) privatekey of the Sender
+        findPublicKeyDistributor(req.body.email , function(err, dist){
+          if(err){
+            res.json({success:false, message:"could not find distributor by email" + err});
+          } else {
+            
+            //trying to find the private key of the sender
+            userDAO.findUser({username:req.decoded.username}, "bigchainKeyPair", function(err, user){
+              let AssetToTransfer = bcwrapper.createAssetObj();
+              //TODO correct the code 
+              AssetToTransfer.createAssetFromId(req.body.Transid)
+              .then(function(responseObj){
+                //metadata should be in form of a js object
+                AssetToTransfer.transferAsset(user.bigchainKeyPair.privateKey, dist.bigchainKeyPair.publicKey, {"price" :req.body.metaData})
+                .then(function(txn){
+                  console.log("txn : " + txn);
+                  res.json({success:true, message:"Asset is Successfully Transfered"})
+                })
+                .catch(function(err){
+                  console.log("error : " + prettyjson.render(err));
+                  res.json({success:false, message:"Error occured"});
+                });
+              })
+              .catch(function(err){
+                console.log(err);
+                res.json({success:false, message:"error occured while creating asset by ID"})
+              });   
+            });
+          }
         })
-        .catch(function(err){
-          console.log(err);
-          res.json({success:false, message:"error occured while creating asset by ID"})
-        });   
-      });
+      } else {
+        res.json({success: false, message:"The distributor is not approved by you, could not complete the transfer."});
+      }
+    } else {
+      res.json({success:false, message :"Cannot be transferred to a non distributor"}); 
     }
-  })
+  });
+
+  
 });
 
 //------------------------------------------------------------------------//

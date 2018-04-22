@@ -6,7 +6,8 @@ angular.module('approvedUsersController', [])
 	_this.approvedUsersMessage= "";
 
 	_this.addApprovedUsers = function(users){
-		$http.post('/api/addApprovedUserList', {newUserList : users})
+
+		$http.post('/api/addApprovedUserList', {newUserList : users.toLowerCase()})
 		.then(function(res){
 			_this.clearout();
 			if (res.data.success) {
@@ -22,7 +23,7 @@ angular.module('approvedUsersController', [])
 	}
 
 	_this.removeApprovedUsers = function(users){
-		$http.post('/api/removeApprovedUserList', {newUserList : users})
+		$http.post('/api/removeApprovedUserList', {newUserList : users.toLowerCase()})
 		.then(function(res){
 			_this.clearout();
 			if (res.data.success) {
