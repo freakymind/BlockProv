@@ -153,10 +153,6 @@ module.exports = class Asset{
 
 	getAssetHistory(){
 		return new Promise((resolve, reject)=>{
-			// if(this.valid == false){
-			// 	throw Error("Asset id is not set for this asset");
-			// }
-			
 			let util = new Utils(this.conn)
 			util.getAssetHistory(this.assetID)
 			.then(function(res){

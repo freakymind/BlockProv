@@ -28,80 +28,47 @@ var secret      = "blockchain" //a secret key which helps decrypt out jwt token
 router.use(express.json());
 router.use(express.urlencoded({extended: true}));
 
-var assetHist = [];
+var assetHistArr = [];
 
-var tranHist = function(txnID){
-  return new Promise(function(resolve, reject){
-    let asset = bcwrapper.createAssetObj();
-    asset.createAssetFromId(txnID)
-    .then(function(assetResObj){
-      console.log(asset.publicKey);
-      userDAO.findUser({'bigchainKeyPair.publicKey' : asset.publicKey}, "username email fullname companyName", function(err, user) {
-        if (err) {
-          res.json({success:false, message:err})
-        } else if(user != null) {
-          assetHist.push(user);
-          if (assetResObj.operation != 'CREATE'){
-            resolve(tranHist(assetResObj.inputs[0].fulfills.transaction_id));
-          } else {
-            resolve(assetResObj.id);
-          }
-        } else {
-          res.json({success:false, message:"no user"})
-        }
-      });
 
-      
-
-    })
-    .catch(function (err) {
-      reject(err);
-    });
-  });
-}
- 
-var cb = function() {
-  console.log("hey")
-}
 router.get('/getTransHist/:txnID', function(req, res, next){
   var curAsset = bcwrapper.createAssetObj();
+  
+  //creating an asset object from transacion ID
   curAsset.createAssetFromId(req.params.txnID)
   .then(function(responseObj){
     if(responseObj) {
+      
+      //calling GetAssetHistory wrpper function 
+      //from the asset object
       curAsset.getAssetHistory()
       .then(function(history){
         if(history) {
+          assetHistArr = [];
           
-          var assetHistArr = [];
           //find the user details from the public keys
           //from each transaction in the history array
-          console.log("heyyyyy resp obj :: " + prettyjson.render(history))
-          async.eachSeries(history, function(assetHist){
-            console.log("heyyyyyyyy : " + prettyjson.render(assetHist, cb));
-            // userDAO.findUser({'bigchainKeyPair.publicKey' : assetHist.outputs[0].public_keys[0]}, "username email fullname companyName", function(err, user) {
-            //   if (err) {
-            //     res.json({success:false, message:err})
-            //   } else if(user != null) {
-            //     assetHistArr.push(user);
-            //   } else {
-            //     res.json({success:false, message:"no user"})
-            //   }
-            // });
-            cb();
-          }, function(err) {
-              // if any of the file processing produced an error, err would equal that error
-              if( err ) {
-                // One of the iterations produced an error.
-                // All processing will now stop.
-                console.log('som error');
+          async.eachSeries(history, function(assetHist, cb){
+            userDAO.findUser({'bigchainKeyPair.publicKey' : assetHist.outputs[0].public_keys[0]}, "username email fullname companyName", function(err, user) {
+              if (err) {
+                res.json({success:false, message:err})
+              } else if(user != null) {
+                assetHistArr.push(user);
+                cb(null);
               } else {
-                console.log('All files have been processed successfully');
+                res.json({success:false, message:"no user"})
               }
+            })
+            
+          }, function(err){
+            if(err) {
+              res.json({success:false, message:"error occured"});
+            } else {
+              res.json({success:true, history:assetHistArr});
+            }
           });  
 
-
-
-          res.json({success:true, history:assetHistArr});
+      
         } else{
           res.json({success:false, message:"no history could be fetched"})
         }
@@ -115,15 +82,6 @@ router.get('/getTransHist/:txnID', function(req, res, next){
       res.json({success:false, message:"some error occured : " + err});
     }
   });
-  // assetHist = [];
-  // tranHist(req.params.txnID)
-  // .then(function(finalTxn){
-  //   res.json({success:true, history:assetHist});
-  // })
-  // .catch(function (err) {
-  //   res.json({success:false, message:err});
-  //   console.log(err)
-  // });
 }); 
 
 
@@ -164,9 +122,8 @@ router.get('/checkIfAuthorised/:emailid/:role',function(req, res, next){
         res.json({success:false, message:"some error in accessing the records"});
       } else {
 
-        //if primary Distributors
         if(primDist != null && primDist.level && primDist.level == 2){
-          res.json({success:true, role:"secDist", message:"you are an authorised primary Distributor"});
+          res.json({success:true, role:"secDist", message:"you are an authorised secondary Distributor"});
         } else if (primDist != null){
           res.json({success:true, role:"primDist", message:"you are an authorised primary Distributor"});
         } else {
@@ -453,7 +410,7 @@ var findCompanyIdByName = function (companyName, cb) {
   });
 }
 
-router.post('/addPrimDistributor', function(req, res, next){
+router.post('/addDistributor', function(req, res, next){
   if(req.decoded.role == 'user'){
     findUserCompanyName(req.decoded.username, function(err, user){
       if(err) {
@@ -475,7 +432,6 @@ router.post('/addPrimDistributor', function(req, res, next){
       }
     })
   } else if (req.decoded.role == 'primdist') {
-    console.log(req.decoded.email);
     prDistDAO.findDistAssociatedCompany(req.decoded.email, function(err, user){
       if(err) {
         res.json({success:false, message:"could not find user " + err});
