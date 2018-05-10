@@ -49,7 +49,22 @@ angular.module('mainController', ['authServices', 'managementServices'])
 		$location.path(path);
 	}
 
-	
+	_this.checkAssetProvenance = function(product_ref, companyName){
+		if(product_ref != undefined && companyName != undefined && product_ref != "" && companyName != "") {
+			$http.get('/api/getAssetId/' + product_ref + "/" + companyName)
+			.then(function(res){
+				if (res.data.success) {
+					$http.get('/api/getTransHist/' + res.data.assetId)
+					.then(function(res){
+						console.log(res);
+					});
+
+					_this.checkProv = "";
+				}
+			});
+		}
+	}
+
 	//setup 2FA 
 	_this.setup2FA = function() {
 		//initiallising response message area

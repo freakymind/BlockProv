@@ -2,11 +2,48 @@
     
 	<!-- heading container -->
     <div class = "row">
-      <div class = "col-sm-offset-2 col-sm-8" style="text-align: center; font-family: 'Roboto Slab', serif; color: #006266">
+      <div class = "col-sm-offset-2 col-sm-8" style="padding-top: 50px;padding-bottom: 50px; text-align: center; font-family: 'Roboto Slab', serif; color: #2d3436">
         <p style="font-size: 6vw"> Provenance System </p>
         <p style="font-size: 4vw"> Blockchain Solution </p>
       </div>
       
     </div>
+        
     <!-- heading container end -->
 </div>
+<div id="section2" class="container-fluid" style="background-color:#2980b9">
+	<div class = "row" ng-show="!(main.isLoggedIn)">
+      <div class = "col-sm-offset-1 col-sm-5" style="padding-top: 50px;padding-bottom: 50px;text-align: left; font-family: 'Roboto Slab', serif; color: #ecf0f1">
+        <p style="font-size: 4vw">
+        	<b>Check Asset History</b>
+        </p>
+        <p>
+        	<h2>
+        		Here you can easily check the history or provenance of your Asset!
+        	</h2>
+        </p>
+        <br>
+
+      </div>
+      <div class = "col-sm-offset-2 col-sm-3" style="padding-top: 50px;padding-bottom: 50px;text-align: right; font-family: 'Roboto Slab', serif; color: #ecf0f1">
+      	<form>
+      		<div>
+	      		<label>
+	      			<h3>Asset Reference No.</h3>
+	      		</label>
+	      		<input type="text" class="form-control" ng-model="main.checkProv.product_ref">
+      		</div>
+      		<br>
+      		<div>
+	      		<label>
+	      			<h3>Company Name</h3>
+	      		</label>
+	      		<input type="text" class="form-control" ng-model="main.checkProv.countryName">
+	      	</div>
+      	</form>
+      	<br>
+      	<button type="button" ng-click="main.checkAssetProvenance(main.checkProv.product_ref, main.checkProv.countryName)" style="border:none; background-color:#ecf0f1; color:#2980b9; padding:2px; border-radius: 25px 25px 25px 25px; width:100px; height:50px; font-size: 1.2em; outline:none; ">Check</button>
+      </div>  
+    </div>
+</div>
+
