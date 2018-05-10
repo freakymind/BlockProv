@@ -81,14 +81,14 @@ router.get('/getTransHist/:txnID', function(req, res, next){
                 tempUser.email = user.email;
                 tempUser.fullname = user.fullname;
                 tempUser.companyName = user.companyName;
-                if(assetHist.operation="CREATE") {
+                if(assetHist.operation == "CREATE") {
                   tempUser.assetDet = assetHist.asset;
                 }
                 else{
                   tempUser.assetDet = assetHist.metadata;
                 }
                 assetHistArr.push(tempUser);
-                
+
                 cb(null);
               } else {
                 res.json({success:false, message:"no user"})
