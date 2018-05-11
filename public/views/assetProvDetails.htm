@@ -36,19 +36,48 @@
 	      </div>  
 	    </div>
 	</div>
-	<div class="row">
-		<div class="col-sm-offset-1 col-sm-10">
-			<div ng-show="assetProv.ownersArray != null">
-				<h1>{{assetProv.ownersArray[0].companyName}}</h1>
-			</div>
+	<div class="row" style="background-color:#2980b9; margin:0px;">
+		<div class="col-sm-offset-1 col-sm-5">
 			<div class="row" style="" ng-repeat="owner in assetProv.ownersArray">
-				<div class="col-sm-offset-1 col-sm-5" style="background-color: #eee; padding:10px; margin:5px; border-radius: 15px 15px 15px 15px;">
-					<ul type="none">
-						<li>Username : {{owner.username}}</li>
+				<div class="col-sm-12" style="background-color: #eee; padding:10px; margin:5px; border-radius: 15px 15px 15px 15px;">
+					<h2 style="text-align: center;" ng-show="owner.seqNo == '1'">Asset Creator</h2>
+					<br>
+					<ul type="none" style="font-size: 1.5em;">
 						<li>Full Name : {{owner.fullname}}</li>
+						<li>Username : {{owner.username}}</li>
 						<li>Email ID : {{owner.email}}</li>
+						<li ng-show="owner.seqNo != '1'">Transfer Price: {{owner.assetDet.price}}</li>
 					</ul>
 				</div>
+			</div>
+		</div>
+		<div class = "col-sm-5" ng-show="assetProv.ownersArray != null" style="text-align: center;">
+			<h1>Asset Details</h1>
+			<div class="col-sm-8 col-sm-offset-2">
+			<table style="text-align: left; font-size: 1.5em;"> 
+				<tr>
+					<td>Brand Name </td>
+					<td> : {{assetProv.ownersArray[0].assetDet.data.brand}}</td>
+				</tr>
+					<td>Product Name </td>
+					<td> : {{assetProv.ownersArray[0].assetDet.data.product_name}}</td>
+				<tr>
+					<td>Product Reference No.</td>
+					<td> <span>: {{assetProv.ownersArray[0].assetDet.data.product_ref}}</span></td>
+				</tr>
+				<tr>
+					<td>UPC_A </td>
+					<td> <span>: {{assetProv.ownersArray[0].assetDet.data.upc_a}}</span></td>
+				</tr>
+				<tr>
+					<td>Product Weight </td>
+					<td> : {{assetProv.ownersArray[0].assetDet.data.weight}}</td>
+				</tr>
+				<tr>
+					<td>Product Dimensions </td>
+					<td> : {{assetProv.ownersArray[0].assetDet.data.product_dim}}</td>
+				</tr>
+			</table>
 			</div>
 		</div>
 	</div>

@@ -17,11 +17,23 @@ angular.module("assetProvDetailsController", [])
 					$http.get('/api/getTransHist/' + res.data.assetId)
 					.then(function(res){
 						_this.ownersArray = res.data.history;
+						_this.addSequence(function(){
+							console.log(_this.ownersArray)
+						});
+						
 					});
 
 					_this.checkProv = "";
 				}
 			});
 		}
+	}
+
+	_this.addSequence = function(cb){
+	 	var itr = 1;
+	 	_this.ownersArray.forEach(function(asset){
+	 		asset.seqNo = itr++;
+	 	})
+	 	cb();
 	}
 }]);
