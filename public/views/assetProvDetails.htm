@@ -1,0 +1,55 @@
+<div class="container-fluid" ng-controller="assetProvDetailsCtrl as assetProv" ng-init="assetProv.checkAssetProvenance()" style="padding:0px; font-family: 'Roboto Slab', serif;">
+
+	
+	<div id="section2" class="container-fluid" style="background-color:#2980b9; margin:0px;">
+		<div class = "row" ng-show="!(main.isLoggedIn)">
+	      <div class = "col-sm-offset-1 col-sm-5" style=" padding-top: 50px;padding-bottom: 50px;text-align: left; font-family: 'Roboto Slab', serif; color: #ecf0f1">
+	        <p style="font-size: 4vw">
+	        	<b>Check Asset History</b>
+	        </p>
+	        <p>
+	        	<h2>
+	        		Here you can easily check the history or provenance of your Asset!
+	        	</h2>
+	        </p>
+	        <br>
+
+	      </div>
+	      <div class = "col-sm-offset-2 col-sm-3" style=" padding-top: 50px;padding-bottom: 50px;text-align: right; font-family: 'Roboto Slab', serif; color: #ecf0f1">
+	      	<form>
+	      		<div>
+		      		<label>
+		      			<h3>Asset Reference No.</h3>
+		      		</label>
+		      		<input type="text" class="form-control" ng-model="assetProv.checkProv.product_ref">
+	      		</div>
+	      		<br>
+	      		<div>
+		      		<label>
+		      			<h3>Company Name</h3>
+		      		</label>
+		      		<input type="text" class="form-control" ng-model="assetProv.checkProv.countryName">
+		      	</div>
+	      	</form>
+	      	<br>
+	      	<button type="button" ng-click="main.checkProvButtonClick(assetProv.checkProv.product_ref, assetProv.checkProv.countryName)" style="border:none; background-color:#ecf0f1; color:#2980b9; padding:2px; border-radius: 25px 25px 25px 25px; width:100px; height:50px; font-size: 1.2em; outline:none; ">Check</button>
+	      </div>  
+	    </div>
+	</div>
+	<div class="row">
+		<div class="col-sm-offset-1 col-sm-10">
+			<div ng-show="assetProv.ownersArray != null">
+				<h1>{{assetProv.ownersArray[0].companyName}}</h1>
+			</div>
+			<div class="row" style="" ng-repeat="owner in assetProv.ownersArray">
+				<div class="col-sm-offset-1 col-sm-5" style="background-color: #eee; padding:10px; margin:5px; border-radius: 15px 15px 15px 15px;">
+					<ul type="none">
+						<li>Username : {{owner.username}}</li>
+						<li>Full Name : {{owner.fullname}}</li>
+						<li>Email ID : {{owner.email}}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
