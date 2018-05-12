@@ -1,8 +1,9 @@
 angular.module("assetProvDetailsController", [])
-.controller('assetProvDetailsCtrl', ["$http", "$routeParams", function($http, $routeParams){
+.controller('assetProvDetailsCtrl', ["$location", "$http", "$routeParams", function($location, $http, $routeParams){
 
 	var _this = this;
-
+	_this.showErrorMessage = false;
+	_this.showAssetProv = false;
 	_this.checkProvButtonClick = function(product_ref, companyName){
 		$location.path("/assetProvDetails/" + product_ref + "/" + companyName)
 	}
@@ -19,11 +20,15 @@ angular.module("assetProvDetailsController", [])
 						_this.ownersArray = res.data.history;
 						_this.addSequence(function(){
 							console.log(_this.ownersArray)
+							_this.showAssetProv = true;
 						});
 						
 					});
 
 					_this.checkProv = "";
+				} else {
+					_this.showErrorMessage = true;
+					_this.showAssetProv = true;
 				}
 			});
 		}
