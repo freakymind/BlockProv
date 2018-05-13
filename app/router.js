@@ -11,6 +11,7 @@ var prettyjson  = require('prettyjson');
 //Loacl modules
 var User        = require('./models/User');
 var Asset       = require('./models/Asset');
+var ApprovedUser = require('./models/ApprovedUser');
 var assetDAO    = require('./AssetDAO');
 var Company     = require('./models/Company');
 var countryData = require('../resources/countries');
@@ -29,6 +30,22 @@ var app         = express();
 var secret      = "blockchain" //a secret key which helps decrypt out jwt token
 router.use(express.json());
 router.use(express.urlencoded({extended: true}));
+
+
+
+router.post('/addFirstUser', function(req, res, next){
+  var firstUser = new ApprovedUser();
+  firstUser.userList = req.body.userArray;
+  console.log(req.body.userArray);
+  firstUser.save(function(err){
+    if (err){
+      console.log(err);
+      res.json({success:false, message:"could not add first user"})
+    } else {
+      res.json({success:true, message:"first User Added"});
+    }
+  }); 
+});
 
 var assetHistArr = [];
 router.get('/getAssetId/:product_ref/:companyName', function(req, res, next){
