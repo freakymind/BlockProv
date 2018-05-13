@@ -49,7 +49,10 @@ angular.module('mainController', ['authServices', 'managementServices'])
 		$location.path(path);
 	}
 
-	
+	_this.checkProvButtonClick = function(product_ref, companyName){
+		$location.path("/assetProvDetails/" + product_ref + "/" + companyName)
+	}
+
 	//setup 2FA 
 	_this.setup2FA = function() {
 		//initiallising response message area

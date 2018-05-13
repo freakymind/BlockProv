@@ -1,0 +1,104 @@
+<div class="container-fluid" ng-controller="assetProvDetailsCtrl as assetProv" ng-init="assetProv.checkAssetProvenance()" style="padding:0px; font-family: 'Roboto Slab', serif;">
+
+	
+	<div id="section2" class="container-fluid" style="background-color:#2980b9; margin:0px;">
+		<div class = "row">
+		    <div class = "col-sm-offset-1 col-sm-5" style=" padding-top: 50px;padding-bottom: 50px;text-align: left; font-family: 'Roboto Slab', serif; color: #ecf0f1">
+		        <p style="font-size: 4vw">
+		        	<b>Check Asset History</b>
+		        </p>
+		        <p>
+		        	<h2>
+		        		Here you can easily check the history or provenance of your Asset!
+		        	</h2>
+		        </p>
+		        <br>
+
+		    </div>
+		    <div class = "col-sm-offset-1 col-sm-4" style=" padding-top: 50px;padding-bottom: 50px;text-align: right; font-family: 'Roboto Slab', serif; color: #ecf0f1;">
+      			<form style="border-radius:25px 25px 25px 25px; background-color: #2c3e50; padding:50px;">
+		      		<div>
+			      		<label>
+			      			<h3>Asset Reference No.</h3>
+			      		</label>
+			      		<input type="text" class="form-control" ng-model="assetProv.product_ref">
+		      		</div>
+		      		<br>
+		      		<div>
+			      		<label>
+			      			<h3>Company Name</h3>
+			      		</label>
+			      		<input type="text" class="form-control" ng-model="assetProv.companyName">
+			      	</div>
+			      	<br>
+			      	<button class="btn btn-primary" type="button" ng-click="assetProv.checkProvButtonClick(assetProv.product_ref, assetProv.companyName)" style="background-color: #FFC312; color:#2c3e50; font-size: 1.2em; outline:none; border: none;"><b>Check</b></button>
+		      	</form>
+		      	
+		    </div>  
+		</div>
+	</div>
+
+	<div class="row" style="background-color:#535c68; padding-bottom: 50px; padding-top: 50px;margin:0px;" ng-show="assetProv.showAssetProv">
+
+		<!-- error messages -->
+		<div class="col-sm-offset-1 col-sm-10" style="margin-right:10px; padding-bottom:100px;" ng-show="assetProv.showErrorMessage">
+			<p style="font-size: 3em; color:#eee;"> <b>Error!</b></p>
+			<p style="font-size: 2em; color:#eee;"> <b>Sorry the Asset could not be fetched :(</b></p>
+			<p style="font-size: 1.5em; color:#eee;"> Check the product information and try again.</p>
+		</div>
+
+		<!-- Asset Provenance Details -->
+		<div ng-show = "!assetProv.showErrorMessage">
+			<div class="col-sm-offset-1 col-sm-10" style="margin-right:10px;">
+				<p style="font-size: 3em; color:#eee;"> <b>Asset Provenance for {{assetProv.ownersArray[0].assetDet.data.product_name}}</b></p>
+			</div>
+			<br><br><br><br>
+			<div class="col-sm-offset-1 col-sm-5" style="margin-right:10px;">
+				<div class="row" style="" ng-repeat="owner in assetProv.ownersArray">
+					<div class="col-sm-12" data-toggle="collapse" data-target="{{'#' + owner.username}}" style="background-color:#eee; padding:10px; margin:10px; margin-top: 0px; border-radius: 15px 15px 15px 15px;">
+						<h2 style="text-align: center;" ng-show="owner.seqNo == '1'">Asset Creator</h2>
+						<br>
+						<ul type="none" style="font-size: 1.5em;">
+							<li>Full Name : {{owner.fullname}}</li>
+							<div id = "{{owner.username}}" class="collapse">
+								<li>Username : {{owner.username}}</li>
+								<li>Email ID : {{owner.email}}</li>
+							</div>
+							<li ng-show="owner.seqNo != '1'"><b>Transfer Price: {{owner.assetDet.price}}</b></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class = "col-sm-5" ng-show="assetProv.ownersArray != null" style="text-align: center; background-color: #eee; margin:10px; margin-top: 0px; border-radius:25px 25px 25px 25px; padding-bottom: 20px;padding-top: 20px;">
+				<h1>Asset Details</h1>
+				<div class="col-sm-8 col-sm-offset-2" style="">
+				<table style="text-align: left; font-size: 1.5em;"> 
+					<tr>
+						<td>Brand Name </td>
+						<td> : {{assetProv.ownersArray[0].assetDet.data.brand}}</td>
+					</tr>
+						<td>Product Name </td>
+						<td> : {{assetProv.ownersArray[0].assetDet.data.product_name}}</td>
+					<tr>
+						<td>Product Reference No.</td>
+						<td> <span>: {{assetProv.ownersArray[0].assetDet.data.product_ref}}</span></td>
+					</tr>
+					<tr>
+						<td>UPC_A </td>
+						<td> <span>: {{assetProv.ownersArray[0].assetDet.data.upc_a}}</span></td>
+					</tr>
+					<tr>
+						<td>Product Weight </td>
+						<td> : {{assetProv.ownersArray[0].assetDet.data.weight}}</td>
+					</tr>
+					<tr>
+						<td>Product Dimensions </td>
+						<td> : {{assetProv.ownersArray[0].assetDet.data.product_dim}}</td>
+					</tr>
+				</table>
+				</div>
+			</div>
+		</div>
+		<!-- Asset Provenance Info -->
+	</div>
+</div>

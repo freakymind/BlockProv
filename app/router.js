@@ -1,4 +1,4 @@
-//core modules
+//Core modules
 var express     = require('express');
 var path        = require('path');
 var jwt         = require('jsonwebtoken');
@@ -6,10 +6,12 @@ var speakeasy   = require('speakeasy');
 var QRCode      = require('qrcode');
 var bcrypt      = require('bcrypt-nodejs');
 var util        = require('util');
-var prettyjson = require('prettyjson');
-//loacl modules
+var prettyjson  = require('prettyjson');
+
+//Loacl modules
 var User        = require('./models/User');
 var Asset       = require('./models/Asset');
+var assetDAO    = require('./AssetDAO');
 var Company     = require('./models/Company');
 var countryData = require('../resources/countries');
 var userDAO     = require('./userDAO');
@@ -22,14 +24,33 @@ let appDetails  = require('../package.json');
 const bcwrapper = require('./bigchain/index.js');
 
 //instances
-var router          = express.Router();
+var router      = express.Router();
 var app         = express();
 var secret      = "blockchain" //a secret key which helps decrypt out jwt token
 router.use(express.json());
 router.use(express.urlencoded({extended: true}));
 
 var assetHistArr = [];
-
+router.get('/getAssetId/:product_ref/:companyName', function(req, res, next){
+  //get company id from company name
+  companyDAO.findCompany({companyName:req.params.companyName}, "companyId", function(err, company){
+    if (err) {
+      res.json({success:false, message:"some error occured while fetching the company"});
+    } else if(company != null){
+      assetDAO.findAssetID({product_ref:req.params.product_ref, company_ref:company.companyId}, function(err, asset){
+        if(err){
+          res.json({success:false, message:"error occured while searching for asset"})
+        } else if(asset != null){
+          res.json({success:true, assetId:asset.assetId});
+        } else {
+          res.json({success:false, message:"asset is not registered"});
+        }
+      });
+    } else {
+      res.json({success:false, message:"invalid company name"})
+    }
+  });
+});
 
 router.get('/getTransHist/:txnID', function(req, res, next){
   var curAsset = bcwrapper.createAssetObj();
@@ -53,7 +74,21 @@ router.get('/getTransHist/:txnID', function(req, res, next){
               if (err) {
                 res.json({success:false, message:err})
               } else if(user != null) {
-                assetHistArr.push(user);
+                
+                user.asset = assetHist;
+                var tempUser = {};
+                tempUser.username = user.username;
+                tempUser.email = user.email;
+                tempUser.fullname = user.fullname;
+                tempUser.companyName = user.companyName;
+                if(assetHist.operation == "CREATE") {
+                  tempUser.assetDet = assetHist.asset;
+                }
+                else{
+                  tempUser.assetDet = assetHist.metadata;
+                }
+                assetHistArr.push(tempUser);
+
                 cb(null);
               } else {
                 res.json({success:false, message:"no user"})
@@ -95,6 +130,7 @@ router.get('/getApprovedUsersList', function(req, res, next){
   });
 });
 
+
 var getUserListArray = function(userList, cb) {
   /*  
     regex takes comma seperated, space seperated and newline char seperated
@@ -102,7 +138,6 @@ var getUserListArray = function(userList, cb) {
   var newUserList = userList.split(/\s+,+\s+|\s+,|,\s+|,+|\s/g);
   cb(newUserList);
 }
-
 
 
 router.get('/checkIfAuthorised/:emailid/:role',function(req, res, next){
@@ -339,8 +374,8 @@ router.get('/getCurrentUserAllDetails', function(req, res, next) {
 
 
 router.get('/getAsset', function(req, res, next){
-
 });
+
 
 router.get('/viewAssets', function(req, res, next){
   userDAO.findUser({username:req.decoded.username}, "bigchainKeyPair", function(err, user){
@@ -351,7 +386,7 @@ router.get('/viewAssets', function(req, res, next){
     NewViewObject.getAllCurrentlyOwnedAssetsForPublicKey(user.bigchainKeyPair.publicKey)
     .then(function(assets){
       
-      console.log("All Assets : " + util.inspect(assets, false, null));
+      //console.log("All Assets : " + util.inspect(assets, false, null));
       res.json({success:true, Assets : assets})
     })
     .catch(function(err){
@@ -361,13 +396,13 @@ router.get('/viewAssets', function(req, res, next){
   });
 });
 
-//ading asset for the user
+//Adding asset for the user
 router.post('/addAsset', function(req, res, next){
   userDAO.findUser({username:req.decoded.username}, "companyName bigchainKeyPair", function(err, user){
     if(err) {
       res.json({success:false, mesage : "some error occured while finding Current user"})
     } else if (user != null) {
-      //adding compaby/brand name to asset
+      //adding company/brand name to asset
       req.body.brand = user.companyName;
       findCompanyIdByName(user.companyName, function(err, company){
         if(err) {
@@ -380,8 +415,24 @@ router.post('/addAsset', function(req, res, next){
           let NewAsset = bcwrapper.createAssetObj();
           NewAsset.createAsset(user.bigchainKeyPair.privateKey, user.bigchainKeyPair.publicKey, req.body, {AssetType:"createTestAsset"})
           .then(function(asset){
-            console.log("Asset Created" + asset);
-            res.json({success:true, message:"Asset is Successfully Created"})
+            
+            //creating a asset details object for assetId and product_ref mapping model
+            var tempAsset = {};
+            tempAsset.product_ref = req.body.product_ref;
+            tempAsset.company_ref = req.body.company_ref;
+            tempAsset.assetId = asset.id;
+            console.log(tempAsset)
+            console.log("Asset Created" + prettyjson.render(asset));
+            assetDAO.registerAsset(tempAsset, function(err){
+                if(err){
+                  res.json({success:false, message:"Error Occured while registering."})
+                } else {
+                  res.json({success:true, message:"Asset was Successfully Created"});
+                } 
+            });
+
+            
+            //res.json({success:true, message:"Asset is Successfully Created"})
           })
           .catch(function(err){
             console.log("error : " + err);
@@ -394,7 +445,6 @@ router.post('/addAsset', function(req, res, next){
     }
 
   });
-
 });
 
 
@@ -404,11 +454,13 @@ var findUserCompanyName = function (username, cb) {
   });
 };
 
+
 var findCompanyIdByName = function (companyName, cb) {
   companyDAO.findCompany({companyName:companyName}, 'companyId', function(err, company){
     cb(err, company)
   });
-}
+};
+
 
 router.post('/addDistributor', function(req, res, next){
   if(req.decoded.role == 'user'){
@@ -461,11 +513,13 @@ router.get('/allDistributorsForAUser', function(req, res, next){
   });
 });
 
+
 var findPublicKeyDistributor = function(userEmailid, cb){
   userDAO.findUser({email: userEmailid} , 'bigchainKeyPair',function(err, dist){
     cb(err, dist)
   });
-}
+};
+
 
 router.post('/transferAsset', function(req, res, next){
   console.log(req.body)
@@ -523,6 +577,7 @@ router.post('/transferAsset', function(req, res, next){
 //------------------------------------------------------------------------//
 //*********************** API that require Admin LOGIN *******************//
 //------------------------------------------------------------------------//
+
 
 router.use(function(req, res, next){
   if(req.decoded.role == "admin") {
@@ -734,6 +789,7 @@ router.delete('/disable2FA', function(req, res, next){
   });
 });
 
+
 router.post('/addApprovedUserList', function(req, res, next){
   if (req.body.newUserList != undefined && req.body.newUserList.length > 0) {
     getUserListArray(req.body.newUserList, function(newUserList){
@@ -753,6 +809,7 @@ router.post('/addApprovedUserList', function(req, res, next){
     res.json({success:false, message: "please enter a user emailID"});
   }
 });
+
 
 router.post('/removeApprovedUserList', function(req, res, next){
   if (req.body.newUserList != undefined && req.body.newUserList.length > 0) {
@@ -774,6 +831,7 @@ router.post('/removeApprovedUserList', function(req, res, next){
     res.json({success:false, message: "please enter a user emailID"});
   }
 });
+
 
 router.post('/addCompany', function(req,res, next){
   var company = new Company();

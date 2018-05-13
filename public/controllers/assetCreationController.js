@@ -9,12 +9,21 @@ angular.module('assetCreationController', [])
 		if(valid) {
 			$http.post('/api/addAsset', _this.assetData)
 			.then(function(res){
-				_this.assetData = {};
-				_this.assetCreationModal = {
-					title : "Success",
-					body : "Asset is succesfully created"
+				if(res.data.success){
+					_this.assetData = {};
+					_this.assetCreationModal = {
+						title : "Success",
+						body : "Asset is succesfully created"
+					}
+					$("#assetCreationModal").modal({backdrop: "static"});
+				} else {
+					_this.assetCreationModal = {
+						title : "Error",
+						body : res.data.message
+					}
+					$("#assetCreationModal").modal({backdrop: "static"});
 				}
-				$("#assetCreationModal").modal({backdrop: "static"});
+				
 			});
 		} else {
 			_this.assetCreationModal = {
