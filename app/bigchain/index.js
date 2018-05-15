@@ -4,9 +4,12 @@ let View = require('./view.js');
 let Utils = require('./utils.js')
 const driver = require('bigchaindb-driver');
 
-const API_PATH = 'http://localhost:9984/api/v1/';
-
-const conn = new driver.Connection(API_PATH);
+const API_PATH = 'https://test.bigchaindb.com/api/v1/';
+const conn = new driver.Connection('https://test.bigchaindb.com/api/v1/', { 
+    app_id: '7e51f5fc',
+    app_key: 'b03265ff0fe9944b88fbd63a34f97f5d'
+})
+//const conn = new driver.Connection(API_PATH);
 
 
 exports.createAssetObj = ()=>{

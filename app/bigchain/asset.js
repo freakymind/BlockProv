@@ -45,8 +45,8 @@ module.exports = class Asset{
 			this.assetId = this.signedTransaction.id;
 
 			//Posting the 
-			this.conn.postTransaction(this.signedTransaction).then(()=>{
-				return this.conn.pollStatusAndFetchTransaction(this.transactionId)
+			this.conn.postTransactionCommit(this.signedTransaction).then((res)=>{
+				return res 
 			}).then((res)=>{
 				//Incase of success
 				//The asset has been successfully initialised
@@ -103,39 +103,37 @@ module.exports = class Asset{
 			if(this.valid == false){
 				reject(new Error("Not initiated"))
 			}
-			this.getAssetState().then((status)=>{
+			// this.getAssetState().then((status)=>{
 
-				if(status["status"] != "valid")
-					throw Error("Asset is not in valid state")
+			// 	if(status["status"] != "valid")
+			// 		throw Error("Asset is not in valid state")
 
-				const txTransfer = driver.Transaction.makeTransferTransaction(
-	                        // signedTx to transfer and output index
-	                        [{ tx: this.signedTransaction , output_index: 0 }],
-	                        [driver.Transaction.makeOutput(driver.Transaction.makeEd25519Condition(toPublicKey))],
-	                        // metadata
-	                        metadata
-	                )
-	                // Sign with alice's private key
-	                this.signedTransaction = driver.Transaction.signTransaction(txTransfer, fromPrivateKey)
-	                // Post and poll status
-	                return this.conn.postTransaction(this.signedTransaction);
-			})
-			.then(res => {
-	                return this.conn.pollStatusAndFetchTransaction(res.id)
-	        })
-	        .then(tx => {
-	                if( tx['outputs'][0]['public_keys'][0] == toPublicKey && tx['inputs'][0]['owners_before'][0] == this.publicKey){
-	                	this.publicKey = toPublicKey;
-	                	this.transactionId = tx.id;
-	                	this.metadata = metadata;
-	                	resolve(tx)
-	                }
-	                else{
-	                	reject (Error("Mismatch in owners"));
-	                }
-	        }).catch((e)=>{
-	        	reject(e);
-	        })
+			const txTransfer = driver.Transaction.makeTransferTransaction(
+                        // signedTx to transfer and output index
+                        [{ tx: this.signedTransaction , output_index: 0 }],
+                        [driver.Transaction.makeOutput(driver.Transaction.makeEd25519Condition(toPublicKey))],
+                        // metadata
+                        metadata
+                )
+                // Sign with alice's private key
+                this.signedTransaction = driver.Transaction.signTransaction(txTransfer, fromPrivateKey)
+                // Post and poll status
+                this.conn.postTransactionCommit(this.signedTransaction).then((res) => {
+                	return res;
+				})
+		        .then(tx => {
+		                if( tx['outputs'][0]['public_keys'][0] == toPublicKey && tx['inputs'][0]['owners_before'][0] == this.publicKey){
+		                	this.publicKey = toPublicKey;
+		                	this.transactionId = tx.id;
+		                	this.metadata = metadata;
+		                	resolve(tx)
+		                }
+		                else{
+		                	reject (Error("Mismatch in owners"));
+		                }
+		        }).catch((e)=>{
+		        	reject(e);
+		        })
 		})
 	}
 	

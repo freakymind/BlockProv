@@ -8,18 +8,33 @@ module.exports = class Utils{
 		this.conn = conn;
 	}
 
-	getTransactionDetails(transactionId){
+	// getTransactionDetails(transactionId){
+	// 	if(transactionId == null){
+	// 		throw Error("Transaction id null");
+	// 	}
+	// 	return new Promise((resolve, reject)=>{
+	// 		this.conn.pollStatusAndFetchTransaction(transactionId).then((response)=>{
+	// 			resolve(response);
+	// 		}).catch((err)=>{
+	// 			reject(err);
+	// 		});
+
+	// 	}) 
+	// }
+
+	getTransactionDetails(transactionId) {
 		if(transactionId == null){
 			throw Error("Transaction id null");
 		}
 		return new Promise((resolve, reject)=>{
-			this.conn.pollStatusAndFetchTransaction(transactionId).then((response)=>{
-				resolve(response);
-			}).catch((err)=>{
-				reject(err);
-			});
+			let options = {
+			    uri: this.conn.path+'transactions/' + transactionId,
+			    json: true 
+			};
+			
+			resolve(request(options));
 
-		}) 
+		})
 	}
 
 	getCreatedAsset(assetId) {
