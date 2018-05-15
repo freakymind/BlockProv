@@ -44,3 +44,6 @@ app.get('*', function(req, res) {
 app.listen(port, function() {
 	console.log('Running a Server at port ' + port);
 });
+process.on('uncaughtException', function (err) {
+  console.log('Caught exception: ', err);
+});
