@@ -13,10 +13,12 @@ let Utils = bcwrapper.getUtilsObj();
 let thirdTxId = null;
 let testAsset2 = null;
 //Pass in the privatekey, publickey, assetData and metadata while asset creation
-testAsset.createAsset( alice.privateKey,alice.publicKey, {"one":"two"}, {"three":4}).then((resp)=>{
+testAsset.createAsset( alice.privateKey,alice.publicKey, {"one":"two"}, {"three":4}).then((res)=>{
+	//console.log(res);
 	let anotherAssetForAlice = bcwrapper.createAssetObj();
 	return anotherAssetForAlice.createAsset( alice.privateKey,alice.publicKey, {"Yo":"waddup"}, {"Two PLus Two minus one":3})
-}).then((resolved)=>{
+})
+.then((resolved)=>{
 	return testAsset.transferAsset(alice.privateKey, bob.publicKey)
 }).then((resolved)=>{
 	console.log("Second");
@@ -45,7 +47,7 @@ testAsset.createAsset( alice.privateKey,alice.publicKey, {"one":"two"}, {"three"
 // 	return view.getAllCurrentlyOwnedAssetsForPublicKey(alice.publicKey);
 	
 // }).then((resp)=>{
-// 	//This was returned from the view.getAllCurrentlyOwnedAssetsForPublicKey(alice.publicKey);
+// // 	//This was returned from the view.getAllCurrentlyOwnedAssetsForPublicKey(alice.publicKey);
 	
 // 	console.log(prettyjson.render(resp))
 // 	return view.getAllPreviouslyOwnedAssetsForPublicKey(alice.publicKey);
