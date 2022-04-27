@@ -14,7 +14,7 @@
   "author": "Yash Bansal",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.6.0",
+    "async": "^2.6.4",
     "bcrypt-nodejs": "0.0.3",
     "bigchaindb-driver": "^3.2.0",
     "express": "^4.16.3",
